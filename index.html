@@ -4,2742 +4,983 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>数学｜几何模型专项练习</title>
-<meta name="description" content="完全离线的几何模型学习与练习系统">
 
 <style>
 :root{
-  --bg:#f6f8fc;
-  --paper:#fff;
-  --ink:#172033;
-  --muted:#667085;
-  --line:#d9e0ea;
-  --brand:#5b5bd6;
-  --brand2:#13a085;
-  --danger:#d92d20;
-  --success:#07835c;
-  --warn:#b54708;
-  --shadow:0 14px 40px rgba(31,41,55,.08);
-  --r:20px;
+  --bg:#f5f7fb;--paper:#fff;--ink:#182230;--muted:#667085;
+  --line:#d9e0ea;--brand:#5757d6;--green:#07835c;--red:#b42318;
 }
-
 *{box-sizing:border-box}
-
 html{scroll-behavior:smooth}
-
 body{
-  margin:0;
-  background:linear-gradient(180deg,#eef4ff 0,#f8fafc 280px,#f6f8fc 100%);
+  margin:0;background:linear-gradient(#edf3ff,#f7f8fc 330px);
   color:var(--ink);
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif;
-  line-height:1.65;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  line-height:1.65
 }
-
 button,input,select{font:inherit}
-
 button{cursor:pointer}
-
-.wrap{
-  max-width:1250px;
-  margin:auto;
-  padding:22px;
-}
-
+.wrap{max-width:1250px;margin:auto;padding:20px}
 .hero{
-  color:white;
-  background:
-    radial-gradient(circle at 85% 20%,rgba(255,255,255,.25),transparent 28%),
-    linear-gradient(135deg,#3c46c7,#6d5bd0 55%,#148f7d);
-  border-radius:28px;
-  padding:28px;
-  box-shadow:var(--shadow);
+  padding:28px;border-radius:26px;color:#fff;
+  background:linear-gradient(135deg,#3946c6,#7258cf,#148d7b);
+  box-shadow:0 16px 45px #24345c20
 }
-
-.hero h1{
-  margin:5px 0;
-  font-size:clamp(30px,5vw,54px);
-}
-
-.hero p{
-  max-width:900px;
-  margin:8px 0;
-}
-
+.hero h1{font-size:clamp(30px,5vw,52px);margin:5px 0}
 .tag{
-  display:inline-block;
-  padding:5px 11px;
-  border:1px solid rgba(255,255,255,.35);
-  background:rgba(255,255,255,.12);
-  border-radius:999px;
-  font-size:13px;
-  margin:3px;
+  display:inline-block;border:1px solid #ffffff55;border-radius:999px;
+  padding:4px 10px;margin:3px;background:#ffffff15;font-size:13px
 }
-
-.topbar{
-  display:flex;
-  flex-wrap:wrap;
-  gap:9px;
-  margin-top:16px;
-}
-
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:15px}
 .btn{
-  border:0;
-  border-radius:12px;
-  padding:10px 14px;
-  background:white;
-  color:#353c9b;
-  font-weight:700;
+  border:0;border-radius:11px;padding:10px 14px;background:#fff;
+  color:#343aa0;font-weight:750
 }
-
-.btn.dark{
-  background:#14213d;
-  color:white;
-}
-
-.btn.green{
-  background:#07835c;
-  color:white;
-}
-
-.btn.orange{
-  background:#b54708;
-  color:white;
-}
-
-.layout{
-  display:grid;
-  grid-template-columns:250px 1fr;
-  gap:20px;
-  margin-top:20px;
-}
-
-.side{
-  position:sticky;
-  top:12px;
-  align-self:start;
-  max-height:calc(100vh - 24px);
-  overflow:auto;
-  background:white;
-  border:1px solid var(--line);
-  border-radius:18px;
-  padding:14px;
-}
-
-.side a{
-  display:block;
-  text-decoration:none;
-  color:#475467;
-  padding:8px 10px;
-  border-radius:9px;
-}
-
-.side a:hover{
-  background:#eef2ff;
-  color:#3730a3;
-}
-
-.search{
-  width:100%;
-  border:1px solid var(--line);
-  border-radius:10px;
-  padding:10px;
-}
-
-.section{
-  margin-bottom:26px;
-  scroll-margin-top:20px;
-}
-
-.section-title h2{
-  margin-bottom:10px;
-}
-
-.grid{
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:14px;
-}
-
-.card{
-  background:white;
-  border:1px solid var(--line);
-  border-radius:var(--r);
-  padding:17px;
-  box-shadow:0 8px 25px rgba(31,41,55,.045);
-}
-
-.card h3{
-  margin-top:0;
-}
-
-.formula{
-  display:flex;
-  flex-wrap:wrap;
-  gap:7px;
-}
-
-.chip{
-  background:#eef1ff;
-  color:#3e46a8;
-  border:1px solid #dfe3ff;
-  border-radius:999px;
-  padding:5px 9px;
-  font-size:13px;
-  font-weight:700;
-}
-
-.note{
-  margin-top:10px;
-  padding:9px 11px;
-  border-left:4px solid #8b8bd9;
-  background:#f8fafc;
-  border-radius:8px;
-  color:#475467;
-}
-
-.master{
-  float:right;
-  font-size:13px;
-  color:#667085;
-}
-
-.master input{
-  accent-color:#5b5bd6;
-}
+.btn.green{background:#07835c;color:#fff}
+.btn.dark{background:#17233c;color:#fff}
+.btn.red{background:#b42318;color:#fff}
+.progress{height:10px;background:#ffffff35;border-radius:99px;overflow:hidden;margin-top:8px}
+.progress i{display:block;height:100%;background:#fff;width:0}
 
 .practice{
-  background:white;
-  border:1px solid #d9e0ea;
-  border-radius:24px;
-  padding:22px;
-  margin:20px 0;
-  box-shadow:var(--shadow);
+  margin:20px 0;background:#fff;border:1px solid var(--line);
+  border-radius:23px;padding:20px;box-shadow:0 12px 35px #34405412
 }
-
-.practice-head{
-  display:flex;
-  justify-content:space-between;
-  gap:15px;
-  flex-wrap:wrap;
+.practice-top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.stats{display:flex;flex-wrap:wrap;gap:7px}
+.stat{background:#f2f4f7;border-radius:9px;padding:6px 10px;font-size:13px}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin:13px 0}
+select{
+  border:1px solid #cfd7e5;border-radius:10px;padding:9px;background:#fff
 }
-
-.stats{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-}
-
-.stat{
-  background:#f2f4f7;
-  border-radius:10px;
-  padding:6px 10px;
-  font-size:13px;
-}
-
 .question{
-  background:#111c34;
-  color:white;
-  padding:20px;
-  border-radius:18px;
-  margin-top:15px;
+  background:#142039;color:#fff;border-radius:18px;padding:20px
 }
-
-.question h3{
-  margin-top:0;
-}
-
-.qtext{
-  font-size:21px;
-  font-weight:700;
-  margin:14px 0;
-}
-
-.answer-row{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  margin-top:15px;
-}
-
+.qcat{color:#cbd5ff;font-size:14px}
+.qtext{font-size:21px;font-weight:750;margin:10px 0}
+.answer-row{display:flex;gap:8px;flex-wrap:wrap}
 .answer-input{
-  flex:1;
-  min-width:200px;
-  padding:12px 14px;
-  border-radius:11px;
-  border:2px solid #d0d5dd;
-  outline:none;
+  flex:1;min-width:190px;border:2px solid #d0d5dd;
+  border-radius:11px;padding:11px 13px;outline:none
 }
+.answer-input:focus{border-color:#7777df}
+.feedback,.solution{display:none;margin-top:11px;padding:11px;border-radius:11px}
+.feedback.good{display:block;background:#ecfdf3;color:#067647;font-weight:700}
+.feedback.bad{display:block;background:#fef3f2;color:#b42318;font-weight:700}
+.solution.show{display:block;background:#eefbf7;color:#185f50}
 
-.answer-input:focus{
-  border-color:#7777df;
+.layout{display:grid;grid-template-columns:245px 1fr;gap:18px}
+.side{
+  position:sticky;top:10px;align-self:start;background:#fff;border:1px solid var(--line);
+  border-radius:17px;padding:13px;max-height:calc(100vh - 20px);overflow:auto
 }
-
-.feedback{
-  display:none;
-  margin-top:12px;
-  padding:12px;
-  border-radius:12px;
-  font-weight:700;
+.side input{width:100%;padding:9px;border:1px solid var(--line);border-radius:9px}
+.side a{display:block;padding:7px 9px;text-decoration:none;color:#475467;border-radius:8px}
+.side a:hover{background:#eef2ff;color:#3730a3}
+.section{margin-bottom:27px;scroll-margin-top:15px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.card{
+  background:#fff;border:1px solid var(--line);border-radius:18px;
+  padding:16px;box-shadow:0 6px 22px #3440540b
 }
-
-.feedback.good{
-  display:block;
-  background:#ecfdf3;
-  color:#067647;
+.card h3{margin:0 0 8px}
+.master{float:right;font-size:13px;color:#667085}
+.master input{accent-color:#5757d6}
+.formulas{display:flex;gap:6px;flex-wrap:wrap}
+.chip{
+  padding:5px 9px;border-radius:999px;background:#eef1ff;color:#3d45a4;
+  border:1px solid #dfe3ff;font-size:13px;font-weight:700
 }
-
-.feedback.bad{
-  display:block;
-  background:#fef3f2;
-  color:#b42318;
-}
-
-.solution{
-  display:none;
-  margin-top:12px;
-  background:#eefbf7;
-  color:#185f50;
-  padding:12px;
-  border-radius:12px;
-}
-
-.solution.show{
-  display:block;
-}
-
-.category{
-  color:#c7d7ff;
-  font-size:14px;
-}
-
-.progress{
-  height:10px;
-  background:#e8ecf5;
-  border-radius:99px;
-  overflow:hidden;
-  margin-top:10px;
-}
-
-.progress i{
-  display:block;
-  height:100%;
-  width:0;
-  background:linear-gradient(90deg,#5b5bd6,#13a085);
-}
-
-.mode-select{
-  padding:9px;
-  border:1px solid #d0d5dd;
-  border-radius:10px;
-  background:white;
-}
-
+.note{margin-top:9px;padding:9px;background:#f8fafc;border-left:4px solid #7d7dde;border-radius:8px}
 .diagram{
-  background:#f8fafc;
-  border:1px dashed #cbd5e1;
-  border-radius:14px;
-  margin-top:10px;
-  padding:10px;
+  margin-top:10px;background:#fbfcff;border:1px dashed #cbd5e1;
+  border-radius:13px;padding:8px;overflow:hidden
 }
+.diagram svg{width:100%;height:auto;max-height:230px;display:block}
+.line{fill:none;stroke:#26334c;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.purple{fill:#e8eaff;stroke:#5757d6;stroke-width:2}
+.greenfill{fill:#dff8f1;stroke:#13927c;stroke-width:2}
+.orangefill{fill:#fff0dc;stroke:#d97706;stroke-width:2}
+.bluefill{fill:#e5f2ff;stroke:#3b82f6;stroke-width:2}
+.redline{fill:none;stroke:#dc2626;stroke-width:2.5}
+.dash{stroke-dasharray:6 5}
+.mid{fill:#5757d6}
+.label{font-size:14px;fill:#172033;font-weight:650}
+.angle{fill:none;stroke:#e11d48;stroke-width:2}
+.hidden{display:none!important}
+.footer{text-align:center;color:#667085;padding:35px}
 
-.diagram svg{
-  display:block;
-  width:100%;
-  max-height:210px;
+@media(max-width:850px){
+ .layout{grid-template-columns:1fr}.side{position:relative;max-height:none}
+ .grid{grid-template-columns:1fr}
 }
-
-.s{
-  fill:none;
-  stroke:#25324b;
-  stroke-width:2.2;
-  stroke-linejoin:round;
-}
-
-.fill1{
-  fill:#e9ecff;
-  stroke:#5b5bd6;
-  stroke-width:2;
-}
-
-.fill2{
-  fill:#ddf7f1;
-  stroke:#14977f;
-  stroke-width:2;
-}
-
-.accent{
-  stroke:#5b5bd6;
-  stroke-width:2.5;
-}
-
-.dash{
-  stroke-dasharray:6 6;
-}
-
-.hide{display:none!important}
-
-.footer{
-  text-align:center;
-  color:#667085;
-  padding:35px;
-}
-
-@media(max-width:900px){
-  .layout{grid-template-columns:1fr}
-  .side{position:relative;max-height:none}
-  .grid{grid-template-columns:1fr}
-}
-
 @media(max-width:550px){
-  .wrap{padding:11px}
-  .hero{padding:19px}
-  .practice{padding:14px}
-  .qtext{font-size:18px}
+ .wrap{padding:10px}.hero{padding:18px}.practice{padding:13px}.qtext{font-size:18px}
 }
 </style>
 </head>
 
 <body>
-
 <div class="wrap">
 
 <header class="hero">
+  <span class="tag">完全离线</span>
+  <span class="tag">SVG 几何图</span>
+  <span class="tag">动态大题库</span>
+  <span class="tag">自动批改</span>
+  <h1>数学｜几何模型专项</h1>
+  <p>先看图理解模型，再自己做题。题目在本机动态生成，可形成远超 4800 道不同组合。</p>
 
-<span class="tag">完全离线</span>
-<span class="tag">动态大题库</span>
-<span class="tag">自动批改</span>
-<span class="tag">错题统计</span>
+  <div class="actions">
+    <button class="btn" onclick="goPractice()">✏️ 开始答题</button>
+    <button class="btn" onclick="newQuestion()">🎲 换一题</button>
+    <button class="btn dark" onclick="window.print()">🖨️ 打印 / PDF</button>
+    <button class="btn red" onclick="resetAll()">↺ 清空记录</button>
+  </div>
 
-<h1>数学｜几何模型专项</h1>
-
-<p>
-从基础图形一直练到等积、一半、风筝、蝴蝶、鸟头和燕尾模型。
-题目由本地题库动态生成，可以产生远超 4800 道不同组合题。
-</p>
-
-<div class="topbar">
-
-<button class="btn" onclick="newQuestion()">
-🎲 随机练习
-</button>
-
-<button class="btn" onclick="scrollPractice()">
-✏️ 开始答题
-</button>
-
-<button class="btn dark" onclick="window.print()">
-🖨️ 打印 / PDF
-</button>
-
-<button class="btn orange" onclick="resetStats()">
-↺ 清空练习记录
-</button>
-
-</div>
-
-<div>
-学习掌握进度：
-<b id="masterText">0 / 0</b>
-</div>
-
-<div class="progress">
-<i id="masterBar"></i>
-</div>
-
+  <div style="margin-top:14px">知识点掌握：<b id="masterText">0 / 0</b></div>
+  <div class="progress"><i id="masterBar"></i></div>
 </header>
 
-
 <section class="practice" id="practice">
+  <div class="practice-top">
+    <div>
+      <h2 style="margin:0">📝 智能练习</h2>
+      <div style="color:#667085">自己输入答案 → 批改 → 不会再看答案</div>
+    </div>
+    <div class="stats">
+      <span class="stat">已做 <b id="done">0</b></span>
+      <span class="stat">正确 <b id="correct">0</b></span>
+      <span class="stat">错误 <b id="wrong">0</b></span>
+      <span class="stat">正确率 <b id="rate">0%</b></span>
+    </div>
+  </div>
 
-<div class="practice-head">
+  <div class="controls">
+    <select id="category" onchange="newQuestion()">
+      <option value="all">全部随机</option>
+      <option value="rectangle">长方形 / 正方形</option>
+      <option value="parallelogram">平行四边形</option>
+      <option value="trapezoid">梯形</option>
+      <option value="triangle">三角形</option>
+      <option value="equal">等积模型</option>
+      <option value="half">一半模型</option>
+      <option value="kite">风筝模型</option>
+      <option value="butterfly">蝴蝶模型</option>
+      <option value="bird">鸟头模型</option>
+      <option value="swallow">燕尾模型</option>
+    </select>
+  </div>
 
-<div>
-<h2 style="margin:0">📝 智能练习区</h2>
-<div style="color:#667085">
-先自己做，再让网页批改。
-</div>
-</div>
-
-<div class="stats">
-<div class="stat">
-已做：<b id="doneCount">0</b>
-</div>
-
-<div class="stat">
-正确：<b id="correctCount">0</b>
-</div>
-
-<div class="stat">
-错误：<b id="wrongCount">0</b>
-</div>
-
-<div class="stat">
-正确率：<b id="rate">0%</b>
-</div>
-</div>
-
-</div>
-
-
-<div style="margin-top:15px">
-
-<label>
-题型：
-<select id="categorySelect"
-class="mode-select"
-onchange="newQuestion()">
-
-<option value="all">全部随机</option>
-<option value="rectangle">长方形</option>
-<option value="square">正方形</option>
-<option value="parallelogram">平行四边形</option>
-<option value="trapezoid">梯形</option>
-<option value="triangle">三角形</option>
-<option value="equal">等积模型</option>
-<option value="half">一半模型</option>
-<option value="kite">风筝模型</option>
-<option value="butterfly">蝴蝶模型</option>
-<option value="bird">鸟头模型</option>
-<option value="swallow">燕尾模型</option>
-
-</select>
-</label>
-
-</div>
-
-
-<div class="question">
-
-<div class="category" id="qCategory">
-准备开始
-</div>
-
-<div class="qtext" id="qText">
-点击“下一题”开始练习。
-</div>
-
-<div class="answer-row">
-
-<input
-id="userAnswer"
-class="answer-input"
-placeholder="在这里输入你的答案"
-autocomplete="off"
-onkeydown="if(event.key==='Enter')checkAnswer()">
-
-<button class="btn green"
-onclick="checkAnswer()">
-✓ 批改
-</button>
-
-<button class="btn"
-onclick="toggleSolution()">
-👀 看答案
-</button>
-
-<button class="btn"
-onclick="newQuestion()">
-→ 下一题
-</button>
-
-</div>
-
-<div id="feedback" class="feedback"></div>
-<div id="solution" class="solution"></div>
-
-</div>
-
+  <div class="question">
+    <div class="qcat" id="qcat"></div>
+    <div class="qtext" id="qtext"></div>
+    <div class="answer-row">
+      <input id="userAnswer" class="answer-input"
+        placeholder="输入答案，例如：24、2:3、钝角三角形"
+        onkeydown="if(event.key==='Enter')checkAnswer()">
+      <button class="btn green" onclick="checkAnswer()">✓ 批改</button>
+      <button class="btn" onclick="showAnswer()">👀 看答案</button>
+      <button class="btn" onclick="newQuestion()">→ 下一题</button>
+    </div>
+    <div id="feedback" class="feedback"></div>
+    <div id="solution" class="solution"></div>
+  </div>
 </section>
-
 
 <div class="layout">
 
 <aside class="side">
-
-<input
-id="search"
-class="search"
-placeholder="搜索知识点……"
-oninput="filterCards(this.value)">
-
-<h3>目录</h3>
-
-<nav>
-<a href="#basic">1. 基础图形</a>
-<a href="#triangle">2. 三角形</a>
-<a href="#equal">3. 等积模型</a>
-<a href="#half">4. 一半模型</a>
-<a href="#kite">5. 风筝模型</a>
-<a href="#butterfly">6. 蝴蝶模型</a>
-<a href="#bird">7. 鸟头模型</a>
-<a href="#swallow">8. 燕尾模型</a>
-<a href="#practice">📝 练习区</a>
-</nav>
-
-<div class="note">
-<strong>推荐做题顺序</strong><br>
-中点 → 平行 → 同底/等高 →
-对顶角 → 相似 → 面积比。
-</div>
-
+  <input placeholder="搜索知识点……" oninput="searchCards(this.value)">
+  <h3>图形目录</h3>
+  <a href="#basic">1. 长方形 / 正方形</a>
+  <a href="#para">2. 平行四边形</a>
+  <a href="#trap">3. 梯形</a>
+  <a href="#tri">4. 三角形</a>
+  <a href="#equal">5. 等积模型</a>
+  <a href="#half">6. 一半模型</a>
+  <a href="#kite">7. 风筝模型</a>
+  <a href="#butterfly">8. 蝴蝶模型</a>
+  <a href="#bird">9. 鸟头模型</a>
+  <a href="#swallow">10. 燕尾模型</a>
 </aside>
-
 
 <main>
 
-
+<!-- 1 长方形正方形 -->
 <section class="section" id="basic">
-
-<div class="section-title">
-<h2>1. 基础图形</h2>
-</div>
-
+<h2>1. 长方形与正方形</h2>
 <div class="grid">
 
-
-<article class="card lesson"
-data-tags="长方形 周长 面积">
-
-<label class="master">
-<input type="checkbox" data-key="rect">
-已掌握
-</label>
-
+<article class="card lesson" data-search="长方形 周长 面积">
+<label class="master"><input type="checkbox" data-master="rect"> 已掌握</label>
 <h3>长方形</h3>
-
-<div class="formula">
-<span class="chip">C=2(a+b)</span>
-<span class="chip">S=ab</span>
-<span class="chip">4个直角</span>
-<span class="chip">对边相等</span>
+<div class="formulas">
+<span class="chip">C=2(a+b)</span><span class="chip">S=ab</span>
 </div>
-
 <div class="diagram">
-
-<svg viewBox="0 0 360 170">
-
-<rect
-x="55"
-y="30"
-width="250"
-height="110"
-class="fill1"/>
-
-<text x="165" y="160">长 a</text>
-<text x="12" y="90">宽 b</text>
-
+<svg viewBox="0 0 360 200">
+<rect x="55" y="35" width="250" height="120" class="bluefill"/>
+<text x="170" y="180" class="label">长 a</text>
+<text x="12" y="100" class="label">宽 b</text>
+<text x="42" y="31" class="label">A</text>
+<text x="308" y="31" class="label">B</text>
+<text x="308" y="172" class="label">C</text>
+<text x="42" y="172" class="label">D</text>
 </svg>
-
 </div>
-
 </article>
 
-
-<article class="card lesson"
-data-tags="正方形 周长 面积 对角线">
-
-<label class="master">
-<input type="checkbox" data-key="square">
-已掌握
-</label>
-
+<article class="card lesson" data-search="正方形 对角线 周长 面积">
+<label class="master"><input type="checkbox" data-master="square"> 已掌握</label>
 <h3>正方形</h3>
-
-<div class="formula">
-<span class="chip">C=4a</span>
-<span class="chip">S=a²</span>
-<span class="chip">4边相等</span>
-<span class="chip">4个直角</span>
+<div class="formulas">
+<span class="chip">C=4a</span><span class="chip">S=a²</span>
+<span class="chip">S=d²÷2</span>
 </div>
-
-<div class="note">
-两条对角线相等、互相平分、互相垂直，
-并且平分顶角。
-</div>
-
-</article>
-
-
-<article class="card lesson"
-data-tags="平行四边形 面积 周长 底 高">
-
-<label class="master">
-<input type="checkbox" data-key="para">
-已掌握
-</label>
-
-<h3>平行四边形</h3>
-
-<div class="formula">
-<span class="chip">C=2(a+b)</span>
-<span class="chip">S=ah</span>
-<span class="chip">对边平行且相等</span>
-<span class="chip">对角相等</span>
-</div>
-
 <div class="diagram">
-
-<svg viewBox="0 0 360 180">
-
-<polygon
-points="55,145 110,35 305,35 250,145"
-class="fill2"/>
-
-<line
-x1="110"
-y1="35"
-x2="110"
-y2="145"
-class="accent dash"/>
-
-<text x="118" y="90">高 h</text>
-
+<svg viewBox="0 0 360 220">
+<rect x="90" y="25" width="170" height="170" class="purple"/>
+<line x1="90" y1="25" x2="260" y2="195" class="line"/>
+<line x1="260" y1="25" x2="90" y2="195" class="line"/>
+<circle cx="175" cy="110" r="4" class="mid"/>
+<text x="70" y="22" class="label">A</text>
+<text x="268" y="22" class="label">B</text>
+<text x="268" y="210" class="label">C</text>
+<text x="70" y="210" class="label">D</text>
+<text x="183" y="105" class="label">O</text>
 </svg>
-
 </div>
-
-</article>
-
-
-<article class="card lesson"
-data-tags="梯形 面积 上底 下底 高">
-
-<label class="master">
-<input type="checkbox" data-key="trap">
-已掌握
-</label>
-
-<h3>梯形</h3>
-
-<div class="formula">
-<span class="chip">S=(a+b)h÷2</span>
-<span class="chip">中位线=(a+b)÷2</span>
-</div>
-
-<div class="note">
-平行的两条边叫上底和下底。
-面积等于“上底加下底”乘高再除以 2。
-</div>
-
+<div class="note">对角线相等、互相垂直、互相平分，并平分顶角。</div>
 </article>
 
 </div>
 </section>
 
-
-<section class="section" id="triangle">
-
-<h2>2. 三角形</h2>
-
+<!-- 2 平行四边形 -->
+<section class="section" id="para">
+<h2>2. 平行四边形</h2>
 <div class="grid">
 
+<article class="card lesson" data-search="平行四边形 底 高 面积">
+<label class="master"><input type="checkbox" data-master="para1"> 已掌握</label>
+<h3>底和高</h3>
+<div class="formulas"><span class="chip">S=ah</span><span class="chip">C=2(a+b)</span></div>
+<div class="diagram">
+<svg viewBox="0 0 360 210">
+<polygon points="45,170 105,40 310,40 250,170" class="greenfill"/>
+<line x1="105" y1="40" x2="105" y2="170" class="redline dash"/>
+<path d="M105 158 L117 158 L117 170" class="line"/>
+<text x="115" y="110" class="label">高 h</text>
+<text x="145" y="193" class="label">底 a</text>
+</svg>
+</div>
+</article>
 
-<article class="card lesson"
-data-tags="三角形 分类 锐角 直角 钝角">
+<article class="card lesson" data-search="平行四边形 对角线 四等份">
+<label class="master"><input type="checkbox" data-master="para2"> 已掌握</label>
+<h3>对角线</h3>
+<div class="diagram">
+<svg viewBox="0 0 360 210">
+<polygon points="45,170 105,35 315,35 255,170" class="purple"/>
+<line x1="45" y1="170" x2="315" y2="35" class="line"/>
+<line x1="105" y1="35" x2="255" y2="170" class="line"/>
+<circle cx="180" cy="102.5" r="4" class="mid"/>
+<text x="187" y="99" class="label">O</text>
+</svg>
+</div>
+<div class="note">两条对角线互相平分，并把平行四边形分成四个等面积三角形。</div>
+</article>
 
-<label class="master">
-<input type="checkbox" data-key="tri-type">
-已掌握
-</label>
+</div>
+</section>
 
+<!-- 3 梯形 -->
+<section class="section" id="trap">
+<h2>3. 梯形</h2>
+<div class="grid">
+
+<article class="card lesson" data-search="梯形 上底 下底 高 面积">
+<label class="master"><input type="checkbox" data-master="trap1"> 已掌握</label>
+<h3>梯形面积</h3>
+<div class="formulas">
+<span class="chip">S=(a+b)h÷2</span><span class="chip">中位线=(a+b)÷2</span>
+</div>
+<div class="diagram">
+<svg viewBox="0 0 360 210">
+<polygon points="40,170 105,40 255,40 320,170" class="orangefill"/>
+<line x1="105" y1="40" x2="105" y2="170" class="redline dash"/>
+<text x="150" y="30" class="label">上底 a</text>
+<text x="150" y="195" class="label">下底 b</text>
+<text x="113" y="110" class="label">h</text>
+</svg>
+</div>
+</article>
+
+<article class="card lesson" data-search="梯形 中位线">
+<label class="master"><input type="checkbox" data-master="trap2"> 已掌握</label>
+<h3>梯形中位线</h3>
+<div class="diagram">
+<svg viewBox="0 0 360 210">
+<polygon points="45,175 105,35 255,35 315,175" class="line"/>
+<circle cx="75" cy="105" r="5" class="mid"/>
+<circle cx="285" cy="105" r="5" class="mid"/>
+<line x1="75" y1="105" x2="285" y2="105" class="redline"/>
+<text x="142" y="95" class="label">中位线</text>
+</svg>
+</div>
+<div class="note">两腰中点的连线平行于两底，长度等于两底和的一半。</div>
+</article>
+
+</div>
+</section>
+
+<!-- 4 三角形 -->
+<section class="section" id="tri">
+<h2>4. 三角形</h2>
+<div class="grid">
+
+<article class="card lesson" data-search="锐角 直角 钝角 三角形 分类">
+<label class="master"><input type="checkbox" data-master="tri1"> 已掌握</label>
 <h3>按角分类</h3>
+<div class="diagram">
+<svg viewBox="0 0 600 200">
+<polygon points="30,165 110,35 190,165" class="purple"/>
+<text x="78" y="190" class="label">锐角</text>
 
-<div class="formula">
-<span class="chip">锐角三角形</span>
-<span class="chip">直角三角形</span>
-<span class="chip">钝角三角形</span>
+<polygon points="230,165 230,55 340,165" class="greenfill"/>
+<path d="M230 148 L247 148 L247 165" class="line"/>
+<text x="260" y="190" class="label">直角</text>
+
+<polygon points="395,165 470,75 570,165" class="orangefill"/>
+<text x="458" y="190" class="label">钝角</text>
+</svg>
 </div>
-
-<div class="note">
-三个角都小于90°：锐角三角形。<br>
-有一个角等于90°：直角三角形。<br>
-有一个角大于90°：钝角三角形。
-</div>
-
 </article>
 
-
-<article class="card lesson"
-data-tags="三角形 等腰 等边 按边分类">
-
-<label class="master">
-<input type="checkbox" data-key="tri-side">
-已掌握
-</label>
-
+<article class="card lesson" data-search="等腰 等边 三角形 按边">
+<label class="master"><input type="checkbox" data-master="tri2"> 已掌握</label>
 <h3>按边分类</h3>
+<div class="diagram">
+<svg viewBox="0 0 500 210">
+<polygon points="45,175 130,35 215,175" class="purple"/>
+<line x1="82" y1="100" x2="92" y2="106" class="redline"/>
+<line x1="168" y1="106" x2="178" y2="100" class="redline"/>
+<text x="85" y="200" class="label">等腰</text>
 
-<div class="formula">
-<span class="chip">不等边三角形</span>
-<span class="chip">等腰三角形</span>
-<span class="chip">等边三角形</span>
+<polygon points="285,175 365,36 445,175" class="greenfill"/>
+<text x="335" y="200" class="label">等边</text>
+</svg>
 </div>
-
-<div class="note">
-等边三角形三个角都是 60°。
-等边三角形也是特殊的等腰三角形。
-</div>
-
 </article>
 
+<article class="card lesson" data-search="三角形 作高 高">
+<label class="master"><input type="checkbox" data-master="tri3"> 已掌握</label>
+<h3>作高</h3>
+<div class="formulas"><span class="chip">S=底×高÷2</span></div>
+<div class="diagram">
+<svg viewBox="0 0 360 210">
+<polygon points="45,175 150,35 315,175" class="bluefill"/>
+<line x1="150" y1="35" x2="150" y2="175" class="redline dash"/>
+<path d="M150 160 L165 160 L165 175" class="line"/>
+<text x="158" y="105" class="label">高 h</text>
+</svg>
+</div>
+</article>
 
-<article class="card lesson"
-data-tags="三角形 内角和 多边形">
-
-<label class="master">
-<input type="checkbox" data-key="tri-angle">
-已掌握
-</label>
-
-<h3>内角和</h3>
-
-<div class="formula">
-<span class="chip">三角形=180°</span>
+<article class="card lesson" data-search="三角形 内角和 三边关系">
+<label class="master"><input type="checkbox" data-master="tri4"> 已掌握</label>
+<h3>边角关系</h3>
+<div class="formulas">
+<span class="chip">内角和=180°</span>
+<span class="chip">两边之和＞第三边</span>
 <span class="chip">n边形=(n−2)×180°</span>
 </div>
-
-</article>
-
-
-<article class="card lesson"
-data-tags="三角形 三边关系">
-
-<label class="master">
-<input type="checkbox" data-key="tri-edge">
-已掌握
-</label>
-
-<h3>三边关系</h3>
-
-<div class="formula">
-<span class="chip">两边之和＞第三边</span>
-<span class="chip">两边之差＜第三边</span>
+<div class="diagram">
+<svg viewBox="0 0 360 210">
+<polygon points="45,170 165,35 315,170" class="line"/>
+<path d="M70 170 A25 25 0 0 1 60 150" class="angle"/>
+<path d="M145 58 A28 28 0 0 1 185 57" class="angle"/>
+<path d="M290 170 A25 25 0 0 0 300 150" class="angle"/>
+<text x="80" y="155" class="label">A</text>
+<text x="160" y="75" class="label">B</text>
+<text x="270" y="155" class="label">C</text>
+</svg>
 </div>
-
-<div class="note">
-快速判断时，把最长边找出来，
-检查另外两条边之和是否大于最长边。
-</div>
-
-</article>
-
-
-<article class="card lesson"
-data-tags="三角形 面积 底 高">
-
-<label class="master">
-<input type="checkbox" data-key="tri-area">
-已掌握
-</label>
-
-<h3>三角形面积</h3>
-
-<div class="formula">
-<span class="chip">S=ah÷2</span>
-<span class="chip">a=2S÷h</span>
-<span class="chip">h=2S÷a</span>
-</div>
-
 </article>
 
 </div>
 </section>
 
-
+<!-- 5 等积 -->
 <section class="section" id="equal">
-
-<h2>3. 等积模型</h2>
-
+<h2>5. 等积模型</h2>
 <div class="grid">
 
-<article class="card lesson"
-data-tags="等积 等底等高">
-
-<label class="master">
-<input type="checkbox" data-key="equal1">
-已掌握
-</label>
-
+<article class="card lesson" data-search="等底等高 等积">
+<label class="master"><input type="checkbox" data-master="equal1"> 已掌握</label>
 <h3>等底等高</h3>
-
-<div class="formula">
-<span class="chip">等底等高 → 面积相等</span>
+<div class="formulas"><span class="chip">同底同高 → 面积相等</span></div>
+<div class="diagram">
+<svg viewBox="0 0 430 220">
+<line x1="30" y1="45" x2="400" y2="45" class="redline dash"/>
+<line x1="30" y1="180" x2="400" y2="180" class="line"/>
+<polygon points="75,180 155,45 235,180" class="purple"/>
+<polygon points="75,180 315,45 235,180" class="greenfill"/>
+<text x="250" y="35" class="label">顶点在同一条平行线上</text>
+</svg>
 </div>
-
-<div class="note">
-两个三角形底相同，
-顶点位于与底平行的同一直线上，
-则高相同，面积相等。
-</div>
-
 </article>
 
-
-<article class="card lesson"
-data-tags="等积 等底不等高">
-
-<label class="master">
-<input type="checkbox" data-key="equal2">
-已掌握
-</label>
-
+<article class="card lesson" data-search="等底 不等高 面积比 高">
+<label class="master"><input type="checkbox" data-master="equal2"> 已掌握</label>
 <h3>等底不等高</h3>
-
-<div class="formula">
-<span class="chip">面积比=高之比</span>
+<div class="formulas"><span class="chip">面积比=高之比</span></div>
+<div class="diagram">
+<svg viewBox="0 0 430 220">
+<line x1="60" y1="180" x2="370" y2="180" class="line"/>
+<polygon points="80,180 180,95 330,180" class="bluefill"/>
+<polygon points="80,180 250,30 330,180" class="line"/>
+<line x1="180" y1="95" x2="180" y2="180" class="redline dash"/>
+<line x1="250" y1="30" x2="250" y2="180" class="redline dash"/>
+</svg>
 </div>
-
 </article>
 
-
-<article class="card lesson"
-data-tags="等积 等高不等底">
-
-<label class="master">
-<input type="checkbox" data-key="equal3">
-已掌握
-</label>
-
+<article class="card lesson" data-search="等高 不等底 面积比 底">
+<label class="master"><input type="checkbox" data-master="equal3"> 已掌握</label>
 <h3>等高不等底</h3>
-
-<div class="formula">
-<span class="chip">面积比=底边比</span>
+<div class="formulas"><span class="chip">面积比=底边比</span></div>
+<div class="diagram">
+<svg viewBox="0 0 430 220">
+<line x1="35" y1="180" x2="400" y2="180" class="line"/>
+<polygon points="45,180 210,35 175,180" class="purple"/>
+<polygon points="175,180 210,35 390,180" class="greenfill"/>
+<line x1="210" y1="35" x2="210" y2="180" class="redline dash"/>
+</svg>
 </div>
-
 </article>
 
 </div>
 </section>
 
-
+<!-- 6 一半模型 -->
 <section class="section" id="half">
-
-<h2>4. 一半模型</h2>
-
+<h2>6. 一半模型</h2>
 <div class="grid">
 
-<article class="card lesson"
-data-tags="一半模型 三角形 中点 中线">
-
-<label class="master">
-<input type="checkbox" data-key="half1">
-已掌握
-</label>
-
-<h3>三角形中线</h3>
-
-<div class="formula">
-<span class="chip">中线把面积分成相等两份</span>
-</div>
-
+<article class="card lesson" data-search="三角形 中点 中线 一半">
+<label class="master"><input type="checkbox" data-master="half1"> 已掌握</label>
+<h3>一边中点</h3>
 <div class="diagram">
-
-<svg viewBox="0 0 360 190">
-
-<polygon
-points="55,150 180,30 310,150"
-class="fill1"/>
-
-<line
-x1="180"
-y1="30"
-x2="182"
-y2="150"
-class="accent"/>
-
+<svg viewBox="0 0 360 220">
+<polygon points="45,180 180,30 315,180" class="line"/>
+<circle cx="180" cy="180" r="5" class="mid"/>
+<line x1="180" y1="30" x2="180" y2="180" class="redline"/>
+<text x="187" y="198" class="label">M 中点</text>
 </svg>
-
 </div>
-
+<div class="note">中线把三角形分成两个等面积三角形。</div>
 </article>
 
-
-<article class="card lesson"
-data-tags="两边中点 中位线 四分之一">
-
-<label class="master">
-<input type="checkbox" data-key="half2">
-已掌握
-</label>
-
+<article class="card lesson" data-search="三角形 两边中点 中位线 四分之一">
+<label class="master"><input type="checkbox" data-master="half2"> 已掌握</label>
 <h3>两边中点</h3>
-
-<div class="formula">
-<span class="chip">中位线=第三边÷2</span>
-<span class="chip">小三角形面积=原面积÷4</span>
+<div class="diagram">
+<svg viewBox="0 0 360 220">
+<polygon points="45,185 180,25 315,185" class="line"/>
+<circle cx="112.5" cy="105" r="5" class="mid"/>
+<circle cx="247.5" cy="105" r="5" class="mid"/>
+<line x1="112.5" y1="105" x2="247.5" y2="105" class="redline"/>
+<text x="135" y="92" class="label">中位线</text>
+</svg>
 </div>
-
+<div class="formulas"><span class="chip">小三角形面积=原来的1/4</span></div>
 </article>
 
-
-<article class="card lesson"
-data-tags="平行四边形 顶天立地 一半">
-
-<label class="master">
-<input type="checkbox" data-key="half3">
-已掌握
-</label>
-
+<article class="card lesson" data-search="平行四边形 顶天立地 一半">
+<label class="master"><input type="checkbox" data-master="half3"> 已掌握</label>
 <h3>顶天立地</h3>
-
-<div class="formula">
-<span class="chip">三角形面积=平行四边形面积÷2</span>
+<div class="diagram">
+<svg viewBox="0 0 400 220">
+<polygon points="45,180 100,35 350,35 295,180" class="greenfill"/>
+<polygon points="45,180 220,35 295,180" class="purple"/>
+</svg>
 </div>
-
-<div class="note">
-三角形使用平行四边形整条底，
-顶点在对面的平行边上。
-两者同底等高。
-</div>
-
+<div class="formulas"><span class="chip">三角形面积=平行四边形面积÷2</span></div>
 </article>
 
-
-<article class="card lesson"
-data-tags="四边中点 任意四边形 一半">
-
-<label class="master">
-<input type="checkbox" data-key="half4">
-已掌握
-</label>
-
-<h3>四边中点</h3>
-
-<div class="formula">
-<span class="chip">四个中点连成平行四边形</span>
-<span class="chip">面积=原四边形÷2</span>
+<article class="card lesson" data-search="平行四边形 锯齿 一半模型">
+<label class="master"><input type="checkbox" data-master="half4"> 已掌握</label>
+<h3>锯齿模型</h3>
+<div class="diagram">
+<svg viewBox="0 0 420 220">
+<polygon points="35,180 90,35 380,35 325,180" class="line"/>
+<polyline points="35,180 150,35 205,180 285,35 325,180" class="redline"/>
+<circle cx="150" cy="35" r="4" class="mid"/>
+<circle cx="205" cy="180" r="4" class="mid"/>
+<circle cx="285" cy="35" r="4" class="mid"/>
+</svg>
 </div>
+<div class="note">把锯齿拆成多个同高三角形，再把底边相加。</div>
+</article>
 
+<article class="card lesson" data-search="平行四边形 交头接耳">
+<label class="master"><input type="checkbox" data-master="half5"> 已掌握</label>
+<h3>交头接耳</h3>
+<div class="diagram">
+<svg viewBox="0 0 420 220">
+<polygon points="40,180 95,35 375,35 320,180" class="line"/>
+<line x1="40" y1="180" x2="255" y2="35" class="redline"/>
+<line x1="95" y1="35" x2="320" y2="180" class="redline"/>
+<circle cx="178" cy="105" r="5" class="mid"/>
+</svg>
+</div>
+<div class="note">看到交点时，优先找同底、等高、对顶角和面积传递关系。</div>
+</article>
+
+<article class="card lesson" data-search="平行四边形 离家出走">
+<label class="master"><input type="checkbox" data-master="half6"> 已掌握</label>
+<h3>离家出走</h3>
+<div class="diagram">
+<svg viewBox="0 0 450 220">
+<polygon points="55,180 110,45 320,45 265,180" class="line"/>
+<line x1="110" y1="45" x2="400" y2="45" class="redline dash"/>
+<polygon points="55,180 390,45 265,180" class="purple"/>
+<text x="330" y="35" class="label">顶点移到延长线上</text>
+</svg>
+</div>
+<div class="note">只要顶点仍在与底平行的直线上，高就不变。</div>
+</article>
+
+<article class="card lesson" data-search="任意四边形 四边中点">
+<label class="master"><input type="checkbox" data-master="half7"> 已掌握</label>
+<h3>任意四边形四边中点</h3>
+<div class="diagram">
+<svg viewBox="0 0 400 240">
+<polygon points="65,55 330,30 360,185 95,215" class="line"/>
+<polygon points="197.5,42.5 345,107.5 227.5,200 80,135" class="greenfill"/>
+<circle cx="197.5" cy="42.5" r="4" class="mid"/>
+<circle cx="345" cy="107.5" r="4" class="mid"/>
+<circle cx="227.5" cy="200" r="4" class="mid"/>
+<circle cx="80" cy="135" r="4" class="mid"/>
+</svg>
+</div>
+<div class="formulas"><span class="chip">中点四边形面积=原四边形÷2</span></div>
 </article>
 
 </div>
 </section>
 
-
+<!-- 7 风筝 -->
 <section class="section" id="kite">
-
-<h2>5. 风筝模型</h2>
-
+<h2>7. 风筝模型</h2>
 <div class="grid">
 
-<article class="card lesson"
-data-tags="风筝 面积比 交点">
-
-<label class="master">
-<input type="checkbox" data-key="kite">
-已掌握
-</label>
-
-<h3>风筝模型</h3>
-
+<article class="card lesson" data-search="风筝模型 面积 乘积">
+<label class="master"><input type="checkbox" data-master="kite1"> 已掌握</label>
+<h3>四块面积关系</h3>
 <div class="diagram">
-
-<svg viewBox="0 0 360 210">
-
-<polygon
-points="180,20 315,105 180,195 45,105"
-class="s"/>
-
-<line x1="180" y1="20" x2="180" y2="195"
-class="accent"/>
-
-<line x1="45" y1="105" x2="315" y2="105"
-class="accent"/>
-
+<svg viewBox="0 0 400 260">
+<polygon points="200,20 360,125 200,235 40,125" class="line"/>
+<line x1="200" y1="20" x2="200" y2="235" class="redline"/>
+<line x1="40" y1="125" x2="360" y2="125" class="redline"/>
+<text x="135" y="80" class="label">S₁</text>
+<text x="255" y="80" class="label">S₂</text>
+<text x="255" y="185" class="label">S₃</text>
+<text x="135" y="185" class="label">S₄</text>
 </svg>
-
 </div>
+<div class="formulas"><span class="chip">S₁×S₃=S₂×S₄</span></div>
+</article>
 
-<div class="formula">
-<span class="chip">S=½ab·sinθ</span>
-<span class="chip">对角面积乘积相等</span>
-<span class="chip">S₁×S₃=S₂×S₄</span>
-</div>
-
+<article class="card lesson" data-search="风筝 边 面积比">
+<label class="master"><input type="checkbox" data-master="kite2"> 已掌握</label>
+<h3>面积与边</h3>
+<div class="formulas"><span class="chip">S=½ab·sinθ</span></div>
+<div class="note">夹角相同时，面积比等于夹角两边乘积之比。</div>
 </article>
 
 </div>
 </section>
 
-
+<!-- 8 蝴蝶 -->
 <section class="section" id="butterfly">
-
-<h2>6. 蝴蝶模型</h2>
-
+<h2>8. 蝴蝶模型</h2>
 <div class="grid">
 
-<article class="card lesson"
-data-tags="梯形 蝴蝶模型">
-
-<label class="master">
-<input type="checkbox" data-key="butterfly1">
-已掌握
-</label>
-
+<article class="card lesson" data-search="梯形 蝴蝶">
+<label class="master"><input type="checkbox" data-master="butterfly1"> 已掌握</label>
 <h3>梯形蝴蝶</h3>
-
 <div class="diagram">
-
-<svg viewBox="0 0 360 210">
-
-<polygon
-points="55,170 105,40 255,40 310,170"
-class="s"/>
-
-<line
-x1="55"
-y1="170"
-x2="255"
-y2="40"
-class="accent"/>
-
-<line
-x1="105"
-y1="40"
-x2="310"
-y2="170"
-class="accent"/>
-
+<svg viewBox="0 0 400 240">
+<polygon points="40,195 105,35 295,35 360,195" class="line"/>
+<line x1="40" y1="195" x2="295" y2="35" class="redline"/>
+<line x1="105" y1="35" x2="360" y2="195" class="redline"/>
+<text x="92" y="120" class="label">翼</text>
+<text x="285" y="120" class="label">翼</text>
 </svg>
-
 </div>
-
-<div class="formula">
+<div class="formulas">
 <span class="chip">两翼面积相等</span>
-<span class="chip">靠两底三角形面积比=底边比²</span>
+<span class="chip">上下三角形面积比=底边比²</span>
 </div>
-
 </article>
 
-
-<article class="card lesson"
-data-tags="平行四边形 长方形 正方形 蝴蝶">
-
-<label class="master">
-<input type="checkbox" data-key="butterfly2">
-已掌握
-</label>
-
-<h3>特殊四边形蝴蝶</h3>
-
-<div class="formula">
-<span class="chip">对角线互相平分</span>
-<span class="chip">四个三角形面积相等</span>
-<span class="chip">每块=总面积÷4</span>
+<article class="card lesson" data-search="平行四边形 蝴蝶">
+<label class="master"><input type="checkbox" data-master="butterfly2"> 已掌握</label>
+<h3>平行四边形蝴蝶</h3>
+<div class="diagram">
+<svg viewBox="0 0 400 230">
+<polygon points="40,185 100,35 360,35 300,185" class="line"/>
+<line x1="40" y1="185" x2="360" y2="35" class="redline"/>
+<line x1="100" y1="35" x2="300" y2="185" class="redline"/>
+</svg>
 </div>
+<div class="formulas"><span class="chip">四个三角形面积相等</span></div>
+</article>
 
-<div class="note">
-适用于平行四边形。
-长方形和正方形都是特殊的平行四边形，
-因此同样成立。
+<article class="card lesson" data-search="长方形 蝴蝶">
+<label class="master"><input type="checkbox" data-master="butterfly3"> 已掌握</label>
+<h3>长方形蝴蝶</h3>
+<div class="diagram">
+<svg viewBox="0 0 400 230">
+<rect x="55" y="35" width="290" height="160" class="bluefill"/>
+<line x1="55" y1="35" x2="345" y2="195" class="redline"/>
+<line x1="345" y1="35" x2="55" y2="195" class="redline"/>
+</svg>
 </div>
+<div class="formulas"><span class="chip">每块=总面积÷4</span></div>
+</article>
 
+<article class="card lesson" data-search="正方形 蝴蝶">
+<label class="master"><input type="checkbox" data-master="butterfly4"> 已掌握</label>
+<h3>正方形蝴蝶</h3>
+<div class="diagram">
+<svg viewBox="0 0 400 250">
+<rect x="105" y="25" width="190" height="190" class="purple"/>
+<line x1="105" y1="25" x2="295" y2="215" class="redline"/>
+<line x1="295" y1="25" x2="105" y2="215" class="redline"/>
+<circle cx="200" cy="120" r="5" class="mid"/>
+</svg>
+</div>
+<div class="formulas"><span class="chip">四块等面积</span></div>
 </article>
 
 </div>
 </section>
 
-
+<!-- 9 鸟头 -->
 <section class="section" id="bird">
-
-<h2>7. 鸟头模型</h2>
-
+<h2>9. 鸟头模型</h2>
 <div class="grid">
 
-<article class="card lesson"
-data-tags="鸟头 相等角 互补角 对顶角">
-
-<label class="master">
-<input type="checkbox" data-key="bird1">
-已掌握
-</label>
-
-<h3>鸟头模型</h3>
-
-<div class="formula">
-<span class="chip">S=½ab·sinθ</span>
-<span class="chip">相等角 → sin相等</span>
-<span class="chip">互补角 → sin相等</span>
-<span class="chip">对顶角相等</span>
+<article class="card lesson" data-search="鸟头 相等角">
+<label class="master"><input type="checkbox" data-master="bird1"> 已掌握</label>
+<h3>相等角鸟头</h3>
+<div class="diagram">
+<svg viewBox="0 0 420 240">
+<line x1="205" y1="125" x2="70" y2="35" class="line"/>
+<line x1="205" y1="125" x2="80" y2="210" class="line"/>
+<line x1="205" y1="125" x2="345" y2="40" class="line"/>
+<line x1="205" y1="125" x2="350" y2="210" class="line"/>
+<path d="M175 105 A38 38 0 0 0 175 145" class="angle"/>
+<path d="M235 105 A38 38 0 0 1 235 145" class="angle"/>
+<text x="185" y="118" class="label">O</text>
+</svg>
 </div>
-
-<div class="note">
-角的正弦值相同时，
-面积比就可以转化为夹角两边乘积之比。
-</div>
-
+<div class="formulas"><span class="chip">S比=夹角两边乘积之比</span></div>
 </article>
 
-
-<article class="card lesson"
-data-tags="沙漏 金字塔 相似">
-
-<label class="master">
-<input type="checkbox" data-key="bird2">
-已掌握
-</label>
-
-<h3>沙漏 / 金字塔</h3>
-
-<div class="formula">
-<span class="chip">平行 → 找相似</span>
-<span class="chip">边长比=k</span>
-<span class="chip">面积比=k²</span>
+<article class="card lesson" data-search="鸟头 对顶角">
+<label class="master"><input type="checkbox" data-master="bird2"> 已掌握</label>
+<h3>对顶角</h3>
+<div class="diagram">
+<svg viewBox="0 0 420 230">
+<line x1="45" y1="35" x2="370" y2="200" class="line"/>
+<line x1="370" y1="35" x2="45" y2="200" class="line"/>
+<circle cx="207.5" cy="117.5" r="5" class="mid"/>
+<text x="215" y="110" class="label">O</text>
+</svg>
 </div>
+<div class="note">对顶角相等，因此两边乘积可以直接参与面积比。</div>
+</article>
 
+<article class="card lesson" data-search="沙漏 相似">
+<label class="master"><input type="checkbox" data-master="bird3"> 已掌握</label>
+<h3>沙漏模型</h3>
+<div class="diagram">
+<svg viewBox="0 0 420 250">
+<line x1="70" y1="30" x2="350" y2="220" class="line"/>
+<line x1="350" y1="30" x2="70" y2="220" class="line"/>
+<line x1="70" y1="30" x2="350" y2="30" class="redline"/>
+<line x1="70" y1="220" x2="350" y2="220" class="redline"/>
+<text x="170" y="18" class="label">平行</text>
+<text x="170" y="244" class="label">平行</text>
+</svg>
+</div>
+<div class="formulas"><span class="chip">平行 → 相似</span><span class="chip">面积比=边长比²</span></div>
+</article>
+
+<article class="card lesson" data-search="金字塔 相似">
+<label class="master"><input type="checkbox" data-master="bird4"> 已掌握</label>
+<h3>金字塔模型</h3>
+<div class="diagram">
+<svg viewBox="0 0 420 250">
+<polygon points="45,220 210,25 375,220" class="line"/>
+<line x1="115" y1="135" x2="305" y2="135" class="redline"/>
+<text x="170" y="125" class="label">DE ∥ BC</text>
+</svg>
+</div>
+<div class="formulas"><span class="chip">小△∽大△</span><span class="chip">面积比=相似比²</span></div>
 </article>
 
 </div>
 </section>
 
-
+<!-- 10 燕尾 -->
 <section class="section" id="swallow">
-
-<h2>8. 燕尾模型</h2>
-
+<h2>10. 燕尾模型</h2>
 <div class="grid">
 
-<article class="card lesson"
-data-tags="燕尾 面积比 共高 分点">
-
-<label class="master">
-<input type="checkbox" data-key="swallow">
-已掌握
-</label>
-
-<h3>燕尾模型</h3>
-
-<div class="formula">
-<span class="chip">共高 → 面积比=底边比</span>
-<span class="chip">同底 → 面积比=高之比</span>
-<span class="chip">逐层传递面积比</span>
+<article class="card lesson" data-search="燕尾 三角形">
+<label class="master"><input type="checkbox" data-master="swallow1"> 已掌握</label>
+<h3>三角形燕尾</h3>
+<div class="diagram">
+<svg viewBox="0 0 420 250">
+<polygon points="45,210 205,25 375,210" class="line"/>
+<circle cx="225" cy="210" r="5" class="mid"/>
+<line x1="205" y1="25" x2="225" y2="210" class="redline"/>
+<text x="215" y="232" class="label">D</text>
+<text x="105" y="195" class="label">BD</text>
+<text x="285" y="195" class="label">DC</text>
+</svg>
 </div>
+<div class="formulas"><span class="chip">S△ABD : S△ADC = BD : DC</span></div>
+</article>
 
-<div class="note">
-不要先背图形。
-先找哪些三角形共高、同底，
-把线段比转化为面积比，
-再一步一步传递。
+<article class="card lesson" data-search="燕尾 四边形 对角线">
+<label class="master"><input type="checkbox" data-master="swallow2"> 已掌握</label>
+<h3>四边形燕尾</h3>
+<div class="diagram">
+<svg viewBox="0 0 420 260">
+<polygon points="65,50 345,30 365,210 55,225" class="line"/>
+<line x1="65" y1="50" x2="365" y2="210" class="redline"/>
+<line x1="345" y1="30" x2="55" y2="225" class="redline"/>
+<circle cx="207" cy="126" r="5" class="mid"/>
+<text x="215" y="120" class="label">O</text>
+</svg>
 </div>
-
+<div class="note">围绕交点找共高三角形，把线段比一步步转成面积比。</div>
 </article>
 
 </div>
 </section>
-
 
 <div class="card">
-
-<h2>模型题通用判断法</h2>
-
-<div class="formula">
-<span class="chip">看到中点 → 想 1:1</span>
-<span class="chip">看到平行 → 想等高 / 相似</span>
-<span class="chip">看到交点 → 想对顶角</span>
-<span class="chip">看到对角线 → 想面积分割</span>
-<span class="chip">看到比例 → 想面积比</span>
+<h2>🧠 模型题快速判断</h2>
+<div class="formulas">
+<span class="chip">中点 → 1:1</span>
+<span class="chip">平行 → 等高 / 相似</span>
+<span class="chip">交点 → 对顶角</span>
+<span class="chip">同高 → 面积比=底边比</span>
+<span class="chip">同底 → 面积比=高之比</span>
+<span class="chip">相似 → 面积比=边长比²</span>
 </div>
-
 </div>
 
 </main>
 </div>
 
-
 <footer class="footer">
-数学 · 几何模型专项练习系统<br>
-完全离线运行 · 不连接任何外部网站或 API
+数学｜几何模型专项 · 完全离线运行<br>
+图形、题库、批改程序全部包含在 index.html 中
 </footer>
-
 </div>
 
-
 <script>
+function R(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+function pick(a){return a[R(0,a.length-1)]}
+function gcd(a,b){a=Math.abs(a);b=Math.abs(b);while(b)[a,b]=[b,a%b];return a||1}
+function rat(a,b){let g=gcd(a,b);return (a/g)+":"+(b/g)}
+function num(v,t=.001){return{type:"number",v:Number(v),t}}
+function txt(...v){return{type:"text",v}}
+function ratio(a,b){let g=gcd(a,b);return{type:"ratio",a:a/g,b:b/g}}
+function Q(cat,q,a,sol){return{cat,q,a,sol}}
 
-/* ==============================
-   工具函数
-============================== */
-
-function rand(min,max){
-  return Math.floor(
-    Math.random()*(max-min+1)
-  )+min;
+function rectangle(){
+ let t=R(1,6),a=R(3,35),b=R(2,25);
+ if(t===1)return Q("长方形｜面积",`长 ${a} cm，宽 ${b} cm，面积是多少？`,num(a*b),`S=${a}×${b}=${a*b} cm²`);
+ if(t===2)return Q("长方形｜周长",`长 ${a} cm，宽 ${b} cm，周长是多少？`,num(2*(a+b)),`C=2×(${a}+${b})=${2*(a+b)} cm`);
+ if(t===3)return Q("长方形｜求宽",`长方形周长 ${2*(a+b)} cm，长 ${a} cm，宽是多少？`,num(b),`宽=${a+b}−${a}=${b} cm`);
+ if(t===4)return Q("长方形｜求长",`长方形面积 ${a*b} cm²，宽 ${b} cm，长是多少？`,num(a),`长=${a*b}÷${b}=${a} cm`);
+ if(t===5)return Q("正方形｜面积",`正方形边长 ${a} cm，面积是多少？`,num(a*a),`S=${a}²=${a*a} cm²`);
+ return Q("正方形｜周长",`正方形边长 ${a} cm，周长是多少？`,num(4*a),`C=4×${a}=${4*a} cm`);
 }
 
-function choice(arr){
-  return arr[rand(0,arr.length-1)];
+function parallelogram(){
+ let t=R(1,5),a=R(4,30),h=R(2,20),b=R(3,25);
+ if(t===1)return Q("平行四边形｜面积",`底 ${a} cm，高 ${h} cm，面积是多少？`,num(a*h),`S=${a}×${h}=${a*h} cm²`);
+ if(t===2)return Q("平行四边形｜求高",`面积 ${a*h} cm²，底 ${a} cm，高是多少？`,num(h),`h=${a*h}÷${a}=${h} cm`);
+ if(t===3)return Q("平行四边形｜周长",`相邻两边为 ${a} cm、${b} cm，周长是多少？`,num(2*(a+b)),`C=2×(${a}+${b})=${2*(a+b)} cm`);
+ if(t===4){let x=R(30,150);return Q("平行四边形｜角",`一个内角是 ${x}°，相邻内角是多少度？`,num(180-x),`相邻角互补：180−${x}=${180-x}°`)}
+ let s=R(5,70)*2;return Q("平行四边形｜一半模型",`平行四边形面积 ${s} cm²，以整条底为底、顶点在对边上的三角形面积是多少？`,num(s/2),`同底等高，三角形面积=${s}÷2=${s/2} cm²`);
 }
 
-function gcd(a,b){
-  a=Math.abs(a);
-  b=Math.abs(b);
-
-  while(b){
-    [a,b]=[b,a%b];
-  }
-
-  return a || 1;
+function trapezoid(){
+ let t=R(1,5),a=R(2,12),b=R(a+2,25),h=R(2,15),s=(a+b)*h/2;
+ if(t===1)return Q("梯形｜面积",`上底 ${a} cm，下底 ${b} cm，高 ${h} cm，面积是多少？`,num(s),`S=(${a}+${b})×${h}÷2=${s} cm²`);
+ if(t===2)return Q("梯形｜求高",`上底 ${a} cm，下底 ${b} cm，面积 ${s} cm²，高是多少？`,num(h),`h=${s}×2÷(${a}+${b})=${h} cm`);
+ if(t===3)return Q("梯形｜中位线",`上底 ${a} cm，下底 ${b} cm，中位线是多少？`,num((a+b)/2),`(${a}+${b})÷2=${(a+b)/2} cm`);
+ if(t===4){let x=R(3,80);return Q("梯形蝴蝶｜两翼",`梯形蝴蝶左翼面积 ${x} cm²，右翼面积是多少？`,num(x),`两翼面积相等，所以是 ${x} cm²`)}
+ return Q("梯形｜面积反推",`梯形面积 ${s} cm²，高 ${h} cm，上底 ${a} cm，下底是多少？`,num(b),`${s}×2÷${h}−${a}=${b} cm`);
 }
 
-function ratio(a,b){
-  const g=gcd(a,b);
-  return (a/g)+":"+(b/g);
+function triangle(){
+ let t=R(1,9);
+ if(t===1){let a=R(20,80),b=R(20,170-a);return Q("三角形｜内角和",`两个角为 ${a}°、${b}°，第三角是多少？`,num(180-a-b),`180−${a}−${b}=${180-a-b}°`)}
+ if(t===2){let n=R(4,15);return Q("多边形｜内角和",`${n} 边形内角和是多少度？`,num((n-2)*180),`(${n}−2)×180=${(n-2)*180}°`)}
+ if(t===3){let b=R(3,30),h=R(2,20);return Q("三角形｜面积",`底 ${b} cm，高 ${h} cm，面积是多少？`,num(b*h/2),`${b}×${h}÷2=${b*h/2} cm²`)}
+ if(t===4){let b=R(3,30),h=R(2,20),s=b*h/2;return Q("三角形｜求高",`面积 ${s} cm²，底 ${b} cm，高是多少？`,num(h),`${s}×2÷${b}=${h} cm`)}
+ if(t===5){let c=R(6,20),a=R(2,c-1),b=R(2,c-1),yes=a+b>c;return Q("三角形｜三边关系",`${a}、${b}、${c} 能组成三角形吗？输入“能”或“不能”。`,txt(...(yes?["能","可以","能组成"]:["不能","不可以","不能组成"])),`${a}+${b}=${a+b}${yes?">":"≤"}${c}，所以${yes?"能":"不能"}组成。`)}
+ if(t===6)return Q("三角形｜分类","一个三角形有一个角为 90°，是什么三角形？",txt("直角三角形","直角"),"有一个90°角，所以是直角三角形。");
+ if(t===7){let x=R(91,150);return Q("三角形｜分类",`一个三角形有一个角为 ${x}°，是什么三角形？`,txt("钝角三角形","钝角"),`${x}>90，所以是钝角三角形。`)}
+ if(t===8)return Q("三角形｜分类","三条边完全相等的三角形叫什么？",txt("等边三角形","等边"),"三边相等叫等边三角形。");
+ let x=R(3,20);return Q("等边三角形｜角","等边三角形的一个内角是多少度？",num(60),"三个角都等于60°。");
 }
 
-function numberAnswer(value,tolerance=0.001){
-
-  return {
-    type:"number",
-    value:Number(value),
-    tolerance:tolerance
-  };
-
+function equal(){
+ let t=R(1,3);
+ if(t===1){let s=R(3,100);return Q("等积｜等底等高",`两个三角形同底等高，第一个面积 ${s} cm²，第二个面积是多少？`,num(s),`同底等高面积相等，所以是 ${s} cm²`)}
+ if(t===2){let a=R(1,12),b=R(1,12);return Q("等积｜等底",`两个三角形底相同，高之比为 ${a}:${b}，面积比是多少？`,ratio(a,b),`面积比=高之比=${rat(a,b)}`)}
+ let a=R(1,12),b=R(1,12);return Q("等积｜等高",`两个三角形高相同，底边比为 ${a}:${b}，面积比是多少？`,ratio(a,b),`面积比=底边比=${rat(a,b)}`);
 }
 
-function textAnswer(values){
-
-  return {
-    type:"text",
-    values:values
-  };
-
+function half(){
+ let t=R(1,5),s=R(3,80)*2;
+ if(t===1)return Q("一半模型｜中线",`三角形面积 ${s} cm²，中线分成的每一部分面积是多少？`,num(s/2),`${s}÷2=${s/2} cm²`);
+ if(t===2){let x=R(3,50);return Q("一半模型｜两边中点",`三角形面积 ${x*4} cm²，两边中点连线形成顶部小三角形，小三角形面积是多少？`,num(x),`${x*4}÷4=${x} cm²`)}
+ if(t===3)return Q("一半模型｜顶天立地",`平行四边形面积 ${s} cm²，顶天立地三角形面积是多少？`,num(s/2),`${s}÷2=${s/2} cm²`);
+ if(t===4)return Q("一半模型｜四边中点",`任意四边形面积 ${s} cm²，四边中点组成的新四边形面积是多少？`,num(s/2),`${s}÷2=${s/2} cm²`);
+ let x=R(3,60);return Q("一半模型｜中点",`M是BC中点，△ABM面积 ${x} cm²，△AMC面积是多少？`,num(x),`BM=MC且同高，所以面积相等，为 ${x} cm²`);
 }
 
-function ratioAnswer(a,b){
-
-  const g=gcd(a,b);
-
-  return {
-    type:"ratio",
-    a:a/g,
-    b:b/g
-  };
-
+function kite(){
+ let t=R(1,2);
+ if(t===1){let a=R(1,10),b=R(1,10),c=R(1,10);let d=b*c/a;return Q("风筝模型｜面积乘积",`四块面积 S₁=${a}，S₂=${b}，S₄=${c}，求与S₁相对的S₃。`,num(d,.01),`S₁×S₃=S₂×S₄，所以 S₃=${fmt(d)}`)}
+ let a=R(1,8),b=R(1,8),c=R(1,8),d=R(1,8);return Q("风筝/鸟头｜面积比",`两个三角形夹角相等，夹角两边分别是 ${a}、${b} 与 ${c}、${d}，面积比是多少？`,ratio(a*b,c*d),`面积比=(${a}×${b}):(${c}×${d})=${rat(a*b,c*d)}`);
 }
 
-function make(
-  category,
-  question,
-  answer,
-  solution
-){
-
-  return {
-    category,
-    question,
-    answer,
-    solution
-  };
-
+function butterfly(){
+ let t=R(1,3);
+ if(t===1){let a=R(1,6),b=R(a+1,10);return Q("梯形蝴蝶｜平方比",`梯形上、下底之比 ${a}:${b}，靠两底的两个三角形面积比是多少？`,ratio(a*a,b*b),`面积比=${a}²:${b}²=${rat(a*a,b*b)}`)}
+ if(t===2){let x=R(3,80);return Q("梯形蝴蝶｜两翼",`左翼面积 ${x} cm²，右翼面积是多少？`,num(x),`两翼面积相等，为 ${x} cm²`)}
+ let x=R(3,60);return Q("平行四边形蝴蝶",`平行四边形总面积 ${x*4} cm²，两条对角线形成的一个小三角形面积是多少？`,num(x),`${x*4}÷4=${x} cm²`);
 }
 
-
-/* ==============================
-   1 长方形
-============================== */
-
-function rectangleProblem(){
-
-  const type=rand(1,5);
-
-  if(type===1){
-
-    const a=rand(4,50);
-    const b=rand(3,a);
-
-    return make(
-      "长方形 · 面积",
-      `一个长方形长 ${a} cm，宽 ${b} cm，面积是多少平方厘米？`,
-      numberAnswer(a*b),
-      `面积 = 长×宽 = ${a}×${b} = ${a*b} cm²。`
-    );
-
-  }
-
-  if(type===2){
-
-    const a=rand(5,40);
-    const b=rand(3,30);
-
-    return make(
-      "长方形 · 周长",
-      `一个长方形长 ${a} cm，宽 ${b} cm，周长是多少厘米？`,
-      numberAnswer(2*(a+b)),
-      `周长 = 2×(长+宽) = 2×(${a}+${b}) = ${2*(a+b)} cm。`
-    );
-
-  }
-
-  if(type===3){
-
-    const a=rand(6,40);
-    const b=rand(3,25);
-    const c=2*(a+b);
-
-    return make(
-      "长方形 · 已知周长求宽",
-      `一个长方形周长 ${c} cm，长 ${a} cm，宽是多少厘米？`,
-      numberAnswer(b),
-      `长+宽=${c}÷2=${c/2}，所以宽=${c/2}−${a}=${b} cm。`
-    );
-
-  }
-
-  if(type===4){
-
-    const b=rand(3,20);
-    const a=rand(b+1,35);
-    const area=a*b;
-
-    return make(
-      "长方形 · 已知面积求长",
-      `长方形面积 ${area} cm²，宽 ${b} cm，长是多少厘米？`,
-      numberAnswer(a),
-      `长=面积÷宽=${area}÷${b}=${a} cm。`
-    );
-
-  }
-
-  const a=rand(5,30);
-  const b=rand(3,20);
-
-  return make(
-    "长方形 · 面积变化",
-    `长方形长 ${a} cm、宽 ${b} cm。如果长不变，宽扩大为原来的 2 倍，新面积是多少平方厘米？`,
-    numberAnswer(a*b*2),
-    `新宽=${b}×2=${b*2}，新面积=${a}×${b*2}=${a*b*2} cm²。`
-  );
-
+function bird(){
+ let t=R(1,3),a=R(1,8),b=R(1,8),c=R(1,8),d=R(1,8);
+ if(t===1)return Q("鸟头｜相等角",`两个三角形夹角相等，两组夹角边为 ${a},${b} 和 ${c},${d}，面积比是多少？`,ratio(a*b,c*d),`面积比=${rat(a*b,c*d)}`);
+ if(t===2)return Q("鸟头｜对顶角",`两直线交于O，AO=${a}, BO=${b}, CO=${c}, DO=${d}，△AOB:△COD面积比是多少？`,ratio(a*b,c*d),`对顶角相等，面积比=${rat(a*b,c*d)}`);
+ let p=R(1,5),q=R(p+1,9);return Q("金字塔｜相似",`DE∥BC，AD:AB=${p}:${q}，△ADE:△ABC面积比是多少？`,ratio(p*p,q*q),`相似比=${p}:${q}，面积比=${rat(p*p,q*q)}`);
 }
 
-
-/* ==============================
-   2 正方形
-============================== */
-
-function squareProblem(){
-
-  const type=rand(1,4);
-  const a=rand(3,35);
-
-  if(type===1){
-
-    return make(
-      "正方形 · 面积",
-      `正方形边长 ${a} cm，面积是多少平方厘米？`,
-      numberAnswer(a*a),
-      `面积=${a}×${a}=${a*a} cm²。`
-    );
-
-  }
-
-  if(type===2){
-
-    return make(
-      "正方形 · 周长",
-      `正方形边长 ${a} cm，周长是多少厘米？`,
-      numberAnswer(a*4),
-      `周长=${a}×4=${a*4} cm。`
-    );
-
-  }
-
-  if(type===3){
-
-    return make(
-      "正方形 · 已知周长",
-      `一个正方形周长为 ${a*4} cm，它的边长是多少厘米？`,
-      numberAnswer(a),
-      `边长=${a*4}÷4=${a} cm。`
-    );
-
-  }
-
-  return make(
-    "正方形 · 已知面积",
-    `一个正方形面积为 ${a*a} cm²，它的边长是多少厘米？`,
-    numberAnswer(a),
-    `因为 ${a}×${a}=${a*a}，所以边长=${a} cm。`
-  );
-
+function swallow(){
+ let t=R(1,3),a=R(1,9),b=R(1,9);
+ if(t===1)return Q("三角形燕尾",`D在BC上，BD:DC=${a}:${b}，△ABD:△ADC面积比是多少？`,ratio(a,b),`共高，所以面积比=BD:DC=${rat(a,b)}`);
+ if(t===2){let u=R(2,10);return Q("燕尾｜面积传递",`BD:DC=${a}:${b}，△ABD面积 ${a*u} cm²，△ADC面积是多少？`,num(b*u),`面积比=${a}:${b}，所以面积=${b*u} cm²`)}
+ return Q("四边形燕尾",`两条对角线交于O，AO:OC=${a}:${b}，△AOB:△BOC面积比是多少？`,ratio(a,b),`两三角形共高，所以面积比=AO:OC=${rat(a,b)}`);
 }
 
-
-/* ==============================
-   3 平行四边形
-============================== */
-
-function parallelogramProblem(){
-
-  const type=rand(1,5);
-
-  if(type===1){
-
-    const a=rand(5,35);
-    const h=rand(3,20);
-
-    return make(
-      "平行四边形 · 面积",
-      `平行四边形底 ${a} cm，高 ${h} cm，面积是多少平方厘米？`,
-      numberAnswer(a*h),
-      `面积=底×高=${a}×${h}=${a*h} cm²。`
-    );
-
-  }
-
-  if(type===2){
-
-    const a=rand(5,30);
-    const b=rand(4,25);
-
-    return make(
-      "平行四边形 · 周长",
-      `平行四边形相邻两边分别为 ${a} cm 和 ${b} cm，周长是多少厘米？`,
-      numberAnswer(2*(a+b)),
-      `周长=2×(${a}+${b})=${2*(a+b)} cm。`
-    );
-
-  }
-
-  if(type===3){
-
-    const a=rand(5,30);
-    const h=rand(3,20);
-    const s=a*h;
-
-    return make(
-      "平行四边形 · 求高",
-      `平行四边形面积 ${s} cm²，底 ${a} cm，高是多少厘米？`,
-      numberAnswer(h),
-      `高=面积÷底=${s}÷${a}=${h} cm。`
-    );
-
-  }
-
-  if(type===4){
-
-    const angle=rand(25,80);
-
-    return make(
-      "平行四边形 · 角",
-      `平行四边形一个内角为 ${angle}°，与它相邻的角是多少度？`,
-      numberAnswer(180-angle),
-      `平行四边形相邻两角互补，所以 180°−${angle}°=${180-angle}°。`
-    );
-
-  }
-
-  const s=rand(10,100)*2;
-
-  return make(
-    "平行四边形 · 一半模型",
-    `一个平行四边形面积为 ${s} cm²。以整条底边为底，顶点取在对边上的三角形面积是多少平方厘米？`,
-    numberAnswer(s/2),
-    `三角形和平行四边形同底等高，所以面积=${s}÷2=${s/2} cm²。`
-  );
-
-}
-
-
-/* ==============================
-   4 梯形
-============================== */
-
-function trapezoidProblem(){
-
-  const type=rand(1,4);
-
-  let a=rand(3,15);
-  let b=rand(a+2,30);
-  let h=rand(2,15);
-
-  if(type===1){
-
-    const s=(a+b)*h/2;
-
-    return make(
-      "梯形 · 面积",
-      `梯形上底 ${a} cm，下底 ${b} cm，高 ${h} cm，面积是多少平方厘米？`,
-      numberAnswer(s),
-      `面积=(${a}+${b})×${h}÷2=${s} cm²。`
-    );
-
-  }
-
-  if(type===2){
-
-    const s=(a+b)*h/2;
-
-    return make(
-      "梯形 · 求高",
-      `梯形上底 ${a} cm，下底 ${b} cm，面积 ${s} cm²，高是多少厘米？`,
-      numberAnswer(h),
-      `高=${s}×2÷(${a}+${b})=${h} cm。`
-    );
-
-  }
-
-  if(type===3){
-
-    return make(
-      "梯形 · 中位线",
-      `梯形上底 ${a} cm，下底 ${b} cm，中位线长多少厘米？`,
-      numberAnswer((a+b)/2),
-      `中位线=(${a}+${b})÷2=${(a+b)/2} cm。`
-    );
-
-  }
-
-  const wing=rand(5,60);
-
-  return make(
-    "梯形蝴蝶 · 两翼",
-    `梯形两条对角线相交形成蝴蝶模型。左翼面积为 ${wing} cm²，右翼面积是多少平方厘米？`,
-    numberAnswer(wing),
-    `梯形蝴蝶模型两翼面积相等，所以右翼面积=${wing} cm²。`
-  );
-
-}
-
-
-/* ==============================
-   5 三角形
-============================== */
-
-function triangleProblem(){
-
-  const type=rand(1,8);
-
-  if(type===1){
-
-    const a=rand(20,100);
-    const b=rand(20,150-a);
-    const c=180-a-b;
-
-    return make(
-      "三角形 · 内角和",
-      `三角形两个角分别为 ${a}° 和 ${b}°，第三个角是多少度？`,
-      numberAnswer(c),
-      `第三角=180°−${a}°−${b}°=${c}°。`
-    );
-
-  }
-
-  if(type===2){
-
-    const n=rand(4,15);
-    const sum=(n-2)*180;
-
-    return make(
-      "多边形 · 内角和",
-      `${n} 边形的内角和是多少度？`,
-      numberAnswer(sum),
-      `(${n}−2)×180°=${sum}°。`
-    );
-
-  }
-
-  if(type===3){
-
-    const base=rand(4,30);
-    const h=rand(3,25);
-    const s=base*h/2;
-
-    return make(
-      "三角形 · 面积",
-      `三角形底 ${base} cm，高 ${h} cm，面积是多少平方厘米？`,
-      numberAnswer(s),
-      `面积=${base}×${h}÷2=${s} cm²。`
-    );
-
-  }
-
-  if(type===4){
-
-    const base=rand(4,30);
-    const h=rand(3,20);
-    const s=base*h/2;
-
-    return make(
-      "三角形 · 求高",
-      `三角形面积 ${s} cm²，底 ${base} cm，高是多少厘米？`,
-      numberAnswer(h),
-      `高=${s}×2÷${base}=${h} cm。`
-    );
-
-  }
-
-  if(type===5){
-
-    const largest=rand(8,20);
-    const a=rand(2,largest-2);
-    const b=rand(2,largest-2);
-
-    const yes=a+b>largest;
-
-    return make(
-      "三角形 · 三边关系",
-      `长度为 ${a}、${b}、${largest} 的三条线段能组成三角形吗？请输入“能”或“不能”。`,
-      textAnswer(yes ? ["能","可以","能组成"] : ["不能","不可以","不能组成"]),
-      yes
-        ? `能，因为较短两边之和 ${a}+${b}=${a+b}＞${largest}。`
-        : `不能，因为较短两边之和 ${a}+${b}=${a+b}≤${largest}。`
-    );
-
-  }
-
-  if(type===6){
-
-    const angle=rand(91,150);
-
-    return make(
-      "三角形 · 按角分类",
-      `一个三角形有一个内角为 ${angle}°，它是什么三角形？`,
-      textAnswer(["钝角三角形","钝角"]),
-      `${angle}°＞90°，所以是钝角三角形。`
-    );
-
-  }
-
-  if(type===7){
-
-    return make(
-      "三角形 · 按角分类",
-      `一个三角形有一个角恰好为 90°，它是什么三角形？`,
-      textAnswer(["直角三角形","直角"]),
-      `有一个角为90°的三角形叫直角三角形。`
-    );
-
-  }
-
-  const side=rand(3,20);
-
-  return make(
-    "三角形 · 按边分类",
-    `一个三角形三条边都是 ${side} cm，它是什么三角形？`,
-    textAnswer(["等边三角形","等边"]),
-    `三边相等，所以是等边三角形。`
-  );
-
-}
-
-
-/* ==============================
-   6 等积模型
-============================== */
-
-function equalProblem(){
-
-  const type=rand(1,4);
-
-  if(type===1){
-
-    const s=rand(5,100);
-
-    return make(
-      "等积模型 · 等底等高",
-      `两个三角形同底等高。第一个三角形面积为 ${s} cm²，第二个面积是多少平方厘米？`,
-      numberAnswer(s),
-      `同底等高的三角形面积相等，所以答案是 ${s} cm²。`
-    );
-
-  }
-
-  if(type===2){
-
-    const h1=rand(2,12);
-    const h2=rand(2,15);
-
-    return make(
-      "等积模型 · 等底不等高",
-      `两个三角形底相等，高分别为 ${h1} cm 和 ${h2} cm。面积比是多少？请输入如 2:3。`,
-      ratioAnswer(h1,h2),
-      `底相等时，面积比=高之比=${ratio(h1,h2)}。`
-    );
-
-  }
-
-  if(type===3){
-
-    const b1=rand(2,15);
-    const b2=rand(2,18);
-
-    return make(
-      "等积模型 · 等高不等底",
-      `两个三角形高相等，底分别为 ${b1} cm 和 ${b2} cm。面积比是多少？`,
-      ratioAnswer(b1,b2),
-      `高相等时，面积比=底边比=${ratio(b1,b2)}。`
-    );
-
-  }
-
-  const base1=rand(2,15);
-  const base2=rand(2,15);
-  const h=rand(3,20);
-
-  return make(
-    "等积模型 · 面积比较",
-    `两个三角形高都是 ${h} cm，底分别为 ${base1} cm、${base2} cm。它们面积比是多少？`,
-    ratioAnswer(base1,base2),
-    `同高三角形面积比等于底边比，所以为 ${ratio(base1,base2)}。`
-  );
-
-}
-
-
-/* ==============================
-   7 一半模型
-============================== */
-
-function halfProblem(){
-
-  const type=rand(1,5);
-
-  if(type===1){
-
-    const s=rand(5,80)*2;
-
-    return make(
-      "一半模型 · 三角形中线",
-      `三角形面积为 ${s} cm²，一条中线把它分成两部分。每部分面积是多少平方厘米？`,
-      numberAnswer(s/2),
-      `中线把三角形分成两个等面积三角形，所以 ${s}÷2=${s/2} cm²。`
-    );
-
-  }
-
-  if(type===2){
-
-    const small=rand(5,60);
-    const total=small*4;
-
-    return make(
-      "一半模型 · 两边中点",
-      `三角形两边中点相连形成顶部小三角形。原三角形面积为 ${total} cm²，小三角形面积是多少？`,
-      numberAnswer(small),
-      `边长比为1:2，面积比为1:4，所以 ${total}÷4=${small} cm²。`
-    );
-
-  }
-
-  if(type===3){
-
-    const s=rand(10,100)*2;
-
-    return make(
-      "一半模型 · 顶天立地",
-      `平行四边形面积 ${s} cm²，以整条底为底，顶点在对边上的三角形面积是多少？`,
-      numberAnswer(s/2),
-      `同底等高，所以三角形面积是平行四边形的一半，即 ${s/2} cm²。`
-    );
-
-  }
-
-  if(type===4){
-
-    const s=rand(10,100)*2;
-
-    return make(
-      "一半模型 · 四边中点",
-      `任意四边形面积为 ${s} cm²，依次连接四边中点形成的新四边形面积是多少？`,
-      numberAnswer(s/2),
-      `四边中点形成的平行四边形面积是原四边形的一半，所以为 ${s/2} cm²。`
-    );
-
-  }
-
-  const s=rand(5,80);
-
-  return make(
-    "一半模型 · 中点",
-    `M 是线段 BC 的中点。△ABM 面积为 ${s} cm²，△AMC 面积是多少？`,
-    numberAnswer(s),
-    `BM=MC，而且两个三角形从A到底边BC的高相同，所以面积相等，为 ${s} cm²。`
-  );
-
-}
-
-
-/* ==============================
-   8 风筝模型
-============================== */
-
-function kiteProblem(){
-
-  const type=rand(1,3);
-
-  if(type===1){
-
-    const a=rand(2,12);
-    const b=rand(2,12);
-
-    return make(
-      "风筝模型 · 共高面积比",
-      `两个三角形共用同一个高，对应底边长度分别为 ${a} 和 ${b}。面积比是多少？`,
-      ratioAnswer(a,b),
-      `共高三角形面积比等于底边比，所以为 ${ratio(a,b)}。`
-    );
-
-  }
-
-  if(type===2){
-
-    const s1=rand(2,12);
-    const s2=rand(2,12);
-    const s4=rand(2,12);
-
-    const s3=s2*s4/s1;
-
-    return make(
-      "风筝模型 · 对角面积乘积",
-      `风筝模型四块面积依次为 ${s1}、${s2}、x、${s4}，第1、3块相对。求 x。`,
-      numberAnswer(s3,0.01),
-      `根据 S₁×S₃=S₂×S₄，${s1}×x=${s2}×${s4}，所以 x=${formatNumber(s3)}。`
-    );
-
-  }
-
-  const a=rand(2,10);
-  const b=rand(2,10);
-  const c=rand(2,10);
-  const d=rand(2,10);
-
-  return make(
-    "风筝模型 · 鸟头结合",
-    `两个三角形夹角相等，第一组三角形夹角两边为 ${a}、${b}，第二组为 ${c}、${d}。面积比是多少？`,
-    ratioAnswer(a*b,c*d),
-    `夹角相等，sin值相等，所以面积比=(${a}×${b}):(${c}×${d})=${ratio(a*b,c*d)}。`
-  );
-
-}
-
-
-/* ==============================
-   9 蝴蝶模型
-============================== */
-
-function butterflyProblem(){
-
-  const type=rand(1,4);
-
-  if(type===1){
-
-    const m=rand(1,6);
-    const n=rand(m+1,10);
-
-    return make(
-      "梯形蝴蝶 · 面积平方比",
-      `梯形上底与下底之比为 ${m}:${n}。靠上底与靠下底的两个三角形面积比是多少？`,
-      ratioAnswer(m*m,n*n),
-      `面积比等于底边比的平方，即 ${m*m}:${n*n}，约成 ${ratio(m*m,n*n)}。`
-    );
-
-  }
-
-  if(type===2){
-
-    const wing=rand(3,100);
-
-    return make(
-      "梯形蝴蝶 · 两翼",
-      `梯形蝴蝶模型左翼面积为 ${wing} cm²，右翼面积是多少？`,
-      numberAnswer(wing),
-      `两翼面积相等，所以为 ${wing} cm²。`
-    );
-
-  }
-
-  if(type===3){
-
-    const each=rand(5,80);
-    const total=each*4;
-
-    return make(
-      "平行四边形蝴蝶",
-      `平行四边形面积为 ${total} cm²，两条对角线相交后，一个小三角形面积是多少？`,
-      numberAnswer(each),
-      `对角线把平行四边形分成四个等面积三角形，所以 ${total}÷4=${each} cm²。`
-    );
-
-  }
-
-  const each=rand(5,60);
-  const total=each*4;
-
-  return make(
-    "长方形 / 正方形蝴蝶",
-    `一个长方形两条对角线相交，长方形总面积为 ${total} cm²。四个小三角形中的一个面积是多少？`,
-    numberAnswer(each),
-    `长方形是平行四边形，对角线互相平分，四块面积相等，所以 ${total}÷4=${each} cm²。`
-  );
-
-}
-
-
-/* ==============================
-   10 鸟头模型
-============================== */
-
-function birdProblem(){
-
-  const type=rand(1,4);
-
-  if(type===1){
-
-    const a=rand(2,10);
-    const b=rand(2,10);
-    const c=rand(2,10);
-    const d=rand(2,10);
-
-    return make(
-      "鸟头模型 · 相等角",
-      `两个三角形夹角相等。夹角两边分别为 ${a}、${b} 和 ${c}、${d}。面积比是多少？`,
-      ratioAnswer(a*b,c*d),
-      `面积比=(${a}×${b}):(${c}×${d})=${ratio(a*b,c*d)}。`
-    );
-
-  }
-
-  if(type===2){
-
-    const a=rand(2,10);
-    const b=rand(2,10);
-    const c=rand(2,10);
-    const d=rand(2,10);
-
-    return make(
-      "鸟头模型 · 互补角",
-      `两个三角形夹角互补。夹角两边分别为 ${a}、${b} 和 ${c}、${d}。面积比是多少？`,
-      ratioAnswer(a*b,c*d),
-      `互补角正弦相等，所以面积比=${ratio(a*b,c*d)}。`
-    );
-
-  }
-
-  if(type===3){
-
-    const a=rand(2,10);
-    const b=rand(2,10);
-    const c=rand(2,10);
-    const d=rand(2,10);
-
-    return make(
-      "鸟头模型 · 对顶角",
-      `两条直线相交于 O。AO=${a}，BO=${b}，CO=${c}，DO=${d}。求 △AOB 与 △COD 面积比。`,
-      ratioAnswer(a*b,c*d),
-      `∠AOB 与 ∠COD 为对顶角，所以面积比=(${a}×${b}):(${c}×${d})=${ratio(a*b,c*d)}。`
-    );
-
-  }
-
-  const p=rand(1,5);
-  const q=rand(p+1,8);
-
-  return make(
-    "特殊鸟头 · 金字塔",
-    `三角形中 DE∥BC，AD:AB=${p}:${q}。求 △ADE 与 △ABC 面积比。`,
-    ratioAnswer(p*p,q*q),
-    `两三角形相似，边长比=${p}:${q}，所以面积比=${p*p}:${q*q}，即 ${ratio(p*p,q*q)}。`
-  );
-
-}
-
-
-/* ==============================
-   11 燕尾模型
-============================== */
-
-function swallowProblem(){
-
-  const type=rand(1,4);
-
-  if(type===1){
-
-    const a=rand(1,10);
-    const b=rand(1,10);
-
-    return make(
-      "燕尾模型 · 共高面积比",
-      `D 在三角形 ABC 的 BC 边上，BD:DC=${a}:${b}。求 △ABD 与 △ADC 面积比。`,
-      ratioAnswer(a,b),
-      `两个三角形从A到BC的高相同，所以面积比=BD:DC=${ratio(a,b)}。`
-    );
-
-  }
-
-  if(type===2){
-
-    const a=rand(1,8);
-    const b=rand(1,8);
-    const unit=rand(2,10);
-
-    const s1=a*unit;
-    const s2=b*unit;
-
-    return make(
-      "燕尾模型 · 已知一块面积",
-      `D 在 BC 上，BD:DC=${a}:${b}。若 △ABD 面积为 ${s1} cm²，△ADC 面积是多少？`,
-      numberAnswer(s2),
-      `面积比=BD:DC=${a}:${b}。所以另一块面积=${s1}×${b}÷${a}=${s2} cm²。`
-    );
-
-  }
-
-  if(type===3){
-
-    const a=rand(1,10);
-    const b=rand(1,10);
-
-    return make(
-      "四边形燕尾 · 对角线",
-      `四边形两条对角线相交于 O，AO:OC=${a}:${b}。求 △AOB 与 △BOC 面积比。`,
-      ratioAnswer(a,b),
-      `两个三角形从B到AC的高相同，所以面积比=AO:OC=${ratio(a,b)}。`
-    );
-
-  }
-
-  const a=rand(1,8);
-  const b=rand(1,8);
-  const unit=rand(2,10);
-
-  return make(
-    "燕尾模型 · 面积传递",
-    `AO:OC=${a}:${b}，△AOD 面积为 ${a*unit} cm²。△COD 面积是多少？`,
-    numberAnswer(b*unit),
-    `两个三角形从D到AC的高相同，所以面积比=${a}:${b}，△COD面积=${b*unit} cm²。`
-  );
-
-}
-
-
-/* ==============================
-   题库生成器
-============================== */
-
-const generators={
-
-  rectangle:rectangleProblem,
-  square:squareProblem,
-  parallelogram:parallelogramProblem,
-  trapezoid:trapezoidProblem,
-  triangle:triangleProblem,
-  equal:equalProblem,
-  half:halfProblem,
-  kite:kiteProblem,
-  butterfly:butterflyProblem,
-  bird:birdProblem,
-  swallow:swallowProblem
-
-};
-
-let currentQuestion=null;
-let answered=false;
-
-
-/* ==============================
-   生成新题
-============================== */
+const gens={rectangle,parallelogram,trapezoid,triangle,equal,half,kite,butterfly,bird,swallow};
+let current=null,marked=false;
 
 function newQuestion(){
-
-  const selected=
-    document.getElementById(
-      "categorySelect"
-    ).value;
-
-  let key=selected;
-
-  if(selected==="all"){
-
-    const keys=
-      Object.keys(generators);
-
-    key=choice(keys);
-
-  }
-
-  currentQuestion=
-    generators[key]();
-
-  answered=false;
-
-  document.getElementById(
-    "qCategory"
-  ).textContent=
-    currentQuestion.category;
-
-  document.getElementById(
-    "qText"
-  ).textContent=
-    currentQuestion.question;
-
-  const input=
-    document.getElementById(
-      "userAnswer"
-    );
-
-  input.value="";
-  input.focus();
-
-  const feedback=
-    document.getElementById(
-      "feedback"
-    );
-
-  feedback.className="feedback";
-  feedback.textContent="";
-
-  const solution=
-    document.getElementById(
-      "solution"
-    );
-
-  solution.className="solution";
-  solution.textContent=
-    "答案：" +
-    currentQuestion.solution;
-
+ let k=document.getElementById("category").value;
+ if(k==="all")k=pick(Object.keys(gens));
+ current=gens[k]();marked=false;
+ qcat.textContent=current.cat;qtext.textContent=current.q;
+ userAnswer.value="";feedback.className="feedback";feedback.textContent="";
+ solution.className="solution";solution.textContent="答案与解析："+current.sol;
+ userAnswer.focus();
 }
 
-
-/* ==============================
-   答案标准化
-============================== */
-
-function normalizeText(str){
-
-  return String(str)
-    .trim()
-    .toLowerCase()
-    .replace(/\s+/g,"")
-    .replace(/：/g,":")
-    .replace(/，/g,",")
-    .replace(/。/g,"")
-    .replace(/厘米/g,"")
-    .replace(/平方厘米/g,"")
-    .replace(/cm²/gi,"")
-    .replace(/cm2/gi,"")
-    .replace(/cm/gi,"")
-    .replace(/°/g,"")
-    .replace(/度/g,"");
-
+function norm(s){
+ return String(s).trim().toLowerCase().replace(/\s+/g,"")
+ .replace(/：/g,":").replace(/平方厘米/g,"").replace(/厘米/g,"")
+ .replace(/cm²/gi,"").replace(/cm2/gi,"").replace(/cm/gi,"")
+ .replace(/°|度|。/g,"");
 }
-
-
-function extractNumber(str){
-
-  const text=normalizeText(str);
-
-  const match=
-    text.match(
-      /-?\d+(?:\.\d+)?/
-    );
-
-  if(!match){
-    return NaN;
-  }
-
-  return Number(match[0]);
-
+function getNum(s){let m=norm(s).match(/-?\d+(?:\.\d+)?/);return m?Number(m[0]):NaN}
+function getRatio(s){
+ let m=String(s).replace(/\s+/g,"").replace(/：/g,":").match(/(-?\d+(?:\.\d+)?)[:\/](-?\d+(?:\.\d+)?)/);
+ return m?[Number(m[1]),Number(m[2])]:null;
 }
-
-
-/* ==============================
-   比例答案处理
-============================== */
-
-function parseRatio(str){
-
-  let text=
-    String(str)
-      .trim()
-      .replace(/\s+/g,"")
-      .replace(/：/g,":");
-
-  let match=
-    text.match(
-      /(-?\d+(?:\.\d+)?)[:\/](-?\d+(?:\.\d+)?)/
-    );
-
-  if(!match){
-    return null;
-  }
-
-  return [
-    Number(match[1]),
-    Number(match[2])
-  ];
-
+function right(u,a){
+ if(a.type==="number"){let n=getNum(u);return !Number.isNaN(n)&&Math.abs(n-a.v)<=a.t}
+ if(a.type==="text"){let n=norm(u);return a.v.some(x=>norm(x)===n)}
+ if(a.type==="ratio"){let r=getRatio(u);return r&&r[1]!==0&&Math.abs(r[0]*a.b-r[1]*a.a)<.0001}
+ return false;
 }
-
-
-/* ==============================
-   判断答案
-============================== */
-
-function isCorrect(user,answer){
-
-  if(answer.type==="number"){
-
-    const value=
-      extractNumber(user);
-
-    if(Number.isNaN(value)){
-      return false;
-    }
-
-    return Math.abs(
-      value-answer.value
-    )<=answer.tolerance;
-
-  }
-
-
-  if(answer.type==="text"){
-
-    const u=
-      normalizeText(user);
-
-    return answer.values.some(
-      value=>
-        normalizeText(value)===u
-    );
-
-  }
-
-
-  if(answer.type==="ratio"){
-
-    const parsed=
-      parseRatio(user);
-
-    if(!parsed){
-      return false;
-    }
-
-    const [a,b]=parsed;
-
-    if(b===0){
-      return false;
-    }
-
-    return Math.abs(
-      a*answer.b -
-      b*answer.a
-    )<0.0001;
-
-  }
-
-  return false;
-
-}
-
-
-/* ==============================
-   批改
-============================== */
-
 function checkAnswer(){
+ if(!current)return newQuestion();
+ let u=userAnswer.value.trim();
+ if(!u){feedback.className="feedback bad";feedback.textContent="先输入你的答案。";return}
+ let ok=right(u,current.a);
+ feedback.className="feedback "+(ok?"good":"bad");
+ feedback.textContent=ok?"✅ 正确！继续保持。":"❌ 还不对，可以重新计算；实在不会再点“看答案”。";
+ if(!marked){saveStat(ok);marked=true}
+}
+function showAnswer(){if(!current)newQuestion();solution.classList.toggle("show")}
+function fmt(n){return Number.isInteger(n)?n:Number(n.toFixed(2))}
 
-  if(!currentQuestion){
-    newQuestion();
-    return;
-  }
-
-  const input=
-    document.getElementById(
-      "userAnswer"
-    );
-
-  const user=
-    input.value.trim();
-
-  if(!user){
-
-    const feedback=
-      document.getElementById(
-        "feedback"
-      );
-
-    feedback.className=
-      "feedback bad";
-
-    feedback.textContent=
-      "先写下你的答案，再批改。";
-
-    return;
-
-  }
-
-  const correct=
-    isCorrect(
-      user,
-      currentQuestion.answer
-    );
-
-  const feedback=
-    document.getElementById(
-      "feedback"
-    );
-
-  if(correct){
-
-    feedback.className=
-      "feedback good";
-
-    feedback.textContent=
-      "✅ 正确！很好，继续下一题。";
-
-  }else{
-
-    feedback.className=
-      "feedback bad";
-
-    feedback.textContent=
-      "❌ 还不对。可以再算一次，也可以点“看答案”。";
-
-  }
-
-  if(!answered){
-
-    updateStats(correct);
-    answered=true;
-
-  }
-
+let stat={done:0,correct:0,wrong:0};
+function loadStat(){
+ try{let x=JSON.parse(localStorage.getItem("math_stats_v3")||"{}");stat.done=x.done||0;stat.correct=x.correct||0;stat.wrong=x.wrong||0}catch(e){}
+ renderStat();
+}
+function saveStat(ok){
+ stat.done++;ok?stat.correct++:stat.wrong++;
+ localStorage.setItem("math_stats_v3",JSON.stringify(stat));renderStat();
+}
+function renderStat(){
+ done.textContent=stat.done;correct.textContent=stat.correct;wrong.textContent=stat.wrong;
+ rate.textContent=(stat.done?Math.round(stat.correct/stat.done*100):0)+"%";
 }
 
-
-/* ==============================
-   看答案
-============================== */
-
-function toggleSolution(){
-
-  if(!currentQuestion){
-    newQuestion();
-    return;
-  }
-
-  document.getElementById(
-    "solution"
-  ).classList.toggle("show");
-
-}
-
-
-/* ==============================
-   数字格式
-============================== */
-
-function formatNumber(n){
-
-  if(Number.isInteger(n)){
-    return n;
-  }
-
-  return Number(
-    n.toFixed(2)
-  );
-
-}
-
-
-/* ==============================
-   统计
-============================== */
-
-let stats={
-  done:0,
-  correct:0,
-  wrong:0
-};
-
-function loadStats(){
-
-  try{
-
-    const saved=
-      JSON.parse(
-        localStorage.getItem(
-          "geometry_stats_v2"
-        ) || "{}"
-      );
-
-    stats.done=
-      saved.done || 0;
-
-    stats.correct=
-      saved.correct || 0;
-
-    stats.wrong=
-      saved.wrong || 0;
-
-  }catch(e){}
-
-  renderStats();
-
-}
-
-
-function updateStats(correct){
-
-  stats.done++;
-
-  if(correct){
-    stats.correct++;
-  }else{
-    stats.wrong++;
-  }
-
-  try{
-
-    localStorage.setItem(
-      "geometry_stats_v2",
-      JSON.stringify(stats)
-    );
-
-  }catch(e){}
-
-  renderStats();
-
-}
-
-
-function renderStats(){
-
-  document.getElementById(
-    "doneCount"
-  ).textContent=
-    stats.done;
-
-  document.getElementById(
-    "correctCount"
-  ).textContent=
-    stats.correct;
-
-  document.getElementById(
-    "wrongCount"
-  ).textContent=
-    stats.wrong;
-
-  const rate=
-    stats.done
-      ? Math.round(
-          stats.correct /
-          stats.done *
-          100
-        )
-      : 0;
-
-  document.getElementById(
-    "rate"
-  ).textContent=
-    rate+"%";
-
-}
-
-
-function resetStats(){
-
-  if(!confirm(
-    "确定清空练习记录和掌握记录吗？"
-  )){
-    return;
-  }
-
-  stats={
-    done:0,
-    correct:0,
-    wrong:0
-  };
-
-  try{
-
-    localStorage.removeItem(
-      "geometry_stats_v2"
-    );
-
-    localStorage.removeItem(
-      "geometry_master_v2"
-    );
-
-  }catch(e){}
-
-  document
-    .querySelectorAll(
-      'input[data-key]'
-    )
-    .forEach(
-      x=>x.checked=false
-    );
-
-  renderStats();
-  updateMaster();
-
-}
-
-
-/* ==============================
-   掌握进度
-============================== */
-
-const mastery=[
-  ...document.querySelectorAll(
-    'input[data-key]'
-  )
-];
-
-function saveMaster(){
-
-  const data={};
-
-  mastery.forEach(x=>{
-    data[x.dataset.key]=x.checked;
-  });
-
-  try{
-
-    localStorage.setItem(
-      "geometry_master_v2",
-      JSON.stringify(data)
-    );
-
-  }catch(e){}
-
-  updateMaster();
-
-}
-
-
+const masters=[...document.querySelectorAll("[data-master]")];
 function loadMaster(){
-
-  let data={};
-
-  try{
-
-    data=
-      JSON.parse(
-        localStorage.getItem(
-          "geometry_master_v2"
-        ) || "{}"
-      );
-
-  }catch(e){}
-
-  mastery.forEach(x=>{
-
-    x.checked=
-      !!data[x.dataset.key];
-
-    x.addEventListener(
-      "change",
-      saveMaster
-    );
-
-  });
-
-  updateMaster();
-
+ let d={};try{d=JSON.parse(localStorage.getItem("math_master_v3")||"{}")}catch(e){}
+ masters.forEach(x=>{x.checked=!!d[x.dataset.master];x.addEventListener("change",saveMaster)});
+ renderMaster();
 }
-
-
-function updateMaster(){
-
-  const done=
-    mastery.filter(
-      x=>x.checked
-    ).length;
-
-  const total=
-    mastery.length;
-
-  document.getElementById(
-    "masterText"
-  ).textContent=
-    done+" / "+total;
-
-  document.getElementById(
-    "masterBar"
-  ).style.width=
-    (
-      total
-        ? done/total*100
-        : 0
-    )+"%";
-
+function saveMaster(){
+ let d={};masters.forEach(x=>d[x.dataset.master]=x.checked);
+ localStorage.setItem("math_master_v3",JSON.stringify(d));renderMaster();
 }
-
-
-/* ==============================
-   搜索
-============================== */
-
-function filterCards(keyword){
-
-  const q=
-    keyword
-      .trim()
-      .toLowerCase();
-
-  document
-    .querySelectorAll(
-      ".lesson"
-    )
-    .forEach(card=>{
-
-      const text=
-        (
-          card.innerText+
-          " "+
-          (card.dataset.tags||"")
-        )
-        .toLowerCase();
-
-      card.classList.toggle(
-        "hide",
-        q && !text.includes(q)
-      );
-
-    });
-
+function renderMaster(){
+ let n=masters.filter(x=>x.checked).length;
+ masterText.textContent=n+" / "+masters.length;
+ masterBar.style.width=(masters.length?n/masters.length*100:0)+"%";
 }
-
-
-/* ==============================
-   定位练习区
-============================== */
-
-function scrollPractice(){
-
-  document
-    .getElementById(
-      "practice"
-    )
-    .scrollIntoView({
-      behavior:"smooth",
-      block:"start"
-    });
-
-  setTimeout(()=>{
-
-    document.getElementById(
-      "userAnswer"
-    ).focus();
-
-  },400);
-
+function resetAll(){
+ if(!confirm("确定清空练习记录和掌握进度吗？"))return;
+ localStorage.removeItem("math_stats_v3");localStorage.removeItem("math_master_v3");
+ stat={done:0,correct:0,wrong:0};masters.forEach(x=>x.checked=false);
+ renderStat();renderMaster();
 }
-
-
-/* ==============================
-   初始化
-============================== */
-
-loadStats();
-loadMaster();
-newQuestion();
-
+function searchCards(v){
+ let q=v.trim().toLowerCase();
+ document.querySelectorAll(".lesson").forEach(c=>{
+   let text=(c.innerText+" "+(c.dataset.search||"")).toLowerCase();
+   c.classList.toggle("hidden",q&&!text.includes(q));
+ });
+}
+function goPractice(){
+ practice.scrollIntoView({behavior:"smooth"});
+ setTimeout(()=>userAnswer.focus(),350);
+}
+loadStat();loadMaster();newQuestion();
 </script>
 
 </body>
