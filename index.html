@@ -1,987 +1,7836 @@
 <!doctype html>
 <html lang="zh-CN">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>数学｜几何模型专项练习</title>
-
-<style>
-:root{
-  --bg:#f5f7fb;--paper:#fff;--ink:#182230;--muted:#667085;
-  --line:#d9e0ea;--brand:#5757d6;--green:#07835c;--red:#b42318;
-}
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/>
+  <title>
+   数学｜几何模型专项练习
+  </title>
+  <meta content="长方形、正方形、平行四边形、梯形、三角形、等积、一半、风筝、蝴蝶、鸟头、燕尾模型专项练习。完全离线可用。" name="description"/>
+  <style>
+   :root{--bg:#f6f8fc;--paper:#fff;--ink:#172033;--muted:#667085;--line:#d9e0ea;--brand:#5b5bd6;--brand2:#13a085;--warn:#c76518;--shadow:0 14px 40px rgba(31,41,55,.08);--r:20px}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{
-  margin:0;background:linear-gradient(#edf3ff,#f7f8fc 330px);
-  color:var(--ink);
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
-  line-height:1.65
+ margin:0;
+ background:linear-gradient(180deg,#eef4ff 0,#f8fafc 280px,#f6f8fc 100%);
+ color:var(--ink);
+ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif;
+ line-height:1.65
 }
-button,input,select{font:inherit}
+button,input{font:inherit}
 button{cursor:pointer}
-.wrap{max-width:1250px;margin:auto;padding:20px}
+.wrap{max-width:1220px;margin:auto;padding:22px}
 .hero{
-  padding:28px;border-radius:26px;color:#fff;
-  background:linear-gradient(135deg,#3946c6,#7258cf,#148d7b);
-  box-shadow:0 16px 45px #24345c20
+ background:radial-gradient(circle at 85% 20%,rgba(255,255,255,.25),transparent 28%),linear-gradient(135deg,#3c46c7,#6d5bd0 55%,#148f7d);
+ color:#fff;
+ border-radius:28px;
+ padding:28px;
+ box-shadow:var(--shadow);
+ position:relative;
+ overflow:hidden
 }
-.hero h1{font-size:clamp(30px,5vw,52px);margin:5px 0}
-.tag{
-  display:inline-block;border:1px solid #ffffff55;border-radius:999px;
-  padding:4px 10px;margin:3px;background:#ffffff15;font-size:13px
+.hero h1{margin:0 0 6px;font-size:clamp(28px,5vw,54px);line-height:1.1}
+.hero p{margin:8px 0;max-width:850px;opacity:.94}
+.hero .tag{
+ display:inline-flex;
+ padding:6px 11px;
+ border:1px solid rgba(255,255,255,.35);
+ border-radius:999px;
+ background:rgba(255,255,255,.12);
+ margin:5px 5px 0 0;
+ font-size:13px
 }
-.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:15px}
+.topbar{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0}
 .btn{
-  border:0;border-radius:11px;padding:10px 14px;background:#fff;
-  color:#343aa0;font-weight:750
+ border:0;
+ border-radius:12px;
+ padding:10px 14px;
+ background:#fff;
+ color:#343b96;
+ font-weight:700
 }
-.btn.green{background:#07835c;color:#fff}
-.btn.dark{background:#17233c;color:#fff}
-.btn.red{background:#b42318;color:#fff}
-.progress{height:10px;background:#ffffff35;border-radius:99px;overflow:hidden;margin-top:8px}
-.progress i{display:block;height:100%;background:#fff;width:0}
-
-.practice{
-  margin:20px 0;background:#fff;border:1px solid var(--line);
-  border-radius:23px;padding:20px;box-shadow:0 12px 35px #34405412
+.btn.alt{background:#12223f;color:#fff}
+.btn.ghost{
+ background:rgba(255,255,255,.15);
+ border:1px solid rgba(255,255,255,.3);
+ color:#fff
 }
-.practice-top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.stats{display:flex;flex-wrap:wrap;gap:7px}
-.stat{background:#f2f4f7;border-radius:9px;padding:6px 10px;font-size:13px}
-.controls{display:flex;gap:8px;flex-wrap:wrap;margin:13px 0}
-select{
-  border:1px solid #cfd7e5;border-radius:10px;padding:9px;background:#fff
+.layout{
+ display:grid;
+ grid-template-columns:260px 1fr;
+ gap:20px;
+ margin-top:20px
 }
-.question{
-  background:#142039;color:#fff;border-radius:18px;padding:20px
-}
-.qcat{color:#cbd5ff;font-size:14px}
-.qtext{font-size:21px;font-weight:750;margin:10px 0}
-.answer-row{display:flex;gap:8px;flex-wrap:wrap}
-.answer-input{
-  flex:1;min-width:190px;border:2px solid #d0d5dd;
-  border-radius:11px;padding:11px 13px;outline:none
-}
-.answer-input:focus{border-color:#7777df}
-.feedback,.solution{display:none;margin-top:11px;padding:11px;border-radius:11px}
-.feedback.good{display:block;background:#ecfdf3;color:#067647;font-weight:700}
-.feedback.bad{display:block;background:#fef3f2;color:#b42318;font-weight:700}
-.solution.show{display:block;background:#eefbf7;color:#185f50}
-
-.layout{display:grid;grid-template-columns:245px 1fr;gap:18px}
 .side{
-  position:sticky;top:10px;align-self:start;background:#fff;border:1px solid var(--line);
-  border-radius:17px;padding:13px;max-height:calc(100vh - 20px);overflow:auto
+ position:sticky;
+ top:12px;
+ align-self:start;
+ background:rgba(255,255,255,.92);
+ backdrop-filter:blur(10px);
+ border:1px solid var(--line);
+ border-radius:18px;
+ padding:14px;
+ max-height:calc(100vh - 24px);
+ overflow:auto
 }
-.side input{width:100%;padding:9px;border:1px solid var(--line);border-radius:9px}
-.side a{display:block;padding:7px 9px;text-decoration:none;color:#475467;border-radius:8px}
+.side h3{margin:4px 8px 10px}
+.side a{
+ display:block;
+ color:#44506a;
+ text-decoration:none;
+ padding:8px 10px;
+ border-radius:10px;
+ font-size:14px
+}
 .side a:hover{background:#eef2ff;color:#3730a3}
-.section{margin-bottom:27px;scroll-margin-top:15px}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.search{
+ width:100%;
+ padding:10px 12px;
+ border:1px solid var(--line);
+ border-radius:11px;
+ outline:none;
+ margin-bottom:10px
+}
+.main{min-width:0}
+.section{scroll-margin-top:20px;margin-bottom:26px}
+.section-title{
+ display:flex;
+ align-items:flex-end;
+ justify-content:space-between;
+ gap:12px;
+ margin:0 0 10px
+}
+.section-title h2{margin:0;font-size:25px}
+.section-title span{font-size:13px;color:var(--muted)}
+.grid{
+ display:grid;
+ grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:14px
+}
 .card{
-  background:#fff;border:1px solid var(--line);border-radius:18px;
-  padding:16px;box-shadow:0 6px 22px #3440540b
+ background:var(--paper);
+ border:1px solid var(--line);
+ border-radius:var(--r);
+ padding:17px;
+ box-shadow:0 8px 25px rgba(31,41,55,.045)
 }
-.card h3{margin:0 0 8px}
-.master{float:right;font-size:13px;color:#667085}
-.master input{accent-color:#5757d6}
-.formulas{display:flex;gap:6px;flex-wrap:wrap}
+.card h3{margin:0 0 8px;font-size:19px}
+.formula{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0 11px}
 .chip{
-  padding:5px 9px;border-radius:999px;background:#eef1ff;color:#3d45a4;
-  border:1px solid #dfe3ff;font-size:13px;font-weight:700
+ display:inline-block;
+ background:#eef1ff;
+ color:#3e46a8;
+ border:1px solid #dfe3ff;
+ border-radius:999px;
+ padding:5px 9px;
+ font-size:13px;
+ font-weight:700
 }
-.note{margin-top:9px;padding:9px;background:#f8fafc;border-left:4px solid #7d7dde;border-radius:8px}
+.note{
+ font-size:14px;
+ color:#4b5563;
+ background:#f8fafc;
+ border-left:4px solid #8b8bd9;
+ padding:8px 10px;
+ border-radius:8px;
+ margin:8px 0
+}
 .diagram{
-  margin-top:10px;background:#fbfcff;border:1px dashed #cbd5e1;
-  border-radius:13px;padding:8px;overflow:hidden
+ background:linear-gradient(180deg,#fbfdff,#f7f8fb);
+ border:1px dashed #cbd5e1;
+ border-radius:14px;
+ padding:8px;
+ margin:10px 0
 }
-.diagram svg{width:100%;height:auto;max-height:230px;display:block}
-.line{fill:none;stroke:#26334c;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
-.purple{fill:#e8eaff;stroke:#5757d6;stroke-width:2}
-.greenfill{fill:#dff8f1;stroke:#13927c;stroke-width:2}
-.orangefill{fill:#fff0dc;stroke:#d97706;stroke-width:2}
-.bluefill{fill:#e5f2ff;stroke:#3b82f6;stroke-width:2}
-.redline{fill:none;stroke:#dc2626;stroke-width:2.5}
-.dash{stroke-dasharray:6 5}
-.mid{fill:#5757d6}
-.label{font-size:14px;fill:#172033;font-weight:650}
-.angle{fill:none;stroke:#e11d48;stroke-width:2}
-.hidden{display:none!important}
-.footer{text-align:center;color:#667085;padding:35px}
+.diagram svg{width:100%;height:auto;display:block}
+.s{
+ stroke:#25324b;
+ stroke-width:2.2;
+ fill:none;
+ stroke-linecap:round;
+ stroke-linejoin:round
+}
+.dash{stroke-dasharray:6 6}
+.accent{stroke:#5b5bd6;stroke-width:2.5;fill:none}
+.accent2{stroke:#0f9f87;stroke-width:2.5;fill:none}
+.fill1{fill:#e9ecff;stroke:#5b5bd6;stroke-width:2}
+.fill2{fill:#ddf7f1;stroke:#14977f;stroke-width:2}
+.fill3{fill:#fff1df;stroke:#d17820;stroke-width:2}
+.lab{font-size:13px;fill:#273248;font-weight:700}
+.mutelab{font-size:11px;fill:#64748b}
+.problem{
+ margin-top:11px;
+ border-top:1px solid #edf0f5;
+ padding-top:10px
+}
+.problem strong{color:#28336c}
+.answer{
+ display:none;
+ background:#eefbf7;
+ border:1px solid #c7efe4;
+ border-radius:10px;
+ padding:9px 11px;
+ margin-top:8px;
+ color:#185f50
+}
+.answer.show{display:block}
+.smallbtn{
+ border:1px solid #d8def0;
+ background:#fff;
+ color:#3c4699;
+ padding:6px 10px;
+ border-radius:9px;
+ font-size:13px;
+ font-weight:700;
+ margin-top:7px
+}
+.smallbtn:hover{background:#f3f5ff}
+.master{
+ display:inline-flex;
+ align-items:center;
+ gap:6px;
+ font-size:13px;
+ color:#536078;
+ float:right
+}
+.master input{accent-color:#5b5bd6}
+.quizbox{
+ background:#111c34;
+ color:#fff;
+ border-radius:20px;
+ padding:18px;
+ margin:20px 0
+}
+.quizbox h2{margin:0 0 8px}
+.quizbox .q{font-size:18px}
+.quizbox .qa{
+ display:none;
+ margin-top:10px;
+ background:#1c2a4a;
+ border-radius:12px;
+ padding:12px
+}
+.quizbox .qa.show{display:block}
+.progress{
+ height:10px;
+ background:#e8ecf5;
+ border-radius:99px;
+ overflow:hidden;
+ margin:10px 0
+}
+.progress>i{
+ display:block;
+ height:100%;
+ width:0;
+ background:linear-gradient(90deg,#5b5bd6,#13a085)
+}
+.legend{font-size:13px;color:var(--muted)}
+.footer{color:#6b7280;text-align:center;padding:28px 8px 45px}
+.hide{display:none!important}
+.pill{
+ padding:4px 9px;
+ border-radius:999px;
+ background:#f1f5f9;
+ font-size:12px;
+ color:#475569
+}
+.warn{color:#8a4b10;background:#fff8eb;border-color:#f5ddb5}
+.toc-count{
+ font-size:12px;
+ background:#edf2f7;
+ border-radius:99px;
+ padding:1px 6px;
+ margin-left:4px
+}
 
-@media(max-width:850px){
- .layout{grid-template-columns:1fr}.side{position:relative;max-height:none}
+@media(max-width:900px){
+ .layout{grid-template-columns:1fr}
+ .side{position:relative;top:auto;max-height:none}
+ .side nav{columns:2}
  .grid{grid-template-columns:1fr}
 }
-@media(max-width:550px){
- .wrap{padding:10px}.hero{padding:18px}.practice{padding:13px}.qtext{font-size:18px}
+
+@media(max-width:560px){
+ .wrap{padding:12px}
+ .hero{padding:20px}
+ .side nav{columns:1}
+ .section-title{display:block}
+ .grid{gap:10px}
+ .card{padding:14px}
 }
-</style>
-</head>
 
-<body>
-<div class="wrap">
+@media print{
+ body{background:#fff}
+ .side,.topbar,.quizbox,.smallbtn,.master{display:none!important}
+ .layout{display:block}
+ .card{break-inside:avoid;box-shadow:none}
+ .hero{background:#fff!important;color:#000;border:1px solid #bbb}
+ .grid{grid-template-columns:1fr 1fr}
+ .answer{display:block!important}
+ details.answerbox:not([open])>.answer-native{display:block!important}
+}
 
-<header class="hero">
-  <span class="tag">完全离线</span>
-  <span class="tag">SVG 几何图</span>
-  <span class="tag">动态大题库</span>
-  <span class="tag">自动批改</span>
-  <h1>数学｜几何模型专项</h1>
-  <p>先看图理解模型，再自己做题。题目在本机动态生成，可形成远超 4800 道不同组合。</p>
+.answerbox{margin-top:7px}
+.answerbox summary.smallbtn{
+ display:inline-block;
+ list-style:none;
+ user-select:none
+}
+.answerbox summary.smallbtn::-webkit-details-marker{display:none}
+.answer-native{
+ background:#eefbf7;
+ border:1px solid #c7efe4;
+ border-radius:10px;
+ padding:9px 11px;
+ margin-top:8px;
+ color:#185f50
+}
+.answerbox[open] summary.smallbtn{background:#f3f5ff}
 
-  <div class="actions">
-    <button class="btn" onclick="goPractice()">✏️ 开始答题</button>
-    <button class="btn" onclick="newQuestion()">🎲 换一题</button>
-    <button class="btn dark" onclick="window.print()">🖨️ 打印 / PDF</button>
-    <button class="btn red" onclick="resetAll()">↺ 清空记录</button>
-  </div>
+.fixed-answer-tools{
+ margin-top:10px;
+ padding-top:10px;
+ border-top:1px dashed #d0d5dd
+}
+.fixed-answer-row{
+ display:flex;
+ gap:8px;
+ flex-wrap:wrap;
+ align-items:center
+}
+.fixed-answer-input{
+ flex:1;
+ min-width:180px;
+ padding:9px 11px;
+ border:1px solid #cbd5e1;
+ border-radius:10px
+}
+.grade-result{
+ margin-top:8px;
+ font-weight:700
+}
+.grade-result.ok{color:#067647}
+.grade-result.no{color:#b42318}
 
-  <div style="margin-top:14px">知识点掌握：<b id="masterText">0 / 0</b></div>
-  <div class="progress"><i id="masterBar"></i></div>
-</header>
+.bank-panel{
+ margin:20px 0;
+ padding:18px;
+ border:1px solid var(--line);
+ border-radius:var(--r);
+ background:var(--paper);
+ box-shadow:var(--shadow)
+}
+.bank-question{
+ margin-top:12px;
+ padding:16px;
+ border-radius:16px;
+ background:#111c34;
+ color:white
+}
+.bank-question input{
+ width:min(100%,520px);
+ padding:11px 12px;
+ border-radius:10px;
+ border:2px solid #d0d5dd
+}
+.bank-controls{
+ display:flex;
+ gap:8px;
+ flex-wrap:wrap;
+ margin-top:12px
+}
+.bank-feedback{
+ margin-top:10px;
+ font-weight:800
+}
+.bank-solution{
+ display:none;
+ margin-top:10px;
+ padding:10px;
+ border-radius:10px;
+ background:#eefbf7;
+ color:#185f50
+}
+.bank-solution.show{display:block}
+  </style>
+ </head>
 
-<section class="practice" id="practice">
-  <div class="practice-top">
-    <div>
-      <h2 style="margin:0">📝 智能练习</h2>
-      <div style="color:#667085">自己输入答案 → 批改 → 不会再看答案</div>
+ <body>
+  <div class="wrap">
+
+   <header class="hero">
+    <div class="tag">
+     完全离线
     </div>
-    <div class="stats">
-      <span class="stat">已做 <b id="done">0</b></span>
-      <span class="stat">正确 <b id="correct">0</b></span>
-      <span class="stat">错误 <b id="wrong">0</b></span>
-      <span class="stat">正确率 <b id="rate">0%</b></span>
+    <div class="tag">
+     公式 + 图形 + 练习
     </div>
-  </div>
-
-  <div class="controls">
-    <select id="category" onchange="newQuestion()">
-      <option value="all">全部随机</option>
-      <option value="rectangle">长方形 / 正方形</option>
-      <option value="parallelogram">平行四边形</option>
-      <option value="trapezoid">梯形</option>
-      <option value="triangle">三角形</option>
-      <option value="equal">等积模型</option>
-      <option value="half">一半模型</option>
-      <option value="kite">风筝模型</option>
-      <option value="butterfly">蝴蝶模型</option>
-      <option value="bird">鸟头模型</option>
-      <option value="swallow">燕尾模型</option>
-    </select>
-  </div>
-
-  <div class="question">
-    <div class="qcat" id="qcat"></div>
-    <div class="qtext" id="qtext"></div>
-    <div class="answer-row">
-      <input id="userAnswer" class="answer-input"
-        placeholder="输入答案，例如：24、2:3、钝角三角形"
-        onkeydown="if(event.key==='Enter')checkAnswer()">
-      <button class="btn green" onclick="checkAnswer()">✓ 批改</button>
-      <button class="btn" onclick="showAnswer()">👀 看答案</button>
-      <button class="btn" onclick="newQuestion()">→ 下一题</button>
+    <div class="tag">
+     自动记录掌握进度
     </div>
-    <div id="feedback" class="feedback"></div>
-    <div id="solution" class="solution"></div>
+
+    <h1>
+     数学｜几何模型专项
+    </h1>
+
+    <p>
+     覆盖基础图形、三角形、等积模型、一半模型、风筝模型、蝴蝶模型、鸟头模型、燕尾模型。每个知识点都配公式、示意图和练习题。
+    </p>
+
+    <div class="topbar">
+     <button class="btn" onclick="pickRandom()">
+      🎲 随机出一题
+     </button>
+
+     <button class="btn ghost" onclick="toggleAllAnswers()">
+      👀 全部答案
+     </button>
+
+     <button class="btn ghost" onclick="window.print()">
+      🖨️ 打印/导出 PDF
+     </button>
+
+     <button class="btn alt" onclick="resetProgress()">
+      ↺ 清空掌握记录
+     </button>
+    </div>
+
+    <div class="legend">
+     掌握进度：
+     <b id="progressText">
+      0 / 0
+     </b>
+    </div>
+
+    <div class="progress">
+     <i id="progressBar">
+     </i>
+    </div>
+   </header>
+
+   <div class="quizbox" id="randomBox">
+    <h2>
+     随机练习
+    </h2>
+
+    <div class="q" id="randomQ">
+     点上面的“随机出一题”开始。
+    </div>
+
+    <div class="qa" id="randomA">
+    </div>
+
+    <button class="btn" onclick="document.getElementById('randomA').classList.toggle('show')">
+     显示/隐藏答案
+    </button>
+   </div>
+
+   <section class="bank-panel" id="bigBank">
+    <h2>
+     🧠 4800 道扩展题库
+    </h2>
+
+    <p class="muted">
+     这 4800 道题直接内置在本文件中，不联网。原来的 48 道题仍全部保留在下方知识卡片里。
+    </p>
+
+    <div class="bank-controls">
+     <select class="smallbtn" id="bankCategory" onchange="nextBankQuestion()">
+      <option value="all">
+       全部专题
+      </option>
+      <option value="长方形">
+       长方形
+      </option>
+      <option value="正方形">
+       正方形
+      </option>
+      <option value="平行四边形">
+       平行四边形
+      </option>
+      <option value="梯形">
+       梯形
+      </option>
+      <option value="三角形">
+       三角形
+      </option>
+      <option value="等积模型">
+       等积模型
+      </option>
+      <option value="一半模型">
+       一半模型
+      </option>
+      <option value="风筝模型">
+       风筝模型
+      </option>
+      <option value="蝴蝶模型">
+       蝴蝶模型
+      </option>
+      <option value="鸟头模型">
+       鸟头模型
+      </option>
+      <option value="燕尾模型">
+       燕尾模型
+      </option>
+      <option value="综合">
+       综合
+      </option>
+     </select>
+
+     <button class="smallbtn" onclick="nextBankQuestion()">
+      🎲 下一题
+     </button>
+    </div>
+
+    <div class="bank-question">
+     <div id="bankMeta">
+     </div>
+
+     <h3 id="bankQuestionText">
+     </h3>
+
+     <input
+      id="bankInput"
+      onkeydown="if(event.key==='Enter')gradeBankQuestion()"
+      placeholder="输入答案；比例题请写成 2:3"
+     />
+
+     <div class="bank-controls">
+      <button class="smallbtn" onclick="gradeBankQuestion()">
+       ✓ 批改
+      </button>
+
+      <button class="smallbtn" onclick="toggleBankSolution()">
+       👀 看答案
+      </button>
+
+      <button class="smallbtn" onclick="nextBankQuestion()">
+       → 下一题
+      </button>
+     </div>
+
+     <div class="bank-feedback" id="bankFeedback">
+     </div>
+
+     <div class="bank-solution" id="bankSolution">
+     </div>
+    </div>
+   </section>
+
+   <div class="layout">
+
+    <aside class="side">
+     <input
+      class="search"
+      id="searchBox"
+      oninput="filterCards()"
+      placeholder="搜索：中点 / 蝴蝶 / 梯形……"
+     />
+
+     <h3>
+      知识目录
+     </h3>
+
+     <nav>
+      <a href="#rect">
+       1. 长方形与正方形
+      </a>
+
+      <a href="#para">
+       2. 平行四边形
+      </a>
+
+      <a href="#trap">
+       3. 梯形
+      </a>
+
+      <a href="#tri">
+       4. 三角形
+      </a>
+
+      <a href="#equal">
+       5. 等积模型
+      </a>
+
+      <a href="#half">
+       6. 一半模型
+      </a>
+
+      <a href="#kite">
+       7. 风筝模型
+      </a>
+
+      <a href="#butterfly">
+       8. 蝴蝶模型
+      </a>
+
+      <a href="#bird">
+       9. 鸟头模型
+      </a>
+
+      <a href="#swallow">
+       10. 燕尾模型
+      </a>
+     </nav>
+    </aside>
+
+    <main class="main">
+
+     <section class="section" id="rect">
+      <div class="section-title">
+       <h2>
+        1. 长方形与正方形
+       </h2>
+       <span>
+        周长、面积、边的关系
+       </span>
+      </div>
+
+      <div class="grid">
+
+       <article class="card lesson" data-tags="长方形 周长 面积 长 宽">
+        <label class="master">
+         <input data-key="rect1" type="checkbox"/>
+         已掌握
+        </label>
+
+        <h3>
+         长方形
+        </h3>
+
+        <div class="formula">
+         <span class="chip">
+          周长 =（长 + 宽）× 2
+         </span>
+
+         <span class="chip">
+          面积 = 长 × 宽
+         </span>
+        </div>
+
+        <div class="diagram">
+         <svg viewbox="0 0 360 190">
+          <rect
+           class="fill1"
+           height="100"
+           rx="2"
+           width="230"
+           x="65"
+           y="45">
+          </rect>
+
+          <text class="lab" x="165" y="35">
+           长 a
+          </text>
+
+          <text class="lab" x="302" y="100">
+           宽 b
+          </text>
+         </svg>
+        </div>
+
+        <div class="problem">
+         <strong>
+          题 1：
+         </strong>
+         长 12 cm，宽 7 cm，求周长。
+
+         <details class="answerbox">
+          <summary class="smallbtn">
+           看答案
+          </summary>
+
+          <div class="answer-native">
+           （12+7）×2=38 cm。
+          </div>
+         </details>
+        </div>
+
+        <div class="problem">
+         <strong>
+          题 2：
+         </strong>
+         长 15 cm，宽 8 cm，求面积。
+
+         <details class="answerbox">
+          <summary class="smallbtn">
+           看答案
+          </summary>
+
+          <div class="answer-native">
+           15×8=120 cm²。
+          </div>
+         </details>
+        </div>
+       </article>
+
+       <article class="card lesson" data-tags="正方形 周长 面积 边长">
+        <label class="master">
+         <input data-key="rect2" type="checkbox"/>
+         已掌握
+        </label>
+
+        <h3>
+         正方形
+        </h3>
+
+        <div class="formula">
+         <span class="chip">
+          周长 = 边长 × 4
+         </span>
+
+         <span class="chip">
+          面积 = 边长 × 边长
+         </span>
+        </div>
+
+        <div class="diagram">
+         <svg viewbox="0 0 360 210">
+          <rect
+           class="fill2"
+           height="130"
+           width="130"
+           x="115"
+           y="35">
+          </rect>
+
+          <line
+           class="accent"
+           x1="115"
+           x2="245"
+           y1="35"
+           y2="165">
+          </line>
+
+          <line
+           class="accent"
+           x1="245"
+           x2="115"
+           y1="35"
+           y2="165">
+          </line>
+
+          <text class="lab" x="160" y="188">
+           边长 a
+          </text>
+         </svg>
+        </div>
+
+        <div class="problem">
+         <strong>
+          题 3：
+         </strong>
+         正方形边长 9 cm，求周长。
+
+         <details class="answerbox">
+          <summary class="smallbtn">
+           看答案
+          </summary>
+
+          <div class="answer-native">
+           9×4=36 cm。
+          </div>
+         </details>
+        </div>
+
+        <div class="problem">
+         <strong>
+          题 4：
+         </strong>
+         正方形边长 11 cm，求面积。
+
+         <details class="answerbox">
+          <summary class="smallbtn">
+           看答案
+          </summary>
+
+          <div class="answer-native">
+           11×11=121 cm²。
+          </div>
+         </details>
+        </div>
+       </article>
+
+      </div>
+     </section>
+
+     <section class="section" id="para">
+      <div class="section-title">
+       <h2>
+        2. 平行四边形
+       </h2>
+
+       <span>
+        特征、周长、面积
+       </span>
+      </div>
+
+      <div class="grid">
+
+       <article class="card lesson" data-tags="平行四边形 特征 对边 平行 相等">
+        <label class="master">
+         <input data-key="para1" type="checkbox"/>
+         已掌握
+        </label>
+
+        <h3>
+         基本特征
+        </h3>
+
+        <div class="formula">
+         <span class="chip">
+          两组对边分别平行
+         </span>
+
+         <span class="chip">
+          两组对边分别相等
+         </span>
+
+         <span class="chip">
+          对角相等
+         </span>
+        </div>
+
+        <div class="diagram">
+         <svg viewbox="0 0 360 190">
+          <polygon
+           class="fill1"
+           points="95,45 290,45 250,145 55,145">
+          </polygon>
+
+          <text class="lab" x="170" y="35">
+           底 a
+          </text>
+
+          <line
+           class="accent dash"
+           x1="95"
+           x2="95"
+           y1="45"
+           y2="145">
+          </line>
+
+          <text class="lab" x="101" y="100">
+           高 h
+          </text>
+         </svg>
+        </div>
+
+        <div class="formula">
+         <span class="chip">
+          周长 =（邻边和）×2
+         </span>
+
+         <span class="chip">
+          面积 = 底 × 高
+         </span>
+        </div>
+
+        <div class="problem">
+         <strong>
+          题 5：
+         </strong>
+         底 14 cm，高 6 cm，求面积。
+
+         <details class="answerbox">
+          <summary class="smallbtn">
+           看答案
+          </summary>
+
+          <div class="answer-native">
+           14×6=84 cm²。
+          </div>
+         </details>
+        </div>
+       </article>
+
+       <article class="card lesson" data-tags="平行四边形 对角线 平分 面积">
+        <label class="master">
+         <input data-key="para2" type="checkbox"/>
+         已掌握
+        </label>
+
+        <h3>
+         对角线
+        </h3>
+
+        <div class="formula">
+         <span class="chip">
+          两条对角线互相平分
+         </span>
+
+         <span class="chip">
+          分成四个等面积三角形
+         </span>
+        </div>
+
+        <div class="diagram">
+         <svg viewbox="0 0 360 190">
+          <polygon
+           class="fill2"
+           points="95,45 290,45 250,145 55,145">
+          </polygon>
+
+          <line
+           class="accent"
+           x1="95"
+           x2="250"
+           y1="45"
+           y2="145">
+          </line>
+
+          <line
+           class="accent"
+           x1="290"
+           x2="55"
+           y1="45"
+           y2="145">
+          </line>
+
+          <circle cx="172.5" cy="95" fill="#5b5bd6" r="5">
+          </circle>
+
+          <text class="lab" x="180" y="90">
+           O
+          </text>
+         </svg>
+        </div>
+
+        <div class="problem">
+         <strong>
+          题 6：
+         </strong>
+         一个平行四边形面积为 96 cm²，两条对角线相交后形成的每个小三角形面积是多少？
+
+         <details class="answerbox">
+          <summary class="smallbtn">
+           看答案
+          </summary>
+
+          <div class="answer-native">
+           96÷4=24 cm²。
+          </div>
+         </details>
+        </div>
+       </article>
+
+      </div>
+     </section>
+
+     <section class="section" id="trap">
+      <div class="section-title">
+       <h2>
+        3. 梯形
+       </h2>
+
+       <span>
+        上底、下底、高、中位线
+       </span>
+      </div>
+
+      <div class="grid">
+
+       <article class="card lesson" data-tags="梯形 上底 下底 高 面积">
+        <label class="master">
+         <input data-key="trap1" type="checkbox"/>
+         已掌握
+        </label>
+
+        <h3>
+         梯形面积
+        </h3>
+
+        <div class="formula">
+         <span class="chip">
+          S =（上底 + 下底）× 高 ÷ 2
+         </span>
+        </div>
+
+        <div class="diagram">
+         <svg viewbox="0 0 360 190">
+          <polygon
+           class="fill3"
+           points="120,45 250,45 310,145 55,145">
+          </polygon>
+
+          <text class="lab" x="165" y="35">
+           上底 a
+          </text>
+
+          <text class="lab" x="165" y="165">
+           下底 b
+          </text>
+
+          <line
+           class="accent dash"
+           x1="120"
+           x2="120"
+           y1="45"
+           y2="145">
+          </line>
+
+          <text class="lab" x="126" y="100">
+           h
+          </text>
+         </svg>
+        </div>
+
+        <div class="problem">
+         <strong>
+          题 7：
+         </strong>
+         上底 8，下底 16，高 5，求面积。
+
+         <details class="answerbox">
+          <summary class="smallbtn">
+           看答案
+          </summary>
+
+          <div class="answer-native">
+           （8+16）×5÷2=60。
+          </div>
+         </details>
+        </div>
+       </article>
+
+       <article class="card lesson" data-tags="梯形 中位线 腰 中点">
+        <label class="master">
+         <input data-key="trap2" type="checkbox"/>
+         已掌握
+        </label>
+
+        <h3>
+         梯形中位线
+        </h3>
+
+        <div class="formula">
+         <span class="chip">
+          中位线 =（上底 + 下底）÷2
+         </span>
+
+         <span class="chip">
+          中位线 ∥ 两底
+         </span>
+        </div>
+
+        <div class="diagram">
+         <svg viewbox="0 0 360 190">
+          <polygon
+           class="fill1"
+           points="120,40 245,40 305,150 55,150">
+          </polygon>
+
+          <line
+           class="accent2"
+           x1="87.5"
+           x2="275"
+           y1="95"
+           y2="95">
+          </line>
+
+          <circle cx="87.5" cy="95" fill="#13a085" r="4">
+          </circle>
+
+          <circle cx="275" cy="95" fill="#13a085" r="4">
+          </circle>
+
+          <text class="lab" x="155" y="88">
+           中位线
+          </text>
+         </svg>
+        </div>
+
+        <div class="problem">
+         <strong>
+          题 8：
+         </strong>
+         梯形两底分别为 10 和 18，中位线长多少？
+
+         <details class="answerbox">
+          <summary class="smallbtn">
+           看答案
+          </summary>
+
+          <div class="answer-native">
+           （10+18）÷2=14。
+          </div>
+         </details>
+        </div>
+       </article>
+
+      </div>
+     </section>
+
+     <section class="section" id="tri">
+      <div class="section-title">
+       <h2>
+        4. 三角形
+       </h2>
+
+       <span>
+        分类、作高、内角和、三边关系、面积
+       </span>
+      </div>
+
+      <div class="grid">
+
+       <article class="card lesson" data-tags="三角形 按角分类 锐角 直角 钝角">
+        <label class="master">
+         <input data-key="tri1" type="checkbox"/>
+         已掌握
+        </label>
+
+        <h3>
+         按角分类
+        </h3>
+
+        <div class="formula">
+         <span class="chip">
+          锐角三角形
+         </span>
+
+         <span class="chip">
+          直角三角形
+         </span>
+
+         <span class="chip">
+          钝角三角形
+         </span>
+        </div>
+
+        <div class="diagram">
+         <svg viewbox="0 0 360 170">
+          <polygon
+           class="fill2"
+           points="25,140 80,45 135,140">
+          </polygon>
+
+          <text class="mutelab" x="50" y="160">
+           锐角
+          </text>
+
+          <polygon
+           class="fill1"
+           points="155,140 155,55 235,140">
+          </polygon>
+
+          <path class="s" d="M155 126h14v14">
+          </path>
+
+          <text class="mutelab" x="175" y="160">
+           直角
+          </text>
+
+          <polygon
+           class="fill3"
+           points="250,140 285,60 340,140">
+          </polygon>
+
+          <text class="mutelab" x="280" y="160">
+           钝角
+          </text>
+         </svg>
+        </div>
+
+        <div class="problem">
+         <strong>
+          题 9：
+         </strong>
+         一个三角形有一个角是 90°，它是什么三角形？
+
+         <details class="answerbox">
+          <summary class="smallbtn">
+           看答案
+          </summary>
+
+          <div class="answer-native">
+           直角三角形。
+          </div>
+         </details>
+        </div>
+       </article>
+
+       <article class="card lesson" data-tags="三角形 按边分类 等腰 等边">
+        <label class="master">
+         <input data-key="tri2" type="checkbox"/>
+         已掌握
+        </label>
+
+        <h3>
+         按边分类
+        </h3>
+
+        <div class="formula">
+         <span class="chip">
+          等腰三角形：两边相等
+         </span>
+
+         <span class="chip">
+          等边三角形：三边相等
+         </span>
+        </div>
+
+        <div class="diagram">
+         <svg viewbox="0 0 360 175">
+          <polygon
+           class="fill1"
+           points="40,140 100,40 160,140">
+          </polygon>
+
+          <line class="s" x1="65" x2="75" y1="90" y2="96">
+          </line>
+
+          <line class="s" x1="125" x2="135" y1="96" y2="90">
+          </line>
+
+          <text class="mutelab" x="65" y="160">
+           等腰
+          </text>
+
+          <polygon
+           class="fill2"
+           points="205,140 265,40 325,140">
+          </polygon>
+
+          <text class="mutelab" x="240" y="160">
+           等边
+          </text>
+         </svg>
+        </div>
+
+        <div class="problem">
+         <strong>
+          题 10：
+         </strong>
+         等腰三角形顶角 40°，一个底角是多少？
+
+         <details class="answerbox">
+          <summary class="smallbtn">
+           看答案
+          </summary>
+
+          <div class="answer-native">
+           （180°−40°）÷2=70°。
+          </div>
+         </details>
+        </div>
+       </article>
+
+       <article class="card lesson" data-tags="三角形 作高 高 垂直">
+        <label class="master">
+         <input data-key="tri3" type="checkbox"/>
+         已掌握
+        </label>
+
+        <h3>
+         作高
+        </h3>
+
+        <div class="formula">
+         <span class="chip">
+          从顶点向对边或对边延长线作垂线
+         </span>
+        </div>
+
+        <div class="diagram">
+         <svg viewbox="0 0 360 185">
+          <polygon
+           class="fill3"
+           points="55,150 205,35 315,150">
+          </polygon>
+
+          <line
+           class="accent dash"
+           x1="205"
+           x2="205"
+           y1="35"
+           y2="150">
+          </line>
+
+          <path class="s" d="M205 136h14v14">
+          </path>
+
+          <text class="lab" x="212" y="90">
+           高 h
+          </text>
+         </svg>
+        </div>
+
+        <div class="problem">
+         <strong>
+          题 11：
+         </strong>
+         三角形底 12，高 9，面积是多少？
+
+         <details class="answerbox">
+          <summary class="smallbtn">
+           看答案
+          </summary>
+
+          <div class="answer-native">
+           12×9÷2=54。
+          </div>
+         </details>
+        </div>
+       </article>
+
+       <article class="card lesson" data-tags="三角形 内角和 180 多边形 内角和">
+        <label class="master">
+         <input data-key="tri4" type="checkbox"/>
+         已掌握
+        </label>
+
+        <h3>
+         内角和
+        </h3>
+
+        <div class="formula">
+         <span class="chip">
+          三角形内角和 = 180°
+         </span>
+
+         <span class="chip">
+          n 边形内角和 =（n−2）×180°
+         </span>
+        </div>
+
+        <div class="diagram">
+         <svg viewbox="0 0 360 175">
+          <polygon
+           class="fill1"
+           points="60,140 180,35 305,140">
+          </polygon>
+
+          <path
+           class="accent"
+           d="M78 140a24 24 0 0 1 13-19">
+          </path>
+
+          <path
+           class="accent"
+           d="M164 49a25 25 0 0 1 32 0">
+          </path>
+
+          <path
+           class="accent"
+           d="M276 120a25 25 0 0 1 13 20">
+          </path>
+
+          <text class="lab" x="140" y="165">
+           A+B+C=180°
+          </text>
+         </svg>
+        </div>
+
+        <div class="problem">
+         <strong>
+          题 12：
+         </strong>
+         三角形两个角分别为 52°、68°，第三角？
+
+         <details class="answerbox">
+          <summary class="smallbtn">
+           看答案
+          </summary>
+
+          <div class="answer-native">
+           180°−52°−68°=60°。
+          </div>
+         </details>
+        </div>
+
+        <div class="problem">
+         <strong>
+          题 13：
+         </strong>
+         六边形内角和？
+
+         <details class="answerbox">
+          <summary class="smallbtn">
+           看答案
+          </summary>
+
+          <div class="answer-native">
+           （6−2）×180°=720°。
+          </div>
+         </details>
+        </div>
+       </article>
+             <article class="card lesson" data-tags="三角形 三边关系 三角不等式 两边之和 大于 第三边">
+        <label class="master">
+         <input data-key="tri5" type="checkbox"/>
+         已掌握
+        </label>
+        <h3>
+         三边之间的关系
+        </h3>
+        <div class="formula">
+         <span class="chip">
+          任意两边之和 ＞ 第三边
+         </span>
+         <span class="chip">
+          任意两边之差 ＜ 第三边
+         </span>
+        </div>
+        <div class="diagram">
+         <svg viewbox="0 0 360 170">
+          <polygon class="fill3" points="60,140 155,35 305,140">
+          </polygon>
+          <text class="lab" x="92" y="82">
+           a
+          </text>
+          <text class="lab" x="236" y="82">
+           b
+          </text>
+          <text class="lab" x="174" y="158">
+           c
+          </text>
+         </svg>
+        </div>
+        <div class="problem">
+         <strong>
+          题 14：
+         </strong>
+         3、5、9 能围成三角形吗？
+         <details class="answerbox">
+          <summary class="smallbtn">
+           看答案
+          </summary>
+          <div class="answer-native">
+           不能，因为 3+5=8＜9。
+          </div>
+         </details>
+        </div>
+        <div class="problem">
+         <strong>
+          题 15：
+         </strong>
+         两边为 6、10，第三边是整数，最小是多少？
+         <details class="answerbox">
+          <summary class="smallbtn">
+           看答案
+          </summary>
+          <div class="answer-native">
+           |10−6|＜x＜16，即 4＜x＜16，最小整数是 5。
+          </div>
+         </details>
+        </div>
+       </article>
+
+       <article class="card lesson" data-tags="三角形 面积 底 高">
+        <label class="master">
+         <input data-key="tri6" type="checkbox"/>
+         已掌握
+        </label>
+        <h3>
+         三角形面积
+        </h3>
+        <div class="formula">
+         <span class="chip">
+          S = ah÷2
+         </span>
+         <span class="chip">
+          a = 2S÷h
+         </span>
+         <span class="chip">
+          h = 2S÷a
+         </span>
+        </div>
+        <div class="diagram">
+         <svg viewbox="0 0 360 185">
+          <polygon class="fill1" points="55,150 185,35 315,150">
+          </polygon>
+          <line class="accent dash" x1="185" x2="185" y1="35" y2="150">
+          </line>
+          <text class="lab" x="185" y="170">
+           底 a
+          </text>
+          <text class="lab" x="192" y="93">
+           h
+          </text>
+         </svg>
+        </div>
+        <div class="problem">
+         <strong>
+          题 16：
+         </strong>
+         底 18，高 7，面积？
+         <details class="answerbox">
+          <summary class="smallbtn">
+           看答案
+          </summary>
+          <div class="answer-native">
+           18×7÷2=63。
+          </div>
+         </details>
+        </div>
+       </article>
+      </div>
+     </section>
+
+     <section class="section" id="equal">
+      <div class="section-title">
+       <h2>
+        5. 等积模型
+       </h2>
+       <span>
+        把面积比变成底比或高比
+       </span>
+      </div>
+
+      <div class="grid">
+
+       <article class="card lesson" data-tags="等底等高 等积 三角形 面积相等">
+        <label class="master">
+         <input data-key="equal1" type="checkbox"/>
+         已掌握
+        </label>
+        <h3>
+         等底等高三角形
+        </h3>
+        <div class="formula">
+         <span class="chip">
+          同底 + 同高 ⇒ 面积相等
+         </span>
+         <span class="chip">
+          S₁ = S₂
+         </span>
+        </div>
+        <div class="diagram">
+         <svg viewbox="0 0 360 180">
+          <line class="s" x1="45" x2="320" y1="140" y2="140">
+          </line>
+          <line class="s dash" x1="45" x2="320" y1="35" y2="35">
+          </line>
+          <polygon class="fill1" points="95,140 210,35 275,140">
+          </polygon>
+          <polygon class="fill2" opacity=".7" points="95,140 135,35 275,140">
+          </polygon>
+         </svg>
+        </div>
+        <div class="problem">
+         <strong>
+          题 17：
+         </strong>
+         两三角形共用底 12，顶点都在一条与底平行的直线上。若第一个面积 48，第二个面积？
+         <details class="answerbox">
+          <summary class="smallbtn">
+           看答案
+          </summary>
+          <div class="answer-native">
+           48。它们等底等高。
+          </div>
+         </details>
+        </div>
+       </article>
+
+       <article class="card lesson" data-tags="等底不等高 面积比 高比">
+        <label class="master">
+         <input data-key="equal2" type="checkbox"/>
+         已掌握
+        </label>
+        <h3>
+         等底不等高
+        </h3>
+        <div class="formula">
+         <span class="chip">
+          同底 ⇒ S₁:S₂ = h₁:h₂
+         </span>
+        </div>
+        <div class="diagram">
+         <svg viewbox="0 0 360 190">
+          <line class="s" x1="55" x2="310" y1="155" y2="155">
+          </line>
+          <polygon class="fill1" points="85,155 145,80 270,155">
+          </polygon>
+          <polygon class="fill3" opacity=".55" points="85,155 230,25 270,155">
+          </polygon>
+          <line class="accent dash" x1="145" x2="145" y1="80" y2="155">
+          </line>
+          <line class="accent2 dash" x1="230" x2="230" y1="25" y2="155">
+          </line>
+         </svg>
+        </div>
+        <div class="problem">
+         <strong>
+          题 18：
+         </strong>
+         同底两三角形高之比 3:5，面积之比？
+         <details class="answerbox">
+          <summary class="smallbtn">
+           看答案
+          </summary>
+          <div class="answer-native">
+           3:5。
+          </div>
+         </details>
+        </div>
+       </article>
+
+       <article class="card lesson" data-tags="等高不等底 面积比 底比">
+        <label class="master">
+         <input data-key="equal3" type="checkbox"/>
+         已掌握
+        </label>
+        <h3>
+         等高不等底
+        </h3>
+        <div class="formula">
+         <span class="chip">
+          同高 ⇒ S₁:S₂ = a₁:a₂
+         </span>
+        </div>
+        <div class="diagram">
+         <svg viewbox="0 0 360 180">
+          <line class="s" x1="35" x2="325" y1="145" y2="145">
+          </line>
+          <line class="s dash" x1="65" x2="290" y1="35" y2="35">
+          </line>
+          <polygon class="fill2" points="50,145 175,35 155,145">
+          </polygon>
+          <polygon class="fill1" points="155,145 175,35 310,145">
+          </polygon>
+         </svg>
+        </div>
+        <div class="problem">
+         <strong>
+          题 19：
+         </strong>
+         等高两三角形底分别 8 和 14，面积比？
+         <details class="answerbox">
+          <summary class="smallbtn">
+           看答案
+          </summary>
+          <div class="answer-native">
+           8:14=4:7。
+          </div>
+         </details>
+        </div>
+       </article>
+      </div>
+     </section>
+
+     <section class="section" id="half">
+      <div class="section-title">
+       <h2>
+        6. 一半模型
+       </h2>
+       <span>
+        中点 + 同高 + 平行线
+       </span>
+      </div>
+
+      <div class="grid">
+
+       <article class="card lesson" data-tags="一半模型 三角形 一边中点 中点">
+        <label class="master">
+         <input data-key="half1" type="checkbox"/>
+         已掌握
+        </label>
+        <h3>
+         三角形：一边中点
+        </h3>
+        <div class="formula">
+         <span class="chip">
+          D 是 BC 中点 ⇒ S△ABD = S△ACD
+         </span>
+         <span class="chip">
+          各占 △ABC 的 1/2
+         </span>
+        </div>
+        <div class="diagram">
+         <svg viewbox="0 0 360 185">
+          <polygon class="fill1" points="55,150 180,35 310,150">
+          </polygon>
+          <line class="accent" x1="180" x2="182" y1="35" y2="150">
+          </line>
+          <text class="lab" x="176" y="169">
+           D
+          </text>
+          <line class="s" x1="115" x2="115" y1="144" y2="156">
+          </line>
+          <line class="s" x1="246" x2="246" y1="144" y2="156">
+          </line>
+         </svg>
+        </div>
+        <div class="problem">
+         <strong>
+          题 20：
+         </strong>
+         △ABC 面积 70，D 是 BC 中点，△ABD 面积？
+         <details class="answerbox">
+          <summary class="smallbtn">
+           看答案
+          </summary>
+          <div class="answer-native">
+           35。
+          </div>
+         </details>
+        </div>
+       </article>
+
+       <article class="card lesson" data-tags="一半模型 三角形 两边中点 中位线 四分之一">
+        <label class="master">
+         <input data-key="half2" type="checkbox"/>
+         已掌握
+        </label>
+        <h3>
+         三角形：两边中点
+        </h3>
+        <div class="formula">
+         <span class="chip">
+          D、E 为两边中点
+         </span>
+         <span class="chip">
+          DE ∥ 第三边
+         </span>
+         <span class="chip">
+          小三角形面积 = 原三角形 1/4
+         </span>
+        </div>
+        <div class="diagram">
+         <svg viewbox="0 0 360 185">
+          <polygon class="fill1" points="55,150 180,30 310,150">
+          </polygon>
+          <line class="accent2" x1="117" x2="245" y1="90" y2="90">
+          </line>
+          <text class="lab" x="108" y="86">
+           D
+          </text>
+          <text class="lab" x="249" y="86">
+           E
+          </text>
+         </svg>
+        </div>
+        <div class="problem">
+         <strong>
+          题 21：
+         </strong>
+         △ABC 面积 96，D、E 分别是 AB、AC 中点，求 △ADE 面积。
+         <details class="answerbox">
+          <summary class="smallbtn">
+           看答案
+          </summary>
+          <div class="answer-native">
+           96×1/4=24。
+          </div>
+         </details>
+        </div>
+       </article>
+
+       <article class="card lesson" data-tags="一半模型 三角形 连线中点 中点连接">
+        <label class="master">
+         <input data-key="half3" type="checkbox"/>
+         已掌握
+        </label>
+        <h3>
+         三角形：连线中点
+        </h3>
+        <div class="formula">
+         <span class="chip">
+          先找“同高”，再用中点把底 1:1 分开
+         </span>
+         <span class="chip">
+          面积随底按 1:1 分开
+         </span>
+        </div>
+        <div class="diagram">
+         <svg viewbox="0 0 360 185">
+          <polygon class="fill2" points="50,150 180,35 315,150">
+          </polygon>
+          <line class="accent" x1="50" x2="245" y1="150" y2="92">
+          </line>
+          <circle cx="148" cy="121" fill="#5b5bd6" r="5">
+          </circle>
+          <text class="lab" x="137" y="115">
+           M
+          </text>
+          <text class="lab" x="248" y="88">
+           P
+          </text>
+         </svg>
+        </div>
+        <div class="note">
+         “连线中点”不是新公式：只要中点把某条作为底的线段分成相等两段，并且对应三角形共享同一高，面积就各一半。
+        </div>
+        <div class="problem">
+         <strong>
+          题 22：
+         </strong>
+         在同一条线段 AP 上，M 是 AP 中点；点 B 到 AP 的高不变。若 S△ABP=40，求 S△ABM。
+         <details class="answerbox">
+          <summary class="smallbtn">
+           看答案
+          </summary>
+          <div class="answer-native">
+           20。
+          </div>
+         </details>
+        </div>
+       </article>
+
+       <article class="card lesson" data-tags="平行四边形 一半模型 顶天立地">
+        <label class="master">
+         <input data-key="half4" type="checkbox"/>
+         已掌握
+        </label>
+        <h3>
+         平行四边形：“顶天立地”型
+        </h3>
+        <div class="formula">
+         <span class="chip">
+          顶点在一条边，底在对边
+         </span>
+         <span class="chip">
+          同底同高 ⇒ 三角形面积 = 平行四边形 1/2
+         </span>
+        </div>
+        <div class="diagram">
+         <svg viewbox="0 0 360 180">
+          <polygon class="fill2" points="55,145 105,35 300,35 250,145">
+          </polygon>
+          <polygon class="fill1" opacity=".85" points="55,145 205,35 250,145">
+          </polygon>
+         </svg>
+        </div>
+        <div class="problem">
+         <strong>
+          题 23：
+         </strong>
+         平行四边形面积 120，点 P 在上边任意位置，连接 P 与下边两个端点。所得“顶天立地”三角形面积？
+         <details class="answerbox">
+          <summary class="smallbtn">
+           看答案
+          </summary>
+          <div class="answer-native">
+           60，与 P 在上边的具体位置无关。
+          </div>
+         </details>
+        </div>
+       </article>
+
+       <article class="card lesson" data-tags="平行四边形 一半模型 锯齿">
+        <label class="master">
+         <input data-key="half5" type="checkbox"/>
+         已掌握
+        </label>
+        <h3>
+         平行四边形：“锯齿”型
+        </h3>
+        <div class="formula">
+         <span class="chip">
+          同一对平行线间，高相同
+         </span>
+         <span class="chip">
+          若各三角形底的总长 = 一整条底，则面积总和 = 平行四边形 1/2
+         </span>
+        </div>
+        <div class="diagram">
+         <svg viewbox="0 0 360 180">
+          <polygon class="fill1" points="45,145 90,35 315,35 270,145">
+          </polygon>
+          <polyline class="accent2" points="45,145 130,35 150,145 230,35 270,145">
+          </polyline>
+         </svg>
+        </div>
+        <div class="problem">
+         <strong>
+          题 24：
+         </strong>
+         一个平行四边形底 20、高 8。锯齿中三个三角形的底在同一底边上，底长总和为 20。面积总和？
+         <details class="answerbox">
+          <summary class="smallbtn">
+           看答案
+          </summary>
+          <div class="answer-native">
+           20×8÷2=80，恰为平行四边形面积 160 的一半。
+          </div>
+         </details>
+        </div>
+       </article>
+
+       <article class="card lesson" data-tags="平行四边形 一半模型 交头接耳">
+        <label class="master">
+         <input data-key="half6" type="checkbox"/>
+         已掌握
+        </label>
+        <h3>
+         平行四边形：“交头接耳”型
+        </h3>
+        <div class="formula">
+         <span class="chip">
+          把复杂图拆成两个或多个同高三角形
+         </span>
+         <span class="chip">
+          底长能拼成整条底 ⇒ 面积和为 1/2
+         </span>
+        </div>
+        <div class="diagram">
+         <svg viewbox="0 0 360 180">
+          <polygon class="fill2" points="45,145 95,35 315,35 265,145">
+          </polygon>
+          <line class="accent" x1="45" x2="205" y1="145" y2="35">
+          </line>
+          <line class="accent" x1="150" x2="315" y1="145" y2="35">
+          </line>
+          <circle cx="180" cy="70" fill="#5b5bd6" r="4">
+          </circle>
+         </svg>
+        </div>
+        <div class="problem">
+         <strong>
+          题 25：
+         </strong>
+         两个“耳朵”三角形同高，底长分别为 7 和 13，公共高为 9，面积和？
+         <details class="answerbox">
+          <summary class="smallbtn">
+           看答案
+          </summary>
+          <div class="answer-native">
+           (7+13)×9÷2=90。
+          </div>
+         </details>
+        </div>
+       </article>
+
+       <article class="card lesson" data-tags="平行四边形 一半模型 离家出走 外部">
+        <label class="master">
+         <input data-key="half7" type="checkbox"/>
+         已掌握
+        </label>
+        <h3>
+         平行四边形：“离家出走”型
+        </h3>
+        <div class="formula">
+         <span class="chip">
+          顶点可在对边所在直线的延长线上
+         </span>
+         <span class="chip">
+          只要底相同、高相同，面积仍是 1/2
+         </span>
+        </div>
+        <div class="diagram">
+         <svg viewbox="0 0 360 190">
+          <polygon class="fill1" points="60,145 105,55 245,55 200,145">
+          </polygon>
+          <line class="s dash" x1="105" x2="320" y1="55" y2="55">
+          </line>
+          <polygon class="fill3" opacity=".55" points="60,145 315,55 200,145">
+          </polygon>
+          <text class="lab" x="315" y="48">
+           P
+          </text>
+         </svg>
+        </div>
+        <div class="problem">
+         <strong>
+          题 26：
+         </strong>
+         平行四边形面积 84，P 在上边延长线上。以整条下底为底、P 为顶点的三角形面积？
+         <details class="answerbox">
+          <summary class="smallbtn">
+           看答案
+          </summary>
+          <div class="answer-native">
+           42。顶点“跑出去”不改变到两条平行线的距离。
+          </div>
+         </details>
+        </div>
+       </article>
+
+       <article class="card lesson" data-tags="梯形 一半模型 底上中点 腰上中点 中位线 任意点">
+        <label class="master">
+         <input data-key="half8" type="checkbox"/>
+         已掌握
+        </label>
+        <h3>
+         梯形中的一半模型
+        </h3>
+        <div class="formula">
+         <span class="chip">
+          底上中点：同高 + 底 1:1
+         </span>
+         <span class="chip">
+          腰上中点：分割后用同高面积比
+         </span>
+         <span class="chip">
+          中位线上任意点：到两底距离固定
+         </span>
+        </div>
+        <div class="diagram">
+         <svg viewbox="0 0 360 190">
+          <polygon class="fill2" points="45,150 110,40 245,40 315,150">
+          </polygon>
+          <line class="accent2" x1="78" x2="280" y1="95" y2="95">
+          </line>
+          <circle cx="180" cy="95" fill="#14977f" r="5">
+          </circle>
+          <text class="lab" x="187" y="91">
+           P
+          </text>
+          <circle cx="180" cy="150" fill="#5b5bd6" r="5">
+          </circle>
+          <text class="lab" x="186" y="170">
+           M
+          </text>
+         </svg>
+        </div>
+        <div class="problem">
+         <strong>
+          题 27：
+         </strong>
+         梯形中位线长 10，高 8。若 P 在中位线上，连接 P 与下底两端点，所得三角形的高是多少？
+         <details class="answerbox">
+          <summary class="smallbtn">
+           看答案
+          </summary>
+          <div class="answer-native">
+           4。中位线到两底的距离都等于梯形高的一半。
+          </div>
+         </details>
+        </div>
+       </article>
+
+       <article class="card lesson" data-tags="任意四边形 一半模型 两边中点 四边中点 中点四边形">
+        <label class="master">
+         <input data-key="half9" type="checkbox"/>
+         已掌握
+        </label>
+        <h3>
+         任意四边形：两边/四边中点
+        </h3>
+        <div class="formula">
+                 <span class="chip">
+          两边中点：利用中点把对应底边按 1:1 分割
+         </span>
+         <span class="chip">
+          四边中点顺次连接形成平行四边形
+         </span>
+         <span class="chip">
+          中点四边形面积 = 原四边形面积的 1/2
+         </span>
+        </div>
+
+        <div class="diagram">
+         <svg viewbox="0 0 360 210">
+          <polygon
+           class="fill3"
+           points="65,45 295,65 260,175 45,145">
+          </polygon>
+
+          <circle cx="180" cy="55" fill="#5b5bd6" r="5">
+          </circle>
+
+          <circle cx="277.5" cy="120" fill="#5b5bd6" r="5">
+          </circle>
+
+          <circle cx="152.5" cy="160" fill="#5b5bd6" r="5">
+          </circle>
+
+          <circle cx="55" cy="95" fill="#5b5bd6" r="5">
+          </circle>
+
+          <polygon
+           class="fill1"
+           points="180,55 277.5,120 152.5,160 55,95">
+          </polygon>
+
+          <text class="lab" x="174" y="44">
+           E
+          </text>
+
+          <text class="lab" x="286" y="122">
+           F
+          </text>
+
+          <text class="lab" x="149" y="182">
+           G
+          </text>
+
+          <text class="lab" x="38" y="96">
+           H
+          </text>
+         </svg>
+        </div>
+
+        <div class="note">
+         这是任意四边形都成立的中点结论。连接四条边的中点，里面得到的图形一定是平行四边形。
+        </div>
+
+        <div class="problem">
+         <strong>
+          题 28：
+         </strong>
+         一个任意四边形面积为 150，顺次连接四边中点，得到的中点四边形面积是多少？
+
+         <details class="answerbox">
+          <summary class="smallbtn">
+           看答案
+          </summary>
+
+          <div class="answer-native">
+           150÷2=75。
+          </div>
+         </details>
+        </div>
+       </article>
+
+      </div>
+     </section>
+
+     <section class="section" id="kite">
+      <div class="section-title">
+       <h2>
+        7. 风筝模型
+       </h2>
+
+       <span>
+        四块三角形面积之间的乘积关系
+       </span>
+      </div>
+
+      <div class="grid">
+
+       <article class="card lesson" data-tags="风筝模型 四边形 对角线 面积乘积">
+        <label class="master">
+         <input data-key="kite1" type="checkbox"/>
+         已掌握
+        </label>
+
+        <h3>
+         风筝模型：四块面积
+        </h3>
+
+        <div class="formula">
+         <span class="chip">
+          S₁ × S₃ = S₂ × S₄
+         </span>
+
+         <span class="chip">
+          对角面积乘积相等
+         </span>
+        </div>
+
+        <div class="diagram">
+         <svg viewbox="0 0 360 230">
+          <polygon
+           class="fill1"
+           points="180,25 320,115 180,205 45,115">
+          </polygon>
+
+          <line
+           class="accent"
+           x1="180"
+           x2="180"
+           y1="25"
+           y2="205">
+          </line>
+
+          <line
+           class="accent2"
+           x1="45"
+           x2="320"
+           y1="115"
+           y2="115">
+          </line>
+
+          <circle cx="180" cy="115" fill="#172033" r="5">
+          </circle>
+
+          <text class="lab" x="184" y="108">
+           O
+          </text>
+
+          <text class="lab" x="118" y="82">
+           S₁
+          </text>
+
+          <text class="lab" x="235" y="82">
+           S₂
+          </text>
+
+          <text class="lab" x="235" y="158">
+           S₃
+          </text>
+
+          <text class="lab" x="118" y="158">
+           S₄
+          </text>
+         </svg>
+        </div>
+
+        <div class="note">
+         四边形两条对角线相交于 O。四个小三角形分别使用两条对角线上的线段作为邻边，它们拥有相同的夹角，因此可以得到对角面积乘积相等。
+        </div>
+
+        <div class="problem">
+         <strong>
+          题 29：
+         </strong>
+         风筝模型中四块面积依次为 S₁=6、S₂=9、S₃=12，求 S₄。
+
+         <details class="answerbox">
+          <summary class="smallbtn">
+           看答案
+          </summary>
+
+          <div class="answer-native">
+           由 S₁×S₃=S₂×S₄，6×12=9×S₄，所以 S₄=8。
+          </div>
+         </details>
+        </div>
+       </article>
+
+       <article class="card lesson" data-tags="风筝模型 面积 边 比例 对角线">
+        <label class="master">
+         <input data-key="kite2" type="checkbox"/>
+         已掌握
+        </label>
+
+        <h3>
+         风筝模型：面积与线段
+        </h3>
+
+        <div class="formula">
+         <span class="chip">
+          共高三角形面积比 = 对应底边比
+         </span>
+
+         <span class="chip">
+          S△AOB : S△BOC = AO : OC
+         </span>
+        </div>
+
+        <div class="diagram">
+         <svg viewbox="0 0 360 230">
+          <polygon
+           class="fill2"
+           points="175,25 315,115 175,205 50,115">
+          </polygon>
+
+          <line
+           class="s"
+           x1="175"
+           x2="175"
+           y1="25"
+           y2="205">
+          </line>
+
+          <line
+           class="s"
+           x1="50"
+           x2="315"
+           y1="115"
+           y2="115">
+          </line>
+
+          <circle cx="175" cy="115" fill="#5b5bd6" r="5">
+          </circle>
+
+          <text class="lab" x="165" y="18">
+           A
+          </text>
+
+          <text class="lab" x="325" y="120">
+           B
+          </text>
+
+          <text class="lab" x="168" y="224">
+           C
+          </text>
+
+          <text class="lab" x="34" y="120">
+           D
+          </text>
+
+          <text class="lab" x="183" y="108">
+           O
+          </text>
+         </svg>
+        </div>
+
+        <div class="problem">
+         <strong>
+          题 30：
+         </strong>
+         两个三角形具有相同的高，对应底边长度比为 3:7，它们的面积比是多少？
+
+         <details class="answerbox">
+          <summary class="smallbtn">
+           看答案
+          </summary>
+
+          <div class="answer-native">
+           3:7。同高时，面积比等于底边比。
+          </div>
+         </details>
+        </div>
+       </article>
+
+      </div>
+     </section>
+
+     <section class="section" id="butterfly">
+      <div class="section-title">
+       <h2>
+        8. 蝴蝶模型
+       </h2>
+
+       <span>
+        梯形、平行四边形、长方形、正方形
+       </span>
+      </div>
+
+      <div class="grid">
+
+       <article class="card lesson" data-tags="蝴蝶模型 梯形 对角线 面积比 平方">
+        <label class="master">
+         <input data-key="butter1" type="checkbox"/>
+         已掌握
+        </label>
+
+        <h3>
+         梯形蝴蝶模型
+        </h3>
+
+        <div class="formula">
+         <span class="chip">
+          两翼面积相等
+         </span>
+
+         <span class="chip">
+          上下两个三角形面积比 = 两底长度比的平方
+         </span>
+
+         <span class="chip">
+          若上底:下底 = a:b，则 S上:S下 = a²:b²
+         </span>
+        </div>
+
+        <div class="diagram">
+         <svg viewbox="0 0 360 220">
+          <polygon
+           class="fill3"
+           points="105,35 255,35 320,185 40,185">
+          </polygon>
+
+          <line
+           class="accent"
+           x1="105"
+           x2="320"
+           y1="35"
+           y2="185">
+          </line>
+
+          <line
+           class="accent"
+           x1="255"
+           x2="40"
+           y1="35"
+           y2="185">
+          </line>
+
+          <circle cx="180" cy="87.3" fill="#5b5bd6" r="5">
+          </circle>
+
+          <text class="lab" x="186" y="83">
+           O
+          </text>
+
+          <text class="lab" x="164" y="25">
+           a
+          </text>
+
+          <text class="lab" x="170" y="207">
+           b
+          </text>
+
+          <text class="mutelab" x="80" y="112">
+           翼
+          </text>
+
+          <text class="mutelab" x="266" y="112">
+           翼
+          </text>
+         </svg>
+        </div>
+
+        <div class="problem">
+         <strong>
+          题 31：
+         </strong>
+         梯形上底与下底之比为 2:5，对角线相交形成的靠上三角形与靠下三角形面积比是多少？
+
+         <details class="answerbox">
+          <summary class="smallbtn">
+           看答案
+          </summary>
+
+          <div class="answer-native">
+           2²:5²=4:25。
+          </div>
+         </details>
+        </div>
+
+        <div class="problem">
+         <strong>
+          题 32：
+         </strong>
+         梯形蝴蝶模型中，左翼面积为 18，右翼面积是多少？
+
+         <details class="answerbox">
+          <summary class="smallbtn">
+           看答案
+          </summary>
+
+          <div class="answer-native">
+           18。梯形蝴蝶模型的两翼面积相等。
+          </div>
+         </details>
+        </div>
+       </article>
+
+       <article class="card lesson" data-tags="蝴蝶模型 平行四边形 对角线 四个三角形 等面积">
+        <label class="master">
+         <input data-key="butter2" type="checkbox"/>
+         已掌握
+        </label>
+
+        <h3>
+         平行四边形蝴蝶模型
+        </h3>
+
+        <div class="formula">
+         <span class="chip">
+          对角线互相平分
+         </span>
+
+         <span class="chip">
+          四个小三角形面积相等
+         </span>
+
+         <span class="chip">
+          每个 = 总面积的 1/4
+         </span>
+        </div>
+
+        <div class="diagram">
+         <svg viewbox="0 0 360 210">
+          <polygon
+           class="fill1"
+           points="90,35 310,35 265,175 45,175">
+          </polygon>
+
+          <line
+           class="accent"
+           x1="90"
+           x2="265"
+           y1="35"
+           y2="175">
+          </line>
+
+          <line
+           class="accent2"
+           x1="310"
+           x2="45"
+           y1="35"
+           y2="175">
+          </line>
+
+          <circle cx="177.5" cy="105" fill="#172033" r="5">
+          </circle>
+
+          <text class="lab" x="184" y="99">
+           O
+          </text>
+         </svg>
+        </div>
+
+        <div class="problem">
+         <strong>
+          题 33：
+         </strong>
+         平行四边形面积为 144，两条对角线相交后，每个小三角形面积是多少？
+
+         <details class="answerbox">
+          <summary class="smallbtn">
+           看答案
+          </summary>
+
+          <div class="answer-native">
+           144÷4=36。
+          </div>
+         </details>
+        </div>
+       </article>
+
+       <article class="card lesson" data-tags="蝴蝶模型 长方形 对角线 等面积">
+        <label class="master">
+         <input data-key="butter3" type="checkbox"/>
+         已掌握
+        </label>
+
+        <h3>
+         长方形蝴蝶模型
+        </h3>
+
+        <div class="formula">
+         <span class="chip">
+          长方形也是特殊的平行四边形
+         </span>
+
+         <span class="chip">
+          两条对角线把长方形分成四个等面积三角形
+         </span>
+        </div>
+
+        <div class="diagram">
+         <svg viewbox="0 0 360 210">
+          <rect
+           class="fill2"
+           height="130"
+           width="240"
+           x="60"
+           y="35">
+          </rect>
+
+          <line
+           class="accent"
+           x1="60"
+           x2="300"
+           y1="35"
+           y2="165">
+          </line>
+
+          <line
+           class="accent"
+           x1="300"
+           x2="60"
+           y1="35"
+           y2="165">
+          </line>
+
+          <circle cx="180" cy="100" fill="#5b5bd6" r="5">
+          </circle>
+         </svg>
+        </div>
+
+        <div class="problem">
+         <strong>
+          题 34：
+         </strong>
+         长方形长 16、宽 10。两条对角线相交后，一个小三角形的面积是多少？
+
+         <details class="answerbox">
+          <summary class="smallbtn">
+           看答案
+          </summary>
+
+          <div class="answer-native">
+           长方形面积=16×10=160；每个小三角形面积=160÷4=40。
+          </div>
+         </details>
+        </div>
+       </article>
+
+       <article class="card lesson" data-tags="蝴蝶模型 正方形 对角线 等面积">
+        <label class="master">
+         <input data-key="butter4" type="checkbox"/>
+         已掌握
+        </label>
+
+        <h3>
+         正方形蝴蝶模型
+        </h3>
+
+        <div class="formula">
+         <span class="chip">
+          四个小三角形面积相等
+         </span>
+
+         <span class="chip">
+          每个占正方形面积的 1/4
+         </span>
+
+         <span class="chip">
+          对角线互相垂直且平分
+         </span>
+        </div>
+
+        <div class="diagram">
+         <svg viewbox="0 0 360 220">
+          <rect
+           class="fill1"
+           height="150"
+           width="150"
+           x="105"
+           y="30">
+          </rect>
+
+          <line
+           class="accent"
+           x1="105"
+           x2="255"
+           y1="30"
+           y2="180">
+          </line>
+
+          <line
+           class="accent2"
+           x1="255"
+           x2="105"
+           y1="30"
+           y2="180">
+          </line>
+
+          <circle cx="180" cy="105" fill="#172033" r="5">
+          </circle>
+
+          <path
+           class="s"
+           d="M180 95 L190 105 L180 115 L170 105 Z">
+          </path>
+         </svg>
+        </div>
+
+        <div class="problem">
+         <strong>
+          题 35：
+         </strong>
+         正方形边长 12，对角线相交后一个小三角形面积是多少？
+
+         <details class="answerbox">
+          <summary class="smallbtn">
+           看答案
+          </summary>
+
+          <div class="answer-native">
+           正方形面积=12×12=144；一个小三角形面积=144÷4=36。
+          </div>
+         </details>
+        </div>
+       </article>
+
+      </div>
+     </section>
+
+     <section class="section" id="bird">
+      <div class="section-title">
+       <h2>
+        9. 鸟头模型
+       </h2>
+
+       <span>
+        相等角、互补角、对顶角、沙漏、金字塔
+       </span>
+      </div>
+
+      <div class="grid">
+
+       <article class="card lesson" data-tags="鸟头模型 相等角 夹角 面积比">
+        <label class="master">
+         <input data-key="bird1" type="checkbox"/>
+         已掌握
+        </label>
+
+        <h3>
+         相等角鸟头
+        </h3>
+
+        <div class="formula">
+         <span class="chip">
+          S = 1/2 ab sinθ
+         </span>
+
+         <span class="chip">
+          夹角相等 ⇒ sinθ 相等
+         </span>
+
+         <span class="chip">
+          面积比由夹角两边的乘积决定
+         </span>
+        </div>
+
+        <div class="diagram">
+         <svg viewbox="0 0 360 220">
+          <line
+           class="s"
+           x1="180"
+           x2="55"
+           y1="120"
+           y2="45">
+          </line>
+
+          <line
+           class="s"
+           x1="180"
+           x2="75"
+           y1="120"
+           y2="190">
+          </line>
+
+          <line
+           class="s"
+           x1="180"
+           x2="305"
+           y1="120"
+           y2="45">
+          </line>
+
+          <line
+           class="s"
+           x1="180"
+           x2="290"
+           y1="120"
+           y2="190">
+          </line>
+
+          <path
+           class="accent"
+           d="M151 103 A34 34 0 0 0 151 138">
+          </path>
+
+          <path
+           class="accent"
+           d="M209 103 A34 34 0 0 1 210 139">
+          </path>
+
+          <circle cx="180" cy="120" fill="#5b5bd6" r="5">
+          </circle>
+
+          <text class="lab" x="187" y="114">
+           O
+          </text>
+
+          <text class="mutelab" x="122" y="109">
+           θ
+          </text>
+
+          <text class="mutelab" x="226" y="109">
+           θ
+          </text>
+         </svg>
+        </div>
+
+        <div class="note">
+         鸟头模型最重要的不是记图，而是发现两个三角形的夹角相等，再比较夹角两边的长度乘积。
+        </div>
+
+        <div class="problem">
+         <strong>
+          题 36：
+         </strong>
+         两个三角形夹角相等。第一个夹角两边长为 3、8，第二个为 4、9。两三角形面积比是多少？
+
+         <details class="answerbox">
+          <summary class="smallbtn">
+           看答案
+          </summary>
+
+          <div class="answer-native">
+           面积比=(3×8):(4×9)=24:36=2:3。
+          </div>
+         </details>
+        </div>
+       </article>
+
+       <article class="card lesson" data-tags="鸟头模型 互补角 180 正弦 面积">
+        <label class="master">
+         <input data-key="bird2" type="checkbox"/>
+         已掌握
+        </label>
+
+        <h3>
+         互补角鸟头
+        </h3>
+
+        <div class="formula">
+         <span class="chip">
+          α + β = 180°
+         </span>
+
+         <span class="chip">
+          sinα = sinβ
+         </span>
+
+         <span class="chip">
+          面积比仍可比较两边乘积
+         </span>
+        </div>
+
+        <div class="diagram">
+         <svg viewbox="0 0 360 210">
+          <line
+           class="s"
+           x1="40"
+           x2="320"
+           y1="120"
+           y2="120">
+          </line>
+
+          <line
+           class="accent"
+           x1="180"
+           x2="105"
+           y1="120"
+           y2="35">
+          </line>
+
+          <line
+           class="accent2"
+           x1="180"
+           x2="275"
+           y1="120"
+           y2="40">
+          </line>
+
+          <path
+           class="s"
+           d="M150 120 A30 30 0 0 1 160 98">
+          </path>
+
+          <path
+           class="s"
+           d="M201 98 A30 30 0 0 1 210 120">
+          </path>
+
+          <text class="lab" x="137" y="103">
+           α
+          </text>
+
+          <text class="lab" x="215" y="103">
+           β
+          </text>
+
+          <text class="mutelab" x="145" y="155">
+           α+β=180°
+          </text>
+         </svg>
+        </div>
+
+        <div class="problem">
+         <strong>
+          题 37：
+         </strong>
+         两三角形的夹角互补。第一组三角形夹角两边为 5、6，第二组为 3、10，面积比是多少？
+
+         <details class="answerbox">
+          <summary class="smallbtn">
+           看答案
+          </summary>
+
+          <div class="answer-native">
+           因为互补角正弦值相等，所以面积比=(5×6):(3×10)=30:30=1:1。
+          </div>
+         </details>
+        </div>
+       </article>
+
+       <article class="card lesson" data-tags="鸟头模型 对顶角 面积 对顶角相等">
+        <label class="master">
+         <input data-key="bird3" type="checkbox"/>
+         已掌握
+        </label>
+
+        <h3>
+         对顶角鸟头
+        </h3>
+
+        <div class="formula">
+         <span class="chip">
+          对顶角相等
+         </span>
+
+         <span class="chip">
+          面积比 = 对应两边乘积之比
+         </span>
+        </div>
+
+        <div class="diagram">
+         <svg viewbox="0 0 360 210">
+          <line
+           class="s"
+           x1="55"
+           x2="305"
+           y1="35"
+           y2="180">
+          </line>
+
+          <line
+           class="s"
+           x1="300"
+           x2="60"
+           y1="35"
+           y2="180">
+          </line>
+
+          <circle cx="180" cy="107" fill="#5b5bd6" r="5">
+          </circle>
+
+          <path
+           class="accent"
+           d="M160 95 A24 24 0 0 1 200 95">
+          </path>
+
+          <path
+           class="accent"
+           d="M160 119 A24 24 0 0 0 200 119">
+          </path>
+
+          <text class="lab" x="187" y="102">
+           O
+          </text>
+         </svg>
+        </div>
+
+        <div class="problem">
+         <strong>
+          题 38：
+         </strong>
+         两直线相交。上方三角形夹角两边分别为 4、7，下方三角形对应两边为 8、5，面积比是多少？
+
+         <details class="answerbox">
+          <summary class="smallbtn">
+           看答案
+          </summary>
+
+          <div class="answer-native">
+           对顶角相等，所以面积比=(4×7):(8×5)=28:40=7:10。
+          </div>
+         </details>
+        </div>
+       </article>
+
+       <article class="card lesson" data-tags="鸟头模型 沙漏 特殊沙漏 相似 面积">
+        <label class="master">
+         <input data-key="bird4" type="checkbox"/>
+         已掌握
+        </label>
+
+        <h3>
+         特殊沙漏
+        </h3>
+
+        <div class="formula">
+         <span class="chip">
+          对顶角是关键入口
+         </span>
+
+         <span class="chip">
+          有平行线时可进一步使用相似三角形
+         </span>
+        </div>
+
+        <div class="diagram">
+         <svg viewbox="0 0 360 230">
+          <line
+           class="s"
+           x1="85"
+           x2="275"
+           y1="35"
+           y2="195">
+          </line>
+
+          <line
+           class="s"
+           x1="275"
+           x2="85"
+           y1="35"
+           y2="195">
+          </line>
+
+          <line
+           class="accent2"
+           x1="85"
+           x2="275"
+           y1="35"
+           y2="35">
+          </line>
+
+          <line
+           class="accent2"
+           x1="85"
+           x2="275"
+           y1="195"
+           y2="195">
+          </line>
+
+          <circle cx="180" cy="115" fill="#5b5bd6" r="5">
+          </circle>
+
+          <text class="lab" x="187" y="109">
+           O
+          </text>
+
+          <text class="mutelab" x="145" y="22">
+           上底
+          </text>
+
+          <text class="mutelab" x="145" y="218">
+           下底
+          </text>
+         </svg>
+        </div>
+
+        <div class="problem">
+         <strong>
+          题 39：
+         </strong>
+         沙漏上下两底平行，长度比为 2:3。上下两个三角形相似，它们面积比是多少？
+
+         <details class="answerbox">
+          <summary class="smallbtn">
+           看答案
+          </summary>
+
+          <div class="answer-native">
+           相似比为 2:3，面积比为 2²:3²=4:9。
+          </div>
+         </details>
+        </div>
+       </article>
+
+       <article class="card lesson" data-tags="鸟头模型 金字塔 相似 面积比">
+        <label class="master">
+         <input data-key="bird5" type="checkbox"/>
+         已掌握
+        </label>
+
+        <h3>
+         特殊金字塔
+        </h3>
+
+        <div class="formula">
+         <span class="chip">
+          平行截线 ⇒ 上下三角形相似
+         </span>
+
+         <span class="chip">
+          面积比 = 相似比²
+         </span>
+        </div>
+
+        <div class="diagram">
+         <svg viewbox="0 0 360 220">
+          <polygon
+           class="fill3"
+           points="45,185 180,25 315,185">
+          </polygon>
+
+          <line
+           class="accent2"
+           x1="112"
+           x2="248"
+           y1="105"
+           y2="105">
+          </line>
+
+          <text class="lab" x="170" y="18">
+           A
+          </text>
+
+          <text class="mutelab" x="145" y="98">
+           DE ∥ BC
+          </text>
+         </svg>
+        </div>
+
+        <div class="problem">
+         <strong>
+          题 40：
+         </strong>
+         金字塔型三角形中，DE∥BC，DE:BC=3:5。求 △ADE 与 △ABC 面积比。
+
+         <details class="answerbox">
+          <summary class="smallbtn">
+           看答案
+          </summary>
+
+          <div class="answer-native">
+           3²:5²=9:25。
+          </div>
+         </details>
+        </div>
+       </article>
+
+      </div>
+     </section>
+
+     <section class="section" id="swallow">
+      <div class="section-title">
+       <h2>
+        10. 燕尾模型
+       </h2>
+
+       <span>
+        三角形燕尾、四边形燕尾
+       </span>
+      </div>
+
+      <div class="grid">
+
+       <article class="card lesson" data-tags="燕尾模型 三角形 面积比 共高">
+        <label class="master">
+         <input data-key="swallow1" type="checkbox"/>
+         已掌握
+        </label>
+
+        <h3>
+         三角形燕尾
+        </h3>
+
+        <div class="formula">
+         <span class="chip">
+          同高三角形面积比 = 底边比
+         </span>
+
+         <span class="chip">
+          找到共享高，是燕尾模型的核心
+         </span>
+        </div>
+
+        <div class="diagram">
+         <svg viewbox="0 0 360 230">
+          <polygon
+           class="fill1"
+           points="45,185 180,25 315,185">
+          </polygon>
+
+          <line
+           class="accent"
+           x1="180"
+           x2="120"
+           y1="25"
+           y2="185">
+          </line>
+
+          <line
+           class="accent2"
+           x1="120"
+           x2="265"
+           y1="185"
+           y2="95">
+          </line>
+
+          <circle cx="120" cy="185" fill="#172033" r="5">
+          </circle>
+
+          <text class="lab" x="107" y="207">
+           D
+          </text>
+
+          <text class="lab" x="270" y="91">
+           E
+          </text>
+         </svg>
+        </div>
+
+        <div class="note">
+         燕尾图看起来复杂，但多数题最终都要回到“同高三角形面积比等于底边比”，再逐层传递面积关系。
+        </div>
+
+        <div class="problem">
+         <strong>
+          题 41：
+         </strong>
+         在 △ABC 中，D 在 BC 上，BD:DC=2:5。求 S△ABD:S△ADC。
+
+         <details class="answerbox">
+          <summary class="smallbtn">
+           看答案
+          </summary>
+
+          <div class="answer-native">
+           2:5，因为两个三角形从 A 到 BC 的高相同。
+          </div>
+         </details>
+        </div>
+       </article>
+
+       <article class="card lesson" data-tags="燕尾模型 四边形 面积比 对角线">
+        <label class="master">
+         <input data-key="swallow2" type="checkbox"/>
+         已掌握
+        </label>
+
+        <h3>
+         四边形燕尾
+        </h3>
+
+        <div class="formula">
+         <span class="chip">
+          先沿对角线拆成三角形
+         </span>
+
+         <span class="chip">
+          再利用同高面积比逐步传递
+         </span>
+        </div>
+
+        <div class="diagram">
+         <svg viewbox="0 0 360 230">
+          <polygon
+           class="fill2"
+           points="65,35 300,65 270,190 45,160">
+          </polygon>
+
+          <line
+           class="accent"
+           x1="65"
+           x2="270"
+           y1="35"
+           y2="190">
+          </line>
+
+          <line
+           class="accent2"
+           x1="45"
+           x2="220"
+           y1="160"
+           y2="103">
+          </line>
+
+          <circle cx="220" cy="103" fill="#5b5bd6" r="5">
+          </circle>
+
+          <text class="lab" x="227" y="98">
+           P
+          </text>
+         </svg>
+        </div>
+
+        <div class="problem">
+         <strong>
+          题 42：
+         </strong>
+         四边形燕尾题中，两个三角形具有相同的高，对应底边比为 4:7。它们面积比是多少？
+
+         <details class="answerbox">
+          <summary class="smallbtn">
+           看答案
+          </summary>
+
+          <div class="answer-native">
+           4:7。
+          </div>
+         </details>
+        </div>
+       </article>
+
+       <article class="card lesson" data-tags="综合 面积模型 等底等高 中点 蝴蝶 风筝 鸟头 燕尾">
+        <label class="master">
+         <input data-key="swallow3" type="checkbox"/>
+         已掌握
+        </label>
+
+        <h3>
+         面积模型综合判断
+        </h3>
+
+        <div class="formula">
+         <span class="chip">
+          看到中点 → 想 1:1
+         </span>
+
+         <span class="chip">
+          看到平行 → 想同高 / 相似
+         </span>
+
+         <span class="chip">
+          看到对角线相交 → 想风筝 / 蝴蝶
+         </span>
+
+         <span class="chip">
+          看到相等角 → 想鸟头
+         </span>
+        </div>
+
+        <div class="note">
+         面积模型题不要急着套名字。先找：底、高、中点、平行、对顶角、相似，再决定使用哪种模型。
+        </div>
+
+        <div class="problem">
+         <strong>
+          题 43：
+         </strong>
+         两个三角形等高，底边比为 5:8，面积比是多少？
+
+         <details class="answerbox">
+          <summary class="smallbtn">
+           看答案
+          </summary>
+
+          <div class="answer-native">
+           5:8。
+          </div>
+         </details>
+        </div>
+
+        <div class="problem">
+         <strong>
+          题 44：
+         </strong>
+         两个三角形等底，高之比为 7:3，面积比是多少？
+
+         <details class="answerbox">
+          <summary class="smallbtn">
+           看答案
+          </summary>
+
+          <div class="answer-native">
+           7:3。
+          </div>
+         </details>
+        </div>
+
+        <div class="problem">
+         <strong>
+          题 45：
+         </strong>
+         一个三角形面积为 80，一边中点与对面顶点连接后，两边小三角形面积各是多少？
+
+         <details class="answerbox">
+          <summary class="smallbtn">
+           看答案
+          </summary>
+
+          <div class="answer-native">
+           各 40。
+          </div>
+         </details>
+        </div>
+
+        <div class="problem">
+         <strong>
+          题 46：
+         </strong>
+         梯形蝴蝶模型中上下底比为 3:4，上下两个三角形面积比是多少？
+
+         <details class="answerbox">
+          <summary class="smallbtn">
+           看答案
+          </summary>
+
+          <div class="answer-native">
+           9:16。
+          </div>
+         </details>
+        </div>
+
+        <div class="problem">
+         <strong>
+          题 47：
+         </strong>
+         风筝模型中 S₁=10、S₂=15、S₃=12，求 S₄。
+
+         <details class="answerbox">
+          <summary class="smallbtn">
+           看答案
+          </summary>
+
+          <div class="answer-native">
+           10×12=15×S₄，所以 S₄=8。
+          </div>
+         </details>
+        </div>
+
+        <div class="problem">
+         <strong>
+          题 48：
+         </strong>
+         两个三角形的夹角相等，夹角两边分别为 4、6 和 3、8。面积比是多少？
+
+         <details class="answerbox">
+          <summary class="smallbtn">
+           看答案
+          </summary>
+
+          <div class="answer-native">
+           (4×6):(3×8)=24:24=1:1。
+          </div>
+         </details>
+        </div>
+       </article>
+
+      </div>
+     </section>
+
+    </main>
+   </div>
+
+   <footer class="footer">
+    数学｜几何模型专项 · 单文件离线版 · 学习进度保存在本机浏览器
+   </footer>
+
   </div>
-</section>
 
-<div class="layout">
+  <script>
+   const STORAGE_KEY = "geometry-master-v4";
 
-<aside class="side">
-  <input placeholder="搜索知识点……" oninput="searchCards(this.value)">
-  <h3>图形目录</h3>
-  <a href="#basic">1. 长方形 / 正方形</a>
-  <a href="#para">2. 平行四边形</a>
-  <a href="#trap">3. 梯形</a>
-  <a href="#tri">4. 三角形</a>
-  <a href="#equal">5. 等积模型</a>
-  <a href="#half">6. 一半模型</a>
-  <a href="#kite">7. 风筝模型</a>
-  <a href="#butterfly">8. 蝴蝶模型</a>
-  <a href="#bird">9. 鸟头模型</a>
-  <a href="#swallow">10. 燕尾模型</a>
-</aside>
+   const masterChecks = Array.from(
+    document.querySelectorAll(".master input[type='checkbox']")
+   );
 
-<main>
+   function loadProgress(){
+    let saved = {};
 
-<!-- 1 长方形正方形 -->
-<section class="section" id="basic">
-<h2>1. 长方形与正方形</h2>
-<div class="grid">
+    try{
+     saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+    }catch(e){
+     saved = {};
+    }
 
-<article class="card lesson" data-search="长方形 周长 面积">
-<label class="master"><input type="checkbox" data-master="rect"> 已掌握</label>
-<h3>长方形</h3>
-<div class="formulas">
-<span class="chip">C=2(a+b)</span><span class="chip">S=ab</span>
-</div>
-<div class="diagram">
-<svg viewBox="0 0 360 200">
-<rect x="55" y="35" width="250" height="120" class="bluefill"/>
-<text x="170" y="180" class="label">长 a</text>
-<text x="12" y="100" class="label">宽 b</text>
-<text x="42" y="31" class="label">A</text>
-<text x="308" y="31" class="label">B</text>
-<text x="308" y="172" class="label">C</text>
-<text x="42" y="172" class="label">D</text>
-</svg>
-</div>
-</article>
+    masterChecks.forEach(function(box){
+     box.checked = !!saved[box.dataset.key];
+    });
 
-<article class="card lesson" data-search="正方形 对角线 周长 面积">
-<label class="master"><input type="checkbox" data-master="square"> 已掌握</label>
-<h3>正方形</h3>
-<div class="formulas">
-<span class="chip">C=4a</span><span class="chip">S=a²</span>
-<span class="chip">S=d²÷2</span>
-</div>
-<div class="diagram">
-<svg viewBox="0 0 360 220">
-<rect x="90" y="25" width="170" height="170" class="purple"/>
-<line x1="90" y1="25" x2="260" y2="195" class="line"/>
-<line x1="260" y1="25" x2="90" y2="195" class="line"/>
-<circle cx="175" cy="110" r="4" class="mid"/>
-<text x="70" y="22" class="label">A</text>
-<text x="268" y="22" class="label">B</text>
-<text x="268" y="210" class="label">C</text>
-<text x="70" y="210" class="label">D</text>
-<text x="183" y="105" class="label">O</text>
-</svg>
-</div>
-<div class="note">对角线相等、互相垂直、互相平分，并平分顶角。</div>
-</article>
+    updateProgress();
+   }
 
-</div>
-</section>
+   function saveProgress(){
+    const data = {};
 
-<!-- 2 平行四边形 -->
-<section class="section" id="para">
-<h2>2. 平行四边形</h2>
-<div class="grid">
+    masterChecks.forEach(function(box){
+     data[box.dataset.key] = box.checked;
+    });
 
-<article class="card lesson" data-search="平行四边形 底 高 面积">
-<label class="master"><input type="checkbox" data-master="para1"> 已掌握</label>
-<h3>底和高</h3>
-<div class="formulas"><span class="chip">S=ah</span><span class="chip">C=2(a+b)</span></div>
-<div class="diagram">
-<svg viewBox="0 0 360 210">
-<polygon points="45,170 105,40 310,40 250,170" class="greenfill"/>
-<line x1="105" y1="40" x2="105" y2="170" class="redline dash"/>
-<path d="M105 158 L117 158 L117 170" class="line"/>
-<text x="115" y="110" class="label">高 h</text>
-<text x="145" y="193" class="label">底 a</text>
-</svg>
-</div>
-</article>
+    localStorage.setItem(
+     STORAGE_KEY,
+     JSON.stringify(data)
+    );
 
-<article class="card lesson" data-search="平行四边形 对角线 四等份">
-<label class="master"><input type="checkbox" data-master="para2"> 已掌握</label>
-<h3>对角线</h3>
-<div class="diagram">
-<svg viewBox="0 0 360 210">
-<polygon points="45,170 105,35 315,35 255,170" class="purple"/>
-<line x1="45" y1="170" x2="315" y2="35" class="line"/>
-<line x1="105" y1="35" x2="255" y2="170" class="line"/>
-<circle cx="180" cy="102.5" r="4" class="mid"/>
-<text x="187" y="99" class="label">O</text>
-</svg>
-</div>
-<div class="note">两条对角线互相平分，并把平行四边形分成四个等面积三角形。</div>
-</article>
+    updateProgress();
+   }
 
-</div>
-</section>
+   function updateProgress(){
+    const total = masterChecks.length;
 
-<!-- 3 梯形 -->
-<section class="section" id="trap">
-<h2>3. 梯形</h2>
-<div class="grid">
+    const done = masterChecks.filter(function(box){
+     return box.checked;
+    }).length;
 
-<article class="card lesson" data-search="梯形 上底 下底 高 面积">
-<label class="master"><input type="checkbox" data-master="trap1"> 已掌握</label>
-<h3>梯形面积</h3>
-<div class="formulas">
-<span class="chip">S=(a+b)h÷2</span><span class="chip">中位线=(a+b)÷2</span>
-</div>
-<div class="diagram">
-<svg viewBox="0 0 360 210">
-<polygon points="40,170 105,40 255,40 320,170" class="orangefill"/>
-<line x1="105" y1="40" x2="105" y2="170" class="redline dash"/>
-<text x="150" y="30" class="label">上底 a</text>
-<text x="150" y="195" class="label">下底 b</text>
-<text x="113" y="110" class="label">h</text>
-</svg>
-</div>
-</article>
+    const text = document.getElementById("progressText");
+    const bar = document.getElementById("progressBar");
 
-<article class="card lesson" data-search="梯形 中位线">
-<label class="master"><input type="checkbox" data-master="trap2"> 已掌握</label>
-<h3>梯形中位线</h3>
-<div class="diagram">
-<svg viewBox="0 0 360 210">
-<polygon points="45,175 105,35 255,35 315,175" class="line"/>
-<circle cx="75" cy="105" r="5" class="mid"/>
-<circle cx="285" cy="105" r="5" class="mid"/>
-<line x1="75" y1="105" x2="285" y2="105" class="redline"/>
-<text x="142" y="95" class="label">中位线</text>
-</svg>
-</div>
-<div class="note">两腰中点的连线平行于两底，长度等于两底和的一半。</div>
-</article>
+    if(text){
+     text.textContent = done + " / " + total;
+    }
 
-</div>
-</section>
+    if(bar){
+     bar.style.width = (
+      total ? done / total * 100 : 0
+     ) + "%";
+    }
+   }
 
-<!-- 4 三角形 -->
-<section class="section" id="tri">
-<h2>4. 三角形</h2>
-<div class="grid">
+   masterChecks.forEach(function(box){
+    box.addEventListener(
+     "change",
+     saveProgress
+    );
+   });
 
-<article class="card lesson" data-search="锐角 直角 钝角 三角形 分类">
-<label class="master"><input type="checkbox" data-master="tri1"> 已掌握</label>
-<h3>按角分类</h3>
-<div class="diagram">
-<svg viewBox="0 0 600 200">
-<polygon points="30,165 110,35 190,165" class="purple"/>
-<text x="78" y="190" class="label">锐角</text>
+   function resetProgress(){
+    if(!confirm("确定清空所有掌握记录吗？")){
+     return;
+    }
 
-<polygon points="230,165 230,55 340,165" class="greenfill"/>
-<path d="M230 148 L247 148 L247 165" class="line"/>
-<text x="260" y="190" class="label">直角</text>
+    localStorage.removeItem(STORAGE_KEY);
 
-<polygon points="395,165 470,75 570,165" class="orangefill"/>
-<text x="458" y="190" class="label">钝角</text>
-</svg>
-</div>
-</article>
+    masterChecks.forEach(function(box){
+     box.checked = false;
+    });
 
-<article class="card lesson" data-search="等腰 等边 三角形 按边">
-<label class="master"><input type="checkbox" data-master="tri2"> 已掌握</label>
-<h3>按边分类</h3>
-<div class="diagram">
-<svg viewBox="0 0 500 210">
-<polygon points="45,175 130,35 215,175" class="purple"/>
-<line x1="82" y1="100" x2="92" y2="106" class="redline"/>
-<line x1="168" y1="106" x2="178" y2="100" class="redline"/>
-<text x="85" y="200" class="label">等腰</text>
+    updateProgress();
+   }
 
-<polygon points="285,175 365,36 445,175" class="greenfill"/>
-<text x="335" y="200" class="label">等边</text>
-</svg>
-</div>
-</article>
+   function filterCards(){
+    const input = document.getElementById("searchBox");
 
-<article class="card lesson" data-search="三角形 作高 高">
-<label class="master"><input type="checkbox" data-master="tri3"> 已掌握</label>
-<h3>作高</h3>
-<div class="formulas"><span class="chip">S=底×高÷2</span></div>
-<div class="diagram">
-<svg viewBox="0 0 360 210">
-<polygon points="45,175 150,35 315,175" class="bluefill"/>
-<line x1="150" y1="35" x2="150" y2="175" class="redline dash"/>
-<path d="M150 160 L165 160 L165 175" class="line"/>
-<text x="158" y="105" class="label">高 h</text>
-</svg>
-</div>
-</article>
+    const keyword = (
+     input ? input.value : ""
+    ).trim().toLowerCase();
 
-<article class="card lesson" data-search="三角形 内角和 三边关系">
-<label class="master"><input type="checkbox" data-master="tri4"> 已掌握</label>
-<h3>边角关系</h3>
-<div class="formulas">
-<span class="chip">内角和=180°</span>
-<span class="chip">两边之和＞第三边</span>
-<span class="chip">n边形=(n−2)×180°</span>
-</div>
-<div class="diagram">
-<svg viewBox="0 0 360 210">
-<polygon points="45,170 165,35 315,170" class="line"/>
-<path d="M70 170 A25 25 0 0 1 60 150" class="angle"/>
-<path d="M145 58 A28 28 0 0 1 185 57" class="angle"/>
-<path d="M290 170 A25 25 0 0 0 300 150" class="angle"/>
-<text x="80" y="155" class="label">A</text>
-<text x="160" y="75" class="label">B</text>
-<text x="270" y="155" class="label">C</text>
-</svg>
-</div>
-</article>
+    const cards = Array.from(
+     document.querySelectorAll(".lesson")
+    );
 
-</div>
-</section>
+    cards.forEach(function(card){
+     const text = (
+      (card.dataset.tags || "") +
+      " " +
+      card.innerText
+     ).toLowerCase();
 
-<!-- 5 等积 -->
-<section class="section" id="equal">
-<h2>5. 等积模型</h2>
-<div class="grid">
+     card.classList.toggle(
+      "hide",
+      keyword && !text.includes(keyword)
+     );
+    });
 
-<article class="card lesson" data-search="等底等高 等积">
-<label class="master"><input type="checkbox" data-master="equal1"> 已掌握</label>
-<h3>等底等高</h3>
-<div class="formulas"><span class="chip">同底同高 → 面积相等</span></div>
-<div class="diagram">
-<svg viewBox="0 0 430 220">
-<line x1="30" y1="45" x2="400" y2="45" class="redline dash"/>
-<line x1="30" y1="180" x2="400" y2="180" class="line"/>
-<polygon points="75,180 155,45 235,180" class="purple"/>
-<polygon points="75,180 315,45 235,180" class="greenfill"/>
-<text x="250" y="35" class="label">顶点在同一条平行线上</text>
-</svg>
-</div>
-</article>
+    document.querySelectorAll(".section").forEach(function(section){
+     const visible = section.querySelector(
+      ".lesson:not(.hide)"
+     );
 
-<article class="card lesson" data-search="等底 不等高 面积比 高">
-<label class="master"><input type="checkbox" data-master="equal2"> 已掌握</label>
-<h3>等底不等高</h3>
-<div class="formulas"><span class="chip">面积比=高之比</span></div>
-<div class="diagram">
-<svg viewBox="0 0 430 220">
-<line x1="60" y1="180" x2="370" y2="180" class="line"/>
-<polygon points="80,180 180,95 330,180" class="bluefill"/>
-<polygon points="80,180 250,30 330,180" class="line"/>
-<line x1="180" y1="95" x2="180" y2="180" class="redline dash"/>
-<line x1="250" y1="30" x2="250" y2="180" class="redline dash"/>
-</svg>
-</div>
-</article>
+     section.classList.toggle(
+      "hide",
+      keyword && !visible
+     );
+    });
+   }
 
-<article class="card lesson" data-search="等高 不等底 面积比 底">
-<label class="master"><input type="checkbox" data-master="equal3"> 已掌握</label>
-<h3>等高不等底</h3>
-<div class="formulas"><span class="chip">面积比=底边比</span></div>
-<div class="diagram">
-<svg viewBox="0 0 430 220">
-<line x1="35" y1="180" x2="400" y2="180" class="line"/>
-<polygon points="45,180 210,35 175,180" class="purple"/>
-<polygon points="175,180 210,35 390,180" class="greenfill"/>
-<line x1="210" y1="35" x2="210" y2="180" class="redline dash"/>
-</svg>
-</div>
-</article>
+   function toggleAllAnswers(){
+    const boxes = Array.from(
+     document.querySelectorAll(".answerbox")
+    );
 
-</div>
-</section>
+    const shouldOpen = boxes.some(function(box){
+     return !box.open;
+    });
 
-<!-- 6 一半模型 -->
-<section class="section" id="half">
-<h2>6. 一半模型</h2>
-<div class="grid">
+    boxes.forEach(function(box){
+     box.open = shouldOpen;
+    });
+   }
 
-<article class="card lesson" data-search="三角形 中点 中线 一半">
-<label class="master"><input type="checkbox" data-master="half1"> 已掌握</label>
-<h3>一边中点</h3>
-<div class="diagram">
-<svg viewBox="0 0 360 220">
-<polygon points="45,180 180,30 315,180" class="line"/>
-<circle cx="180" cy="180" r="5" class="mid"/>
-<line x1="180" y1="30" x2="180" y2="180" class="redline"/>
-<text x="187" y="198" class="label">M 中点</text>
-</svg>
-</div>
-<div class="note">中线把三角形分成两个等面积三角形。</div>
-</article>
+   const randomQuestions = [
+    {
+     q:"长方形长 18 cm、宽 7 cm，求面积。",
+     a:"18×7=126 cm²。"
+    },
+    {
+     q:"正方形边长 13 cm，求周长。",
+     a:"13×4=52 cm。"
+    },
+    {
+     q:"平行四边形底 16、高 9，求面积。",
+     a:"16×9=144。"
+    },
+    {
+     q:"梯形上底 8、下底 20、高 6，求面积。",
+     a:"（8+20）×6÷2=84。"
+    },
+    {
+     q:"三角形两个角分别为 47° 和 68°，第三个角是多少？",
+     a:"180°−47°−68°=65°。"
+    },
+    {
+     q:"三角形底 24、高 11，求面积。",
+     a:"24×11÷2=132。"
+    },
+    {
+     q:"同高两三角形底边比为 4:9，面积比是多少？",
+     a:"4:9。"
+    },
+    {
+     q:"同底两三角形高之比为 7:5，面积比是多少？",
+     a:"7:5。"
+    },
+    {
+     q:"三角形面积为 128，一边中点与对面顶点相连，其中一个小三角形面积是多少？",
+     a:"128÷2=64。"
+    },
+    {
+     q:"梯形蝴蝶模型上下底比为 3:7，上下两个三角形面积比是多少？",
+     a:"3²:7²=9:49。"
+    },
+    {
+     q:"风筝模型中 S₁=6、S₂=9、S₃=15，求 S₄。",
+     a:"6×15=9×S₄，所以 S₄=10。"
+    },
+    {
+     q:"两个三角形夹角相等，夹角两边分别为 3、10 和 5、9，面积比是多少？",
+     a:"(3×10):(5×9)=30:45=2:3。"
+    }
+   ];
 
-<article class="card lesson" data-search="三角形 两边中点 中位线 四分之一">
-<label class="master"><input type="checkbox" data-master="half2"> 已掌握</label>
-<h3>两边中点</h3>
-<div class="diagram">
-<svg viewBox="0 0 360 220">
-<polygon points="45,185 180,25 315,185" class="line"/>
-<circle cx="112.5" cy="105" r="5" class="mid"/>
-<circle cx="247.5" cy="105" r="5" class="mid"/>
-<line x1="112.5" y1="105" x2="247.5" y2="105" class="redline"/>
-<text x="135" y="92" class="label">中位线</text>
-</svg>
-</div>
-<div class="formulas"><span class="chip">小三角形面积=原来的1/4</span></div>
-</article>
+   function pickRandom(){
+    const box = document.getElementById("randomBox");
+    const q = document.getElementById("randomQ");
+    const a = document.getElementById("randomA");
 
-<article class="card lesson" data-search="平行四边形 顶天立地 一半">
-<label class="master"><input type="checkbox" data-master="half3"> 已掌握</label>
-<h3>顶天立地</h3>
-<div class="diagram">
-<svg viewBox="0 0 400 220">
-<polygon points="45,180 100,35 350,35 295,180" class="greenfill"/>
-<polygon points="45,180 220,35 295,180" class="purple"/>
-</svg>
-</div>
-<div class="formulas"><span class="chip">三角形面积=平行四边形面积÷2</span></div>
-</article>
+    const item = randomQuestions[
+     Math.floor(
+      Math.random() * randomQuestions.length
+     )
+    ];
 
-<article class="card lesson" data-search="平行四边形 锯齿 一半模型">
-<label class="master"><input type="checkbox" data-master="half4"> 已掌握</label>
-<h3>锯齿模型</h3>
-<div class="diagram">
-<svg viewBox="0 0 420 220">
-<polygon points="35,180 90,35 380,35 325,180" class="line"/>
-<polyline points="35,180 150,35 205,180 285,35 325,180" class="redline"/>
-<circle cx="150" cy="35" r="4" class="mid"/>
-<circle cx="205" cy="180" r="4" class="mid"/>
-<circle cx="285" cy="35" r="4" class="mid"/>
-</svg>
-</div>
-<div class="note">把锯齿拆成多个同高三角形，再把底边相加。</div>
-</article>
+    q.textContent = item.q;
+    a.textContent = item.a;
+    a.classList.remove("show");
 
-<article class="card lesson" data-search="平行四边形 交头接耳">
-<label class="master"><input type="checkbox" data-master="half5"> 已掌握</label>
-<h3>交头接耳</h3>
-<div class="diagram">
-<svg viewBox="0 0 420 220">
-<polygon points="40,180 95,35 375,35 320,180" class="line"/>
-<line x1="40" y1="180" x2="255" y2="35" class="redline"/>
-<line x1="95" y1="35" x2="320" y2="180" class="redline"/>
-<circle cx="178" cy="105" r="5" class="mid"/>
-</svg>
-</div>
-<div class="note">看到交点时，优先找同底、等高、对顶角和面积传递关系。</div>
-</article>
+    box.scrollIntoView({
+     behavior:"smooth",
+     block:"center"
+    });
+   }
 
-<article class="card lesson" data-search="平行四边形 离家出走">
-<label class="master"><input type="checkbox" data-master="half6"> 已掌握</label>
-<h3>离家出走</h3>
-<div class="diagram">
-<svg viewBox="0 0 450 220">
-<polygon points="55,180 110,45 320,45 265,180" class="line"/>
-<line x1="110" y1="45" x2="400" y2="45" class="redline dash"/>
-<polygon points="55,180 390,45 265,180" class="purple"/>
-<text x="330" y="35" class="label">顶点移到延长线上</text>
-</svg>
-</div>
-<div class="note">只要顶点仍在与底平行的直线上，高就不变。</div>
-</article>
+   function normalizeFixedAnswer(value){
+    return String(value || "")
+     .trim()
+     .toLowerCase()
+     .replace(/\s+/g,"")
+     .replace(/：/g,":")
+     .replace(/，/g,",")
+     .replace(/°/g,"")
+     .replace(/平方厘米/g,"")
+     .replace(/cm²/gi,"")
+     .replace(/cm2/gi,"")
+     .replace(/厘米/g,"")
+     .replace(/cm/gi,"");
+   }
 
-<article class="card lesson" data-search="任意四边形 四边中点">
-<label class="master"><input type="checkbox" data-master="half7"> 已掌握</label>
-<h3>任意四边形四边中点</h3>
-<div class="diagram">
-<svg viewBox="0 0 400 240">
-<polygon points="65,55 330,30 360,185 95,215" class="line"/>
-<polygon points="197.5,42.5 345,107.5 227.5,200 80,135" class="greenfill"/>
-<circle cx="197.5" cy="42.5" r="4" class="mid"/>
-<circle cx="345" cy="107.5" r="4" class="mid"/>
-<circle cx="227.5" cy="200" r="4" class="mid"/>
-<circle cx="80" cy="135" r="4" class="mid"/>
-</svg>
-</div>
-<div class="formulas"><span class="chip">中点四边形面积=原四边形÷2</span></div>
-</article>
+   function extractAnswerText
+  const EXPANDED_BANK = [
+  {
+    id: 1,
+    category: "长方形",
+    question: "长方形长 3 cm，宽 2 cm，求面积。",
+    answer: "6",
+    solution: "3×2=6 cm²"
+  },
+  {
+    id: 2,
+    category: "长方形",
+    question: "长方形长 4 cm，宽 9 cm，求面积。",
+    answer: "36",
+    solution: "4×9=36 cm²"
+  },
+  {
+    id: 3,
+    category: "长方形",
+    question: "长方形长 5 cm，宽 16 cm，求面积。",
+    answer: "80",
+    solution: "5×16=80 cm²"
+  },
+  {
+    id: 4,
+    category: "长方形",
+    question: "长方形长 6 cm，宽 4 cm，求面积。",
+    answer: "24",
+    solution: "6×4=24 cm²"
+  },
+  {
+    id: 5,
+    category: "长方形",
+    question: "长方形长 7 cm，宽 11 cm，求面积。",
+    answer: "77",
+    solution: "7×11=77 cm²"
+  },
+  {
+    id: 6,
+    category: "长方形",
+    question: "长方形长 8 cm，宽 18 cm，求面积。",
+    answer: "144",
+    solution: "8×18=144 cm²"
+  },
+  {
+    id: 7,
+    category: "长方形",
+    question: "长方形长 9 cm，宽 6 cm，求面积。",
+    answer: "54",
+    solution: "9×6=54 cm²"
+  },
+  {
+    id: 8,
+    category: "长方形",
+    question: "长方形长 10 cm，宽 13 cm，求面积。",
+    answer: "130",
+    solution: "10×13=130 cm²"
+  },
+  {
+    id: 9,
+    category: "长方形",
+    question: "长方形长 11 cm，宽 20 cm，求面积。",
+    answer: "220",
+    solution: "11×20=220 cm²"
+  },
+  {
+    id: 10,
+    category: "长方形",
+    question: "长方形长 12 cm，宽 8 cm，求面积。",
+    answer: "96",
+    solution: "12×8=96 cm²"
+  },
+  {
+    id: 11,
+    category: "长方形",
+    question: "长方形长 13 cm，宽 15 cm，求面积。",
+    answer: "195",
+    solution: "13×15=195 cm²"
+  },
+  {
+    id: 12,
+    category: "长方形",
+    question: "长方形长 14 cm，宽 3 cm，求面积。",
+    answer: "42",
+    solution: "14×3=42 cm²"
+  },
+  {
+    id: 13,
+    category: "长方形",
+    question: "长方形长 15 cm，宽 10 cm，求面积。",
+    answer: "150",
+    solution: "15×10=150 cm²"
+  },
+  {
+    id: 14,
+    category: "长方形",
+    question: "长方形长 16 cm，宽 17 cm，求面积。",
+    answer: "272",
+    solution: "16×17=272 cm²"
+  },
+  {
+    id: 15,
+    category: "长方形",
+    question: "长方形长 17 cm，宽 5 cm，求面积。",
+    answer: "85",
+    solution: "17×5=85 cm²"
+  },
+  {
+    id: 16,
+    category: "长方形",
+    question: "长方形长 18 cm，宽 12 cm，求面积。",
+    answer: "216",
+    solution: "18×12=216 cm²"
+  },
+  {
+    id: 17,
+    category: "长方形",
+    question: "长方形长 19 cm，宽 19 cm，求面积。",
+    answer: "361",
+    solution: "19×19=361 cm²"
+  },
+  {
+    id: 18,
+    category: "长方形",
+    question: "长方形长 20 cm，宽 7 cm，求面积。",
+    answer: "140",
+    solution: "20×7=140 cm²"
+  },
+  {
+    id: 19,
+    category: "长方形",
+    question: "长方形长 21 cm，宽 14 cm，求面积。",
+    answer: "294",
+    solution: "21×14=294 cm²"
+  },
+  {
+    id: 20,
+    category: "长方形",
+    question: "长方形长 22 cm，宽 2 cm，求面积。",
+    answer: "44",
+    solution: "22×2=44 cm²"
+  },
+  {
+    id: 21,
+    category: "长方形",
+    question: "长方形长 23 cm，宽 9 cm，求面积。",
+    answer: "207",
+    solution: "23×9=207 cm²"
+  },
+  {
+    id: 22,
+    category: "长方形",
+    question: "长方形长 24 cm，宽 16 cm，求面积。",
+    answer: "384",
+    solution: "24×16=384 cm²"
+  },
+  {
+    id: 23,
+    category: "长方形",
+    question: "长方形长 25 cm，宽 4 cm，求面积。",
+    answer: "100",
+    solution: "25×4=100 cm²"
+  },
+  {
+    id: 24,
+    category: "长方形",
+    question: "长方形长 26 cm，宽 11 cm，求面积。",
+    answer: "286",
+    solution: "26×11=286 cm²"
+  },
+  {
+    id: 25,
+    category: "长方形",
+    question: "长方形长 27 cm，宽 18 cm，求面积。",
+    answer: "486",
+    solution: "27×18=486 cm²"
+  },
+  {
+    id: 26,
+    category: "长方形",
+    question: "长方形长 28 cm，宽 6 cm，求面积。",
+    answer: "168",
+    solution: "28×6=168 cm²"
+  },
+  {
+    id: 27,
+    category: "长方形",
+    question: "长方形长 29 cm，宽 13 cm，求面积。",
+    answer: "377",
+    solution: "29×13=377 cm²"
+  },
+  {
+    id: 28,
+    category: "长方形",
+    question: "长方形长 30 cm，宽 20 cm，求面积。",
+    answer: "600",
+    solution: "30×20=600 cm²"
+  },
+  {
+    id: 29,
+    category: "长方形",
+    question: "长方形长 31 cm，宽 8 cm，求面积。",
+    answer: "248",
+    solution: "31×8=248 cm²"
+  },
+  {
+    id: 30,
+    category: "长方形",
+    question: "长方形长 32 cm，宽 15 cm，求面积。",
+    answer: "480",
+    solution: "32×15=480 cm²"
+  },
+  {
+    id: 31,
+    category: "长方形",
+    question: "长方形长 33 cm，宽 3 cm，求面积。",
+    answer: "99",
+    solution: "33×3=99 cm²"
+  },
+  {
+    id: 32,
+    category: "长方形",
+    question: "长方形长 34 cm，宽 10 cm，求面积。",
+    answer: "340",
+    solution: "34×10=340 cm²"
+  },
+  {
+    id: 33,
+    category: "长方形",
+    question: "长方形长 35 cm，宽 17 cm，求面积。",
+    answer: "595",
+    solution: "35×17=595 cm²"
+  },
+  {
+    id: 34,
+    category: "长方形",
+    question: "长方形长 36 cm，宽 5 cm，求面积。",
+    answer: "180",
+    solution: "36×5=180 cm²"
+  },
+  {
+    id: 35,
+    category: "长方形",
+    question: "长方形长 37 cm，宽 12 cm，求面积。",
+    answer: "444",
+    solution: "37×12=444 cm²"
+  },
+  {
+    id: 36,
+    category: "长方形",
+    question: "长方形长 38 cm，宽 19 cm，求面积。",
+    answer: "722",
+    solution: "38×19=722 cm²"
+  },
+  {
+    id: 37,
+    category: "长方形",
+    question: "长方形长 39 cm，宽 7 cm，求面积。",
+    answer: "273",
+    solution: "39×7=273 cm²"
+  },
+  {
+    id: 38,
+    category: "长方形",
+    question: "长方形长 40 cm，宽 14 cm，求面积。",
+    answer: "560",
+    solution: "40×14=560 cm²"
+  },
+  {
+    id: 39,
+    category: "长方形",
+    question: "长方形长 41 cm，宽 2 cm，求面积。",
+    answer: "82",
+    solution: "41×2=82 cm²"
+  },
+  {
+    id: 40,
+    category: "长方形",
+    question: "长方形长 42 cm，宽 9 cm，求面积。",
+    answer: "378",
+    solution: "42×9=378 cm²"
+  },
+  {
+    id: 41,
+    category: "长方形",
+    question: "长方形长 43 cm，宽 16 cm，求面积。",
+    answer: "688",
+    solution: "43×16=688 cm²"
+  },
+  {
+    id: 42,
+    category: "长方形",
+    question: "长方形长 44 cm，宽 4 cm，求面积。",
+    answer: "176",
+    solution: "44×4=176 cm²"
+  },
+  {
+    id: 43,
+    category: "长方形",
+    question: "长方形长 45 cm，宽 11 cm，求面积。",
+    answer: "495",
+    solution: "45×11=495 cm²"
+  },
+  {
+    id: 44,
+    category: "长方形",
+    question: "长方形长 46 cm，宽 18 cm，求面积。",
+    answer: "828",
+    solution: "46×18=828 cm²"
+  },
+  {
+    id: 45,
+    category: "长方形",
+    question: "长方形长 47 cm，宽 6 cm，求面积。",
+    answer: "282",
+    solution: "47×6=282 cm²"
+  },
+  {
+    id: 46,
+    category: "长方形",
+    question: "长方形长 48 cm，宽 13 cm，求面积。",
+    answer: "624",
+    solution: "48×13=624 cm²"
+  },
+  {
+    id: 47,
+    category: "长方形",
+    question: "长方形长 49 cm，宽 20 cm，求面积。",
+    answer: "980",
+    solution: "49×20=980 cm²"
+  },
+  {
+    id: 48,
+    category: "长方形",
+    question: "长方形长 50 cm，宽 8 cm，求面积。",
+    answer: "400",
+    solution: "50×8=400 cm²"
+  },
+  {
+    id: 49,
+    category: "长方形",
+    question: "长方形长 51 cm，宽 15 cm，求面积。",
+    answer: "765",
+    solution: "51×15=765 cm²"
+  },
+  {
+    id: 50,
+    category: "长方形",
+    question: "长方形长 52 cm，宽 3 cm，求面积。",
+    answer: "156",
+    solution: "52×3=156 cm²"
+  },
+  {
+    id: 51,
+    category: "长方形",
+    question: "长方形长 53 cm，宽 10 cm，求面积。",
+    answer: "530",
+    solution: "53×10=530 cm²"
+  },
+  {
+    id: 52,
+    category: "长方形",
+    question: "长方形长 54 cm，宽 17 cm，求面积。",
+    answer: "918",
+    solution: "54×17=918 cm²"
+  },
+  {
+    id: 53,
+    category: "长方形",
+    question: "长方形长 55 cm，宽 5 cm，求面积。",
+    answer: "275",
+    solution: "55×5=275 cm²"
+  },
+  {
+    id: 54,
+    category: "长方形",
+    question: "长方形长 56 cm，宽 12 cm，求面积。",
+    answer: "672",
+    solution: "56×12=672 cm²"
+  },
+  {
+    id: 55,
+    category: "长方形",
+    question: "长方形长 57 cm，宽 19 cm，求面积。",
+    answer: "1083",
+    solution: "57×19=1083 cm²"
+  },
+  {
+    id: 56,
+    category: "长方形",
+    question: "长方形长 58 cm，宽 7 cm，求面积。",
+    answer: "406",
+    solution: "58×7=406 cm²"
+  },
+  {
+    id: 57,
+    category: "长方形",
+    question: "长方形长 59 cm，宽 14 cm，求面积。",
+    answer: "826",
+    solution: "59×14=826 cm²"
+  },
+  {
+    id: 58,
+    category: "长方形",
+    question: "长方形长 60 cm，宽 2 cm，求面积。",
+    answer: "120",
+    solution: "60×2=120 cm²"
+  },
+  {
+    id: 59,
+    category: "长方形",
+    question: "长方形长 61 cm，宽 9 cm，求面积。",
+    answer: "549",
+    solution: "61×9=549 cm²"
+  },
+  {
+    id: 60,
+    category: "长方形",
+    question: "长方形长 62 cm，宽 16 cm，求面积。",
+    answer: "992",
+    solution: "62×16=992 cm²"
+  },
+  {
+    id: 61,
+    category: "长方形",
+    question: "长方形长 63 cm，宽 4 cm，求面积。",
+    answer: "252",
+    solution: "63×4=252 cm²"
+  },
+  {
+    id: 62,
+    category: "长方形",
+    question: "长方形长 64 cm，宽 11 cm，求面积。",
+    answer: "704",
+    solution: "64×11=704 cm²"
+  },
+  {
+    id: 63,
+    category: "长方形",
+    question: "长方形长 65 cm，宽 18 cm，求面积。",
+    answer: "1170",
+    solution: "65×18=1170 cm²"
+  },
+  {
+    id: 64,
+    category: "长方形",
+    question: "长方形长 66 cm，宽 6 cm，求面积。",
+    answer: "396",
+    solution: "66×6=396 cm²"
+  },
+  {
+    id: 65,
+    category: "长方形",
+    question: "长方形长 67 cm，宽 13 cm，求面积。",
+    answer: "871",
+    solution: "67×13=871 cm²"
+  },
+  {
+    id: 66,
+    category: "长方形",
+    question: "长方形长 68 cm，宽 20 cm，求面积。",
+    answer: "1360",
+    solution: "68×20=1360 cm²"
+  },
+  {
+    id: 67,
+    category: "长方形",
+    question: "长方形长 69 cm，宽 8 cm，求面积。",
+    answer: "552",
+    solution: "69×8=552 cm²"
+  },
+  {
+    id: 68,
+    category: "长方形",
+    question: "长方形长 70 cm，宽 15 cm，求面积。",
+    answer: "1050",
+    solution: "70×15=1050 cm²"
+  },
+  {
+    id: 69,
+    category: "长方形",
+    question: "长方形长 71 cm，宽 3 cm，求面积。",
+    answer: "213",
+    solution: "71×3=213 cm²"
+  },
+  {
+    id: 70,
+    category: "长方形",
+    question: "长方形长 72 cm，宽 10 cm，求面积。",
+    answer: "720",
+    solution: "72×10=720 cm²"
+  },
+  {
+    id: 71,
+    category: "长方形",
+    question: "长方形长 73 cm，宽 17 cm，求面积。",
+    answer: "1241",
+    solution: "73×17=1241 cm²"
+  },
+  {
+    id: 72,
+    category: "长方形",
+    question: "长方形长 74 cm，宽 5 cm，求面积。",
+    answer: "370",
+    solution: "74×5=370 cm²"
+  },
+  {
+    id: 73,
+    category: "长方形",
+    question: "长方形长 75 cm，宽 12 cm，求面积。",
+    answer: "900",
+    solution: "75×12=900 cm²"
+  },
+  {
+    id: 74,
+    category: "长方形",
+    question: "长方形长 76 cm，宽 19 cm，求面积。",
+    answer: "1444",
+    solution: "76×19=1444 cm²"
+  },
+  {
+    id: 75,
+    category: "长方形",
+    question: "长方形长 77 cm，宽 7 cm，求面积。",
+    answer: "539",
+    solution: "77×7=539 cm²"
+  },
+  {
+    id: 76,
+    category: "长方形",
+    question: "长方形长 78 cm，宽 14 cm，求面积。",
+    answer: "1092",
+    solution: "78×14=1092 cm²"
+  },
+  {
+    id: 77,
+    category: "长方形",
+    question: "长方形长 79 cm，宽 2 cm，求面积。",
+    answer: "158",
+    solution: "79×2=158 cm²"
+  },
+  {
+    id: 78,
+    category: "长方形",
+    question: "长方形长 80 cm，宽 9 cm，求面积。",
+    answer: "720",
+    solution: "80×9=720 cm²"
+  },
+  {
+    id: 79,
+    category: "长方形",
+    question: "长方形长 81 cm，宽 16 cm，求面积。",
+    answer: "1296",
+    solution: "81×16=1296 cm²"
+  },
+  {
+    id: 80,
+    category: "长方形",
+    question: "长方形长 82 cm，宽 4 cm，求面积。",
+    answer: "328",
+    solution: "82×4=328 cm²"
+  },
+  {
+    id: 81,
+    category: "长方形",
+    question: "长方形长 83 cm，宽 11 cm，求面积。",
+    answer: "913",
+    solution: "83×11=913 cm²"
+  },
+  {
+    id: 82,
+    category: "长方形",
+    question: "长方形长 84 cm，宽 18 cm，求面积。",
+    answer: "1512",
+    solution: "84×18=1512 cm²"
+  },
+  {
+    id: 83,
+    category: "长方形",
+    question: "长方形长 85 cm，宽 6 cm，求面积。",
+    answer: "510",
+    solution: "85×6=510 cm²"
+  },
+  {
+    id: 84,
+    category: "长方形",
+    question: "长方形长 86 cm，宽 13 cm，求面积。",
+    answer: "1118",
+    solution: "86×13=1118 cm²"
+  },
+  {
+    id: 85,
+    category: "长方形",
+    question: "长方形长 87 cm，宽 20 cm，求面积。",
+    answer: "1740",
+    solution: "87×20=1740 cm²"
+  },
+  {
+    id: 86,
+    category: "长方形",
+    question: "长方形长 88 cm，宽 8 cm，求面积。",
+    answer: "704",
+    solution: "88×8=704 cm²"
+  },
+  {
+    id: 87,
+    category: "长方形",
+    question: "长方形长 89 cm，宽 15 cm，求面积。",
+    answer: "1335",
+    solution: "89×15=1335 cm²"
+  },
+  {
+    id: 88,
+    category: "长方形",
+    question: "长方形长 90 cm，宽 3 cm，求面积。",
+    answer: "270",
+    solution: "90×3=270 cm²"
+  },
+  {
+    id: 89,
+    category: "长方形",
+    question: "长方形长 91 cm，宽 10 cm，求面积。",
+    answer: "910",
+    solution: "91×10=910 cm²"
+  },
+  {
+    id: 90,
+    category: "长方形",
+    question: "长方形长 92 cm，宽 17 cm，求面积。",
+    answer: "1564",
+    solution: "92×17=1564 cm²"
+  },
+  {
+    id: 91,
+    category: "长方形",
+    question: "长方形长 93 cm，宽 5 cm，求面积。",
+    answer: "465",
+    solution: "93×5=465 cm²"
+  },
+  {
+    id: 92,
+    category: "长方形",
+    question: "长方形长 94 cm，宽 12 cm，求面积。",
+    answer: "1128",
+    solution: "94×12=1128 cm²"
+  },
+  {
+    id: 93,
+    category: "长方形",
+    question: "长方形长 95 cm，宽 19 cm，求面积。",
+    answer: "1805",
+    solution: "95×19=1805 cm²"
+  },
+  {
+    id: 94,
+    category: "长方形",
+    question: "长方形长 96 cm，宽 7 cm，求面积。",
+    answer: "672",
+    solution: "96×7=672 cm²"
+  },
+  {
+    id: 95,
+    category: "长方形",
+    question: "长方形长 97 cm，宽 14 cm，求面积。",
+    answer: "1358",
+    solution: "97×14=1358 cm²"
+  },
+  {
+    id: 96,
+    category: "长方形",
+    question: "长方形长 98 cm，宽 2 cm，求面积。",
+    answer: "196",
+    solution: "98×2=196 cm²"
+  },
+  {
+    id: 97,
+    category: "长方形",
+    question: "长方形长 99 cm，宽 9 cm，求面积。",
+    answer: "891",
+    solution: "99×9=891 cm²"
+  },
+  {
+    id: 98,
+    category: "长方形",
+    question: "长方形长 100 cm，宽 16 cm，求面积。",
+    answer: "1600",
+    solution: "100×16=1600 cm²"
+  },
+  {
+    id: 99,
+    category: "长方形",
+    question: "长方形长 101 cm，宽 4 cm，求面积。",
+    answer: "404",
+    solution: "101×4=404 cm²"
+  },
+  {
+    id: 100,
+    category: "长方形",
+    question: "长方形长 102 cm，宽 11 cm，求面积。",
+    answer: "1122",
+    solution: "102×11=1122 cm²"
+  },{
+  id: 101,
+  category: "长方形",
+  question: "长方形长 103 cm，宽 18 cm，求面积。",
+  answer: "1854",
+  solution: "103×18=1854 cm²"
+},
+{
+  id: 102,
+  category: "长方形",
+  question: "长方形长 104 cm，宽 6 cm，求面积。",
+  answer: "624",
+  solution: "104×6=624 cm²"
+},
+{
+  id: 103,
+  category: "长方形",
+  question: "长方形长 105 cm，宽 13 cm，求面积。",
+  answer: "1365",
+  solution: "105×13=1365 cm²"
+},
+{
+  id: 104,
+  category: "长方形",
+  question: "长方形长 106 cm，宽 20 cm，求面积。",
+  answer: "2120",
+  solution: "106×20=2120 cm²"
+},
+{
+  id: 105,
+  category: "长方形",
+  question: "长方形长 107 cm，宽 8 cm，求面积。",
+  answer: "856",
+  solution: "107×8=856 cm²"
+},
+{
+  id: 106,
+  category: "长方形",
+  question: "长方形长 108 cm，宽 15 cm，求面积。",
+  answer: "1620",
+  solution: "108×15=1620 cm²"
+},
+{
+  id: 107,
+  category: "长方形",
+  question: "长方形长 109 cm，宽 3 cm，求面积。",
+  answer: "327",
+  solution: "109×3=327 cm²"
+},
+{
+  id: 108,
+  category: "长方形",
+  question: "长方形长 110 cm，宽 10 cm，求面积。",
+  answer: "1100",
+  solution: "110×10=1100 cm²"
+},
+{
+  id: 109,
+  category: "长方形",
+  question: "长方形长 111 cm，宽 17 cm，求面积。",
+  answer: "1887",
+  solution: "111×17=1887 cm²"
+},
+{
+  id: 110,
+  category: "长方形",
+  question: "长方形长 112 cm，宽 5 cm，求面积。",
+  answer: "560",
+  solution: "112×5=560 cm²"
+},
+{
+  id: 111,
+  category: "长方形",
+  question: "长方形长 113 cm，宽 12 cm，求面积。",
+  answer: "1356",
+  solution: "113×12=1356 cm²"
+},
+{
+  id: 112,
+  category: "长方形",
+  question: "长方形长 114 cm，宽 19 cm，求面积。",
+  answer: "2166",
+  solution: "114×19=2166 cm²"
+},
+{
+  id: 113,
+  category: "长方形",
+  question: "长方形长 115 cm，宽 7 cm，求面积。",
+  answer: "805",
+  solution: "115×7=805 cm²"
+},
+{
+  id: 114,
+  category: "长方形",
+  question: "长方形长 116 cm，宽 14 cm，求面积。",
+  answer: "1624",
+  solution: "116×14=1624 cm²"
+},
+{
+  id: 115,
+  category: "长方形",
+  question: "长方形长 117 cm，宽 2 cm，求面积。",
+  answer: "234",
+  solution: "117×2=234 cm²"
+},
+{
+  id: 116,
+  category: "长方形",
+  question: "长方形长 118 cm，宽 9 cm，求面积。",
+  answer: "1062",
+  solution: "118×9=1062 cm²"
+},
+{
+  id: 117,
+  category: "长方形",
+  question: "长方形长 119 cm，宽 16 cm，求面积。",
+  answer: "1904",
+  solution: "119×16=1904 cm²"
+},
+{
+  id: 118,
+  category: "长方形",
+  question: "长方形长 120 cm，宽 4 cm，求面积。",
+  answer: "480",
+  solution: "120×4=480 cm²"
+},
+{
+  id: 119,
+  category: "长方形",
+  question: "长方形长 121 cm，宽 11 cm，求面积。",
+  answer: "1331",
+  solution: "121×11=1331 cm²"
+},
+{
+  id: 120,
+  category: "长方形",
+  question: "长方形长 122 cm，宽 18 cm，求面积。",
+  answer: "2196",
+  solution: "122×18=2196 cm²"
+},
+{
+  id: 121,
+  category: "长方形",
+  question: "长方形长 12 cm，宽 5 cm，求周长。",
+  answer: "34",
+  solution: "（12+5）×2=34 cm"
+},
+{
+  id: 122,
+  category: "长方形",
+  question: "长方形长 13 cm，宽 7 cm，求周长。",
+  answer: "40",
+  solution: "（13+7）×2=40 cm"
+},
+{
+  id: 123,
+  category: "长方形",
+  question: "长方形长 14 cm，宽 9 cm，求周长。",
+  answer: "46",
+  solution: "（14+9）×2=46 cm"
+},
+{
+  id: 124,
+  category: "长方形",
+  question: "长方形长 15 cm，宽 11 cm，求周长。",
+  answer: "52",
+  solution: "（15+11）×2=52 cm"
+},
+{
+  id: 125,
+  category: "长方形",
+  question: "长方形长 16 cm，宽 13 cm，求周长。",
+  answer: "58",
+  solution: "（16+13）×2=58 cm"
+},
+{
+  id: 126,
+  category: "长方形",
+  question: "长方形长 17 cm，宽 15 cm，求周长。",
+  answer: "64",
+  solution: "（17+15）×2=64 cm"
+},
+{
+  id: 127,
+  category: "长方形",
+  question: "长方形长 18 cm，宽 4 cm，求周长。",
+  answer: "44",
+  solution: "（18+4）×2=44 cm"
+},
+{
+  id: 128,
+  category: "长方形",
+  question: "长方形长 19 cm，宽 6 cm，求周长。",
+  answer: "50",
+  solution: "（19+6）×2=50 cm"
+},
+{
+  id: 129,
+  category: "长方形",
+  question: "长方形长 20 cm，宽 8 cm，求周长。",
+  answer: "56",
+  solution: "（20+8）×2=56 cm"
+},
+{
+  id: 130,
+  category: "长方形",
+  question: "长方形长 21 cm，宽 10 cm，求周长。",
+  answer: "62",
+  solution: "（21+10）×2=62 cm"
+},
+{
+  id: 131,
+  category: "长方形",
+  question: "长方形长 22 cm，宽 12 cm，求周长。",
+  answer: "68",
+  solution: "（22+12）×2=68 cm"
+},
+{
+  id: 132,
+  category: "长方形",
+  question: "长方形长 23 cm，宽 14 cm，求周长。",
+  answer: "74",
+  solution: "（23+14）×2=74 cm"
+},
+{
+  id: 133,
+  category: "长方形",
+  question: "长方形长 24 cm，宽 3 cm，求周长。",
+  answer: "54",
+  solution: "（24+3）×2=54 cm"
+},
+{
+  id: 134,
+  category: "长方形",
+  question: "长方形长 25 cm，宽 5 cm，求周长。",
+  answer: "60",
+  solution: "（25+5）×2=60 cm"
+},
+{
+  id: 135,
+  category: "长方形",
+  question: "长方形长 26 cm，宽 7 cm，求周长。",
+  answer: "66",
+  solution: "（26+7）×2=66 cm"
+},
+{
+  id: 136,
+  category: "长方形",
+  question: "长方形长 27 cm，宽 9 cm，求周长。",
+  answer: "72",
+  solution: "（27+9）×2=72 cm"
+},
+{
+  id: 137,
+  category: "长方形",
+  question: "长方形长 28 cm，宽 11 cm，求周长。",
+  answer: "78",
+  solution: "（28+11）×2=78 cm"
+},
+{
+  id: 138,
+  category: "长方形",
+  question: "长方形长 29 cm，宽 13 cm，求周长。",
+  answer: "84",
+  solution: "（29+13）×2=84 cm"
+},
+{
+  id: 139,
+  category: "长方形",
+  question: "长方形长 30 cm，宽 15 cm，求周长。",
+  answer: "90",
+  solution: "（30+15）×2=90 cm"
+},
+{
+  id: 140,
+  category: "长方形",
+  question: "长方形长 31 cm，宽 4 cm，求周长。",
+  answer: "70",
+  solution: "（31+4）×2=70 cm"
+},
+{
+  id: 141,
+  category: "长方形",
+  question: "长方形长 32 cm，宽 6 cm，求周长。",
+  answer: "76",
+  solution: "（32+6）×2=76 cm"
+},
+{
+  id: 142,
+  category: "长方形",
+  question: "长方形长 33 cm，宽 8 cm，求周长。",
+  answer: "82",
+  solution: "（33+8）×2=82 cm"
+},
+{
+  id: 143,
+  category: "长方形",
+  question: "长方形长 34 cm，宽 10 cm，求周长。",
+  answer: "88",
+  solution: "（34+10）×2=88 cm"
+},
+{
+  id: 144,
+  category: "长方形",
+  question: "长方形长 35 cm，宽 12 cm，求周长。",
+  answer: "94",
+  solution: "（35+12）×2=94 cm"
+},
+{
+  id: 145,
+  category: "长方形",
+  question: "长方形长 36 cm，宽 14 cm，求周长。",
+  answer: "100",
+  solution: "（36+14）×2=100 cm"
+},
+{
+  id: 146,
+  category: "长方形",
+  question: "长方形长 37 cm，宽 3 cm，求周长。",
+  answer: "80",
+  solution: "（37+3）×2=80 cm"
+},
+{
+  id: 147,
+  category: "长方形",
+  question: "长方形长 38 cm，宽 5 cm，求周长。",
+  answer: "86",
+  solution: "（38+5）×2=86 cm"
+},
+{
+  id: 148,
+  category: "长方形",
+  question: "长方形长 39 cm，宽 7 cm，求周长。",
+  answer: "92",
+  solution: "（39+7）×2=92 cm"
+},
+{
+  id: 149,
+  category: "长方形",
+  question: "长方形长 40 cm，宽 9 cm，求周长。",
+  answer: "98",
+  solution: "（40+9）×2=98 cm"
+},
+{
+  id: 150,
+  category: "长方形",
+  question: "长方形长 41 cm，宽 11 cm，求周长。",
+  answer: "104",
+  solution: "（41+11）×2=104 cm"
+},
+{
+  id: 151,
+  category: "长方形",
+  question: "长方形长 42 cm，宽 13 cm，求周长。",
+  answer: "110",
+  solution: "（42+13）×2=110 cm"
+},
+{
+  id: 152,
+  category: "长方形",
+  question: "长方形长 43 cm，宽 15 cm，求周长。",
+  answer: "116",
+  solution: "（43+15）×2=116 cm"
+},
+{
+  id: 153,
+  category: "长方形",
+  question: "长方形长 44 cm，宽 4 cm，求周长。",
+  answer: "96",
+  solution: "（44+4）×2=96 cm"
+},
+{
+  id: 154,
+  category: "长方形",
+  question: "长方形长 45 cm，宽 6 cm，求周长。",
+  answer: "102",
+  solution: "（45+6）×2=102 cm"
+},
+{
+  id: 155,
+  category: "长方形",
+  question: "长方形长 46 cm，宽 8 cm，求周长。",
+  answer: "108",
+  solution: "（46+8）×2=108 cm"
+},
+{
+  id: 156,
+  category: "长方形",
+  question: "长方形长 47 cm，宽 10 cm，求周长。",
+  answer: "114",
+  solution: "（47+10）×2=114 cm"
+},
+{
+  id: 157,
+  category: "长方形",
+  question: "长方形长 48 cm，宽 12 cm，求周长。",
+  answer: "120",
+  solution: "（48+12）×2=120 cm"
+},
+{
+  id: 158,
+  category: "长方形",
+  question: "长方形长 49 cm，宽 14 cm，求周长。",
+  answer: "126",
+  solution: "（49+14）×2=126 cm"
+},
+{
+  id: 159,
+  category: "长方形",
+  question: "长方形长 50 cm，宽 3 cm，求周长。",
+  answer: "106",
+  solution: "（50+3）×2=106 cm"
+},
+{
+  id: 160,
+  category: "长方形",
+  question: "长方形长 51 cm，宽 5 cm，求周长。",
+  answer: "112",
+  solution: "（51+5）×2=112 cm"
+},
+{
+  id: 161,
+  category: "长方形",
+  question: "一个长方形面积为 48 cm²，长为 8 cm，求宽。",
+  answer: "6",
+  solution: "宽=面积÷长=48÷8=6 cm"
+},
+{
+  id: 162,
+  category: "长方形",
+  question: "一个长方形面积为 63 cm²，长为 9 cm，求宽。",
+  answer: "7",
+  solution: "宽=面积÷长=63÷9=7 cm"
+},
+{
+  id: 163,
+  category: "长方形",
+  question: "一个长方形面积为 80 cm²，长为 10 cm，求宽。",
+  answer: "8",
+  solution: "宽=面积÷长=80÷10=8 cm"
+},
+{
+  id: 164,
+  category: "长方形",
+  question: "一个长方形面积为 99 cm²，长为 11 cm，求宽。",
+  answer: "9",
+  solution: "宽=面积÷长=99÷11=9 cm"
+},
+{
+  id: 165,
+  category: "长方形",
+  question: "一个长方形面积为 120 cm²，长为 12 cm，求宽。",
+  answer: "10",
+  solution: "宽=面积÷长=120÷12=10 cm"
+},
+{
+  id: 166,
+  category: "长方形",
+  question: "一个长方形面积为 143 cm²，长为 13 cm，求宽。",
+  answer: "11",
+  solution: "宽=面积÷长=143÷13=11 cm"
+},
+{
+  id: 167,
+  category: "长方形",
+  question: "一个长方形面积为 168 cm²，长为 14 cm，求宽。",
+  answer: "12",
+  solution: "宽=面积÷长=168÷14=12 cm"
+},
+{
+  id: 168,
+  category: "长方形",
+  question: "一个长方形面积为 195 cm²，长为 15 cm，求宽。",
+  answer: "13",
+  solution: "宽=面积÷长=195÷15=13 cm"
+},
+{
+  id: 169,
+  category: "长方形",
+  question: "一个长方形面积为 224 cm²，长为 16 cm，求宽。",
+  answer: "14",
+  solution: "宽=面积÷长=224÷16=14 cm"
+},
+{
+  id: 170,
+  category: "长方形",
+  question: "一个长方形面积为 255 cm²，长为 17 cm，求宽。",
+  answer: "15",
+  solution: "宽=面积÷长=255÷17=15 cm"
+},
+{
+  id: 171,
+  category: "长方形",
+  question: "一个长方形面积为 288 cm²，长为 18 cm，求宽。",
+  answer: "16",
+  solution: "宽=面积÷长=288÷18=16 cm"
+},
+{
+  id: 172,
+  category: "长方形",
+  question: "一个长方形面积为 323 cm²，长为 19 cm，求宽。",
+  answer: "17",
+  solution: "宽=面积÷长=323÷19=17 cm"
+},
+{
+  id: 173,
+  category: "长方形",
+  question: "一个长方形面积为 360 cm²，长为 20 cm，求宽。",
+  answer: "18",
+  solution: "宽=面积÷长=360÷20=18 cm"
+},
+{
+  id: 174,
+  category: "长方形",
+  question: "一个长方形面积为 399 cm²，长为 21 cm，求宽。",
+  answer: "19",
+  solution: "宽=面积÷长=399÷21=19 cm"
+},
+{
+  id: 175,
+  category: "长方形",
+  question: "一个长方形面积为 440 cm²，长为 22 cm，求宽。",
+  answer: "20",
+  solution: "宽=面积÷长=440÷22=20 cm"
+},
+{
+  id: 176,
+  category: "长方形",
+  question: "一个长方形面积为 115 cm²，长为 23 cm，求宽。",
+  answer: "5",
+  solution: "宽=面积÷长=115÷23=5 cm"
+},
+{
+  id: 177,
+  category: "长方形",
+  question: "一个长方形面积为 144 cm²，长为 24 cm，求宽。",
+  answer: "6",
+  solution: "宽=面积÷长=144÷24=6 cm"
+},
+{
+  id: 178,
+  category: "长方形",
+  question: "一个长方形面积为 175 cm²，长为 25 cm，求宽。",
+  answer: "7",
+  solution: "宽=面积÷长=175÷25=7 cm"
+},
+{
+  id: 179,
+  category: "长方形",
+  question: "一个长方形面积为 208 cm²，长为 26 cm，求宽。",
+  answer: "8",
+  solution: "宽=面积÷长=208÷26=8 cm"
+},
+{
+  id: 180,
+  category: "长方形",
+  question: "一个长方形面积为 243 cm²，长为 27 cm，求宽。",
+  answer: "9",
+  solution: "宽=面积÷长=243÷27=9 cm"
+},{
+  id: 181,
+  category: "长方形",
+  question: "一个长方形面积为 280 cm²，长为 28 cm，求宽。",
+  answer: "10",
+  solution: "宽=面积÷长=280÷28=10 cm"
+},
+{
+  id: 182,
+  category: "长方形",
+  question: "一个长方形面积为 319 cm²，长为 29 cm，求宽。",
+  answer: "11",
+  solution: "宽=面积÷长=319÷29=11 cm"
+},
+{
+  id: 183,
+  category: "长方形",
+  question: "一个长方形面积为 360 cm²，长为 30 cm，求宽。",
+  answer: "12",
+  solution: "宽=面积÷长=360÷30=12 cm"
+},
+{
+  id: 184,
+  category: "长方形",
+  question: "一个长方形面积为 403 cm²，长为 31 cm，求宽。",
+  answer: "13",
+  solution: "宽=面积÷长=403÷31=13 cm"
+},
+{
+  id: 185,
+  category: "长方形",
+  question: "一个长方形面积为 448 cm²，长为 32 cm，求宽。",
+  answer: "14",
+  solution: "宽=面积÷长=448÷32=14 cm"
+},
+{
+  id: 186,
+  category: "长方形",
+  question: "一个长方形面积为 495 cm²，长为 33 cm，求宽。",
+  answer: "15",
+  solution: "宽=面积÷长=495÷33=15 cm"
+},
+{
+  id: 187,
+  category: "长方形",
+  question: "一个长方形面积为 544 cm²，长为 34 cm，求宽。",
+  answer: "16",
+  solution: "宽=面积÷长=544÷34=16 cm"
+},
+{
+  id: 188,
+  category: "长方形",
+  question: "一个长方形面积为 595 cm²，长为 35 cm，求宽。",
+  answer: "17",
+  solution: "宽=面积÷长=595÷35=17 cm"
+},
+{
+  id: 189,
+  category: "长方形",
+  question: "一个长方形面积为 648 cm²，长为 36 cm，求宽。",
+  answer: "18",
+  solution: "宽=面积÷长=648÷36=18 cm"
+},
+{
+  id: 190,
+  category: "长方形",
+  question: "一个长方形面积为 703 cm²，长为 37 cm，求宽。",
+  answer: "19",
+  solution: "宽=面积÷长=703÷37=19 cm"
+},
+{
+  id: 191,
+  category: "长方形",
+  question: "一个长方形面积为 760 cm²，长为 38 cm，求宽。",
+  answer: "20",
+  solution: "宽=面积÷长=760÷38=20 cm"
+},
+{
+  id: 192,
+  category: "长方形",
+  question: "一个长方形面积为 195 cm²，长为 39 cm，求宽。",
+  answer: "5",
+  solution: "宽=面积÷长=195÷39=5 cm"
+},
+{
+  id: 193,
+  category: "长方形",
+  question: "一个长方形面积为 240 cm²，长为 40 cm，求宽。",
+  answer: "6",
+  solution: "宽=面积÷长=240÷40=6 cm"
+},
+{
+  id: 194,
+  category: "长方形",
+  question: "一个长方形面积为 287 cm²，长为 41 cm，求宽。",
+  answer: "7",
+  solution: "宽=面积÷长=287÷41=7 cm"
+},
+{
+  id: 195,
+  category: "长方形",
+  question: "一个长方形面积为 336 cm²，长为 42 cm，求宽。",
+  answer: "8",
+  solution: "宽=面积÷长=336÷42=8 cm"
+},
+{
+  id: 196,
+  category: "长方形",
+  question: "一个长方形面积为 387 cm²，长为 43 cm，求宽。",
+  answer: "9",
+  solution: "宽=面积÷长=387÷43=9 cm"
+},
+{
+  id: 197,
+  category: "长方形",
+  question: "一个长方形面积为 440 cm²，长为 44 cm，求宽。",
+  answer: "10",
+  solution: "宽=面积÷长=440÷44=10 cm"
+},
+{
+  id: 198,
+  category: "长方形",
+  question: "一个长方形面积为 495 cm²，长为 45 cm，求宽。",
+  answer: "11",
+  solution: "宽=面积÷长=495÷45=11 cm"
+},
+{
+  id: 199,
+  category: "长方形",
+  question: "一个长方形面积为 552 cm²，长为 46 cm，求宽。",
+  answer: "12",
+  solution: "宽=面积÷长=552÷46=12 cm"
+},
+{
+  id: 200,
+  category: "长方形",
+  question: "一个长方形面积为 611 cm²，长为 47 cm，求宽。",
+  answer: "13",
+  solution: "宽=面积÷长=611÷47=13 cm"
+},
+{
+  id: 201,
+  category: "长方形",
+  question: "一个长方形周长为 30 cm，长为 9 cm，求宽。",
+  answer: "6",
+  solution: "宽=周长÷2−长=30÷2−9=6 cm"
+},
+{
+  id: 202,
+  category: "长方形",
+  question: "一个长方形周长为 36 cm，长为 11 cm，求宽。",
+  answer: "7",
+  solution: "宽=36÷2−11=7 cm"
+},
+{
+  id: 203,
+  category: "长方形",
+  question: "一个长方形周长为 42 cm，长为 13 cm，求宽。",
+  answer: "8",
+  solution: "宽=42÷2−13=8 cm"
+},
+{
+  id: 204,
+  category: "长方形",
+  question: "一个长方形周长为 48 cm，长为 15 cm，求宽。",
+  answer: "9",
+  solution: "宽=48÷2−15=9 cm"
+},
+{
+  id: 205,
+  category: "长方形",
+  question: "一个长方形周长为 54 cm，长为 17 cm，求宽。",
+  answer: "10",
+  solution: "宽=54÷2−17=10 cm"
+},
+{
+  id: 206,
+  category: "长方形",
+  question: "一个长方形周长为 60 cm，长为 19 cm，求宽。",
+  answer: "11",
+  solution: "宽=60÷2−19=11 cm"
+},
+{
+  id: 207,
+  category: "长方形",
+  question: "一个长方形周长为 66 cm，长为 21 cm，求宽。",
+  answer: "12",
+  solution: "宽=66÷2−21=12 cm"
+},
+{
+  id: 208,
+  category: "长方形",
+  question: "一个长方形周长为 72 cm，长为 23 cm，求宽。",
+  answer: "13",
+  solution: "宽=72÷2−23=13 cm"
+},
+{
+  id: 209,
+  category: "长方形",
+  question: "一个长方形周长为 78 cm，长为 25 cm，求宽。",
+  answer: "14",
+  solution: "宽=78÷2−25=14 cm"
+},
+{
+  id: 210,
+  category: "长方形",
+  question: "一个长方形周长为 84 cm，长为 27 cm，求宽。",
+  answer: "15",
+  solution: "宽=84÷2−27=15 cm"
+},
+{
+  id: 211,
+  category: "长方形",
+  question: "一个长方形周长为 90 cm，长为 29 cm，求宽。",
+  answer: "16",
+  solution: "宽=90÷2−29=16 cm"
+},
+{
+  id: 212,
+  category: "长方形",
+  question: "一个长方形周长为 96 cm，长为 31 cm，求宽。",
+  answer: "17",
+  solution: "宽=96÷2−31=17 cm"
+},
+{
+  id: 213,
+  category: "长方形",
+  question: "一个长方形周长为 102 cm，长为 33 cm，求宽。",
+  answer: "18",
+  solution: "宽=102÷2−33=18 cm"
+},
+{
+  id: 214,
+  category: "长方形",
+  question: "一个长方形周长为 108 cm，长为 35 cm，求宽。",
+  answer: "19",
+  solution: "宽=108÷2−35=19 cm"
+},
+{
+  id: 215,
+  category: "长方形",
+  question: "一个长方形周长为 114 cm，长为 37 cm，求宽。",
+  answer: "20",
+  solution: "宽=114÷2−37=20 cm"
+},
+{
+  id: 216,
+  category: "长方形",
+  question: "一个长方形周长为 88 cm，宽为 14 cm，求长。",
+  answer: "30",
+  solution: "长=周长÷2−宽=88÷2−14=30 cm"
+},
+{
+  id: 217,
+  category: "长方形",
+  question: "一个长方形周长为 94 cm，宽为 15 cm，求长。",
+  answer: "32",
+  solution: "长=94÷2−15=32 cm"
+},
+{
+  id: 218,
+  category: "长方形",
+  question: "一个长方形周长为 100 cm，宽为 16 cm，求长。",
+  answer: "34",
+  solution: "长=100÷2−16=34 cm"
+},
+{
+  id: 219,
+  category: "长方形",
+  question: "一个长方形周长为 106 cm，宽为 17 cm，求长。",
+  answer: "36",
+  solution: "长=106÷2−17=36 cm"
+},
+{
+  id: 220,
+  category: "长方形",
+  question: "一个长方形周长为 112 cm，宽为 18 cm，求长。",
+  answer: "38",
+  solution: "长=112÷2−18=38 cm"
+},
 
-</div>
-</section>
+{
+  id: 221,
+  category: "正方形",
+  question: "正方形边长为 3 cm，求面积。",
+  answer: "9",
+  solution: "3×3=9 cm²"
+},
+{
+  id: 222,
+  category: "正方形",
+  question: "正方形边长为 4 cm，求面积。",
+  answer: "16",
+  solution: "4×4=16 cm²"
+},
+{
+  id: 223,
+  category: "正方形",
+  question: "正方形边长为 5 cm，求面积。",
+  answer: "25",
+  solution: "5×5=25 cm²"
+},
+{
+  id: 224,
+  category: "正方形",
+  question: "正方形边长为 6 cm，求面积。",
+  answer: "36",
+  solution: "6×6=36 cm²"
+},
+{
+  id: 225,
+  category: "正方形",
+  question: "正方形边长为 7 cm，求面积。",
+  answer: "49",
+  solution: "7×7=49 cm²"
+},
+{
+  id: 226,
+  category: "正方形",
+  question: "正方形边长为 8 cm，求面积。",
+  answer: "64",
+  solution: "8×8=64 cm²"
+},
+{
+  id: 227,
+  category: "正方形",
+  question: "正方形边长为 9 cm，求面积。",
+  answer: "81",
+  solution: "9×9=81 cm²"
+},
+{
+  id: 228,
+  category: "正方形",
+  question: "正方形边长为 10 cm，求面积。",
+  answer: "100",
+  solution: "10×10=100 cm²"
+},
+{
+  id: 229,
+  category: "正方形",
+  question: "正方形边长为 11 cm，求面积。",
+  answer: "121",
+  solution: "11×11=121 cm²"
+},
+{
+  id: 230,
+  category: "正方形",
+  question: "正方形边长为 12 cm，求面积。",
+  answer: "144",
+  solution: "12×12=144 cm²"
+},
+{
+  id: 231,
+  category: "正方形",
+  question: "正方形边长为 13 cm，求面积。",
+  answer: "169",
+  solution: "13×13=169 cm²"
+},
+{
+  id: 232,
+  category: "正方形",
+  question: "正方形边长为 14 cm，求面积。",
+  answer: "196",
+  solution: "14×14=196 cm²"
+},
+{
+  id: 233,
+  category: "正方形",
+  question: "正方形边长为 15 cm，求面积。",
+  answer: "225",
+  solution: "15×15=225 cm²"
+},
+{
+  id: 234,
+  category: "正方形",
+  question: "正方形边长为 16 cm，求面积。",
+  answer: "256",
+  solution: "16×16=256 cm²"
+},
+{
+  id: 235,
+  category: "正方形",
+  question: "正方形边长为 17 cm，求面积。",
+  answer: "289",
+  solution: "17×17=289 cm²"
+},
+{
+  id: 236,
+  category: "正方形",
+  question: "正方形边长为 18 cm，求面积。",
+  answer: "324",
+  solution: "18×18=324 cm²"
+},
+{
+  id: 237,
+  category: "正方形",
+  question: "正方形边长为 19 cm，求面积。",
+  answer: "361",
+  solution: "19×19=361 cm²"
+},
+{
+  id: 238,
+  category: "正方形",
+  question: "正方形边长为 20 cm，求面积。",
+  answer: "400",
+  solution: "20×20=400 cm²"
+},
+{
+  id: 239,
+  category: "正方形",
+  question: "正方形边长为 21 cm，求面积。",
+  answer: "441",
+  solution: "21×21=441 cm²"
+},
+{
+  id: 240,
+  category: "正方形",
+  question: "正方形边长为 22 cm，求面积。",
+  answer: "484",
+  solution: "22×22=484 cm²"
+},
+{
+  id: 241,
+  category: "正方形",
+  question: "正方形边长为 23 cm，求面积。",
+  answer: "529",
+  solution: "23×23=529 cm²"
+},
+{
+  id: 242,
+  category: "正方形",
+  question: "正方形边长为 24 cm，求面积。",
+  answer: "576",
+  solution: "24×24=576 cm²"
+},
+{
+  id: 243,
+  category: "正方形",
+  question: "正方形边长为 25 cm，求面积。",
+  answer: "625",
+  solution: "25×25=625 cm²"
+},
+{
+  id: 244,
+  category: "正方形",
+  question: "正方形边长为 26 cm，求面积。",
+  answer: "676",
+  solution: "26×26=676 cm²"
+},
+{
+  id: 245,
+  category: "正方形",
+  question: "正方形边长为 27 cm，求面积。",
+  answer: "729",
+  solution: "27×27=729 cm²"
+},
+{
+  id: 246,
+  category: "正方形",
+  question: "正方形边长为 28 cm，求面积。",
+  answer: "784",
+  solution: "28×28=784 cm²"
+},
+{
+  id: 247,
+  category: "正方形",
+  question: "正方形边长为 29 cm，求面积。",
+  answer: "841",
+  solution: "29×29=841 cm²"
+},
+{
+  id: 248,
+  category: "正方形",
+  question: "正方形边长为 30 cm，求面积。",
+  answer: "900",
+  solution: "30×30=900 cm²"
+},
+{
+  id: 249,
+  category: "正方形",
+  question: "正方形边长为 31 cm，求面积。",
+  answer: "961",
+  solution: "31×31=961 cm²"
+},
+{
+  id: 250,
+  category: "正方形",
+  question: "正方形边长为 32 cm，求面积。",
+  answer: "1024",
+  solution: "32×32=1024 cm²"
+},
+{
+  id: 251,
+  category: "正方形",
+  question: "正方形边长为 5 cm，求周长。",
+  answer: "20",
+  solution: "5×4=20 cm"
+},
+{
+  id: 252,
+  category: "正方形",
+  question: "正方形边长为 6 cm，求周长。",
+  answer: "24",
+  solution: "6×4=24 cm"
+},
+{
+  id: 253,
+  category: "正方形",
+  question: "正方形边长为 7 cm，求周长。",
+  answer: "28",
+  solution: "7×4=28 cm"
+},
+{
+  id: 254,
+  category: "正方形",
+  question: "正方形边长为 8 cm，求周长。",
+  answer: "32",
+  solution: "8×4=32 cm"
+},
+{
+  id: 255,
+  category: "正方形",
+  question: "正方形边长为 9 cm，求周长。",
+  answer: "36",
+  solution: "9×4=36 cm"
+},
+{
+  id: 256,
+  category: "正方形",
+  question: "正方形边长为 10 cm，求周长。",
+  answer: "40",
+  solution: "10×4=40 cm"
+},
+{
+  id: 257,
+  category: "正方形",
+  question: "正方形边长为 11 cm，求周长。",
+  answer: "44",
+  solution: "11×4=44 cm"
+},
+{
+  id: 258,
+  category: "正方形",
+  question: "正方形边长为 12 cm，求周长。",
+  answer: "48",
+  solution: "12×4=48 cm"
+},
+{
+  id: 259,
+  category: "正方形",
+  question: "正方形边长为 13 cm，求周长。",
+  answer: "52",
+  solution: "13×4=52 cm"
+},
+{
+  id: 260,
+  category: "正方形",
+  question: "正方形边长为 14 cm，求周长。",
+  answer: "56",
+  solution: "14×4=56 cm"
+},
+{
+  id: 261,
+  category: "正方形",
+  question: "正方形边长为 15 cm，求周长。",
+  answer: "60",
+  solution: "15×4=60 cm"
+},
+{
+  id: 262,
+  category: "正方形",
+  question: "正方形边长为 16 cm，求周长。",
+  answer: "64",
+  solution: "16×4=64 cm"
+},
+{
+  id: 263,
+  category: "正方形",
+  question: "正方形边长为 17 cm，求周长。",
+  answer: "68",
+  solution: "17×4=68 cm"
+},
+{
+  id: 264,
+  category: "正方形",
+  question: "正方形边长为 18 cm，求周长。",
+  answer: "72",
+  solution: "18×4=72 cm"
+},
+{
+  id: 265,
+  category: "正方形",
+  question: "正方形边长为 19 cm，求周长。",
+  answer: "76",
+  solution: "19×4=76 cm"
+},
+{
+  id: 266,
+  category: "正方形",
+  question: "正方形边长为 20 cm，求周长。",
+  answer: "80",
+  solution: "20×4=80 cm"
+},
+{
+  id: 267,
+  category: "正方形",
+  question: "正方形边长为 21 cm，求周长。",
+  answer: "84",
+  solution: "21×4=84 cm"
+},
+{
+  id: 268,
+  category: "正方形",
+  question: "正方形边长为 22 cm，求周长。",
+  answer: "88",
+  solution: "22×4=88 cm"
+},
+{
+  id: 269,
+  category: "正方形",
+  question: "正方形边长为 23 cm，求周长。",
+  answer: "92",
+  solution: "23×4=92 cm"
+},
+{
+  id: 270,
+  category: "正方形",
+  question: "正方形边长为 24 cm，求周长。",
+  answer: "96",
+  solution: "24×4=96 cm"
+},
+{
+  id: 271,
+  category: "正方形",
+  question: "正方形边长为 25 cm，求周长。",
+  answer: "100",
+  solution: "25×4=100 cm"
+},
+{
+  id: 272,
+  category: "正方形",
+  question: "正方形边长为 26 cm，求周长。",
+  answer: "104",
+  solution: "26×4=104 cm"
+},
+{
+  id: 273,
+  category: "正方形",
+  question: "正方形边长为 27 cm，求周长。",
+  answer: "108",
+  solution: "27×4=108 cm"
+},
+{
+  id: 274,
+  category: "正方形",
+  question: "正方形边长为 28 cm，求周长。",
+  answer: "112",
+  solution: "28×4=112 cm"
+},
+{
+  id: 275,
+  category: "正方形",
+  question: "正方形边长为 29 cm，求周长。",
+  answer: "116",
+  solution: "29×4=116 cm"
+},
+{
+  id: 276,
+  category: "正方形",
+  question: "正方形边长为 30 cm，求周长。",
+  answer: "120",
+  solution: "30×4=120 cm"
+},
+{
+  id: 277,
+  category: "正方形",
+  question: "正方形边长为 31 cm，求周长。",
+  answer: "124",
+  solution: "31×4=124 cm"
+},
+{
+  id: 278,
+  category: "正方形",
+  question: "正方形边长为 32 cm，求周长。",
+  answer: "128",
+  solution: "32×4=128 cm"
+},
+{
+  id: 279,
+  category: "正方形",
+  question: "正方形边长为 33 cm，求周长。",
+  answer: "132",
+  solution: "33×4=132 cm"
+},
+{
+  id: 280,
+  category: "正方形",
+  question: "正方形边长为 34 cm，求周长。",
+  answer: "136",
+  solution: "34×4=136 cm"
+},
+{
+  id: 281,
+  category: "正方形",
+  question: "正方形周长为 28 cm，求边长。",
+  answer: "7",
+  solution: "边长=周长÷4=28÷4=7 cm"
+},
+{
+  id: 282,
+  category: "正方形",
+  question: "正方形周长为 32 cm，求边长。",
+  answer: "8",
+  solution: "边长=32÷4=8 cm"
+},
+{
+  id: 283,
+  category: "正方形",
+  question: "正方形周长为 36 cm，求边长。",
+  answer: "9",
+  solution: "边长=36÷4=9 cm"
+},
+{
+  id: 284,
+  category: "正方形",
+  question: "正方形周长为 40 cm，求边长。",
+  answer: "10",
+  solution: "边长=40÷4=10 cm"
+},
+{
+  id: 285,
+  category: "正方形",
+  question: "正方形周长为 44 cm，求边长。",
+  answer: "11",
+  solution: "边长=44÷4=11 cm"
+},
+{
+  id: 286,
+  category: "正方形",
+  question: "正方形周长为 48 cm，求边长。",
+  answer: "12",
+  solution: "边长=48÷4=12 cm"
+},
+{
+  id: 287,
+  category: "正方形",
+  question: "正方形周长为 52 cm，求边长。",
+  answer: "13",
+  solution: "边长=52÷4=13 cm"
+},
+{
+  id: 288,
+  category: "正方形",
+  question: "正方形周长为 56 cm，求边长。",
+  answer: "14",
+  solution: "边长=56÷4=14 cm"
+},
+{
+  id: 289,
+  category: "正方形",
+  question: "正方形周长为 60 cm，求边长。",
+  answer: "15",
+  solution: "边长=60÷4=15 cm"
+},
+{
+  id: 290,
+  category: "正方形",
+  question: "正方形周长为 64 cm，求边长。",
+  answer: "16",
+  solution: "边长=64÷4=16 cm"
+},
+{
+  id: 291,
+  category: "正方形",
+  question: "正方形周长为 68 cm，求边长。",
+  answer: "17",
+  solution: "边长=68÷4=17 cm"
+},
+{
+  id: 292,
+  category: "正方形",
+  question: "正方形周长为 72 cm，求边长。",
+  answer: "18",
+  solution: "边长=72÷4=18 cm"
+},
+{
+  id: 293,
+  category: "正方形",
+  question: "正方形周长为 76 cm，求边长。",
+  answer: "19",
+  solution: "边长=76÷4=19 cm"
+},
+{
+  id: 294,
+  category: "正方形",
+  question: "正方形周长为 80 cm，求边长。",
+  answer: "20",
+  solution: "边长=80÷4=20 cm"
+},
+{
+  id: 295,
+  category: "正方形",
+  question: "正方形面积为 81 cm²，求边长。",
+  answer: "9",
+  solution: "因为9×9=81，所以边长为9 cm"
+},
+{
+  id: 296,
+  category: "正方形",
+  question: "正方形面积为 100 cm²，求边长。",
+  answer: "10",
+  solution: "因为10×10=100，所以边长为10 cm"
+},
+{
+  id: 297,
+  category: "正方形",
+  question: "正方形面积为 121 cm²，求边长。",
+  answer: "11",
+  solution: "因为11×11=121，所以边长为11 cm"
+},
+{
+  id: 298,
+  category: "正方形",
+  question: "正方形面积为 144 cm²，求边长。",
+  answer: "12",
+  solution: "因为12×12=144，所以边长为12 cm"
+},
+{
+  id: 299,
+  category: "正方形",
+  question: "正方形面积为 169 cm²，求边长。",
+  answer: "13",
+  solution: "因为13×13=169，所以边长为13 cm"
+},
+{
+  id: 300,
+  category: "正方形",
+  question: "正方形面积为 196 cm²，求边长。",
+  answer: "14",
+  solution: "因为14×14=196，所以边长为14 cm"
+},
 
-<!-- 7 风筝 -->
-<section class="section" id="kite">
-<h2>7. 风筝模型</h2>
-<div class="grid">
+{
+  id: 301,
+  category: "平行四边形",
+  question: "平行四边形底为 6 cm，高为 4 cm，求面积。",
+  answer: "24",
+  solution: "面积=底×高=6×4=24 cm²"
+},
+{
+  id: 302,
+  category: "平行四边形",
+  question: "平行四边形底为 7 cm，高为 5 cm，求面积。",
+  answer: "35",
+  solution: "面积=7×5=35 cm²"
+},
+{
+  id: 303,
+  category: "平行四边形",
+  question: "平行四边形底为 8 cm，高为 6 cm，求面积。",
+  answer: "48",
+  solution: "面积=8×6=48 cm²"
+},
+{
+  id: 304,
+  category: "平行四边形",
+  question: "平行四边形底为 9 cm，高为 7 cm，求面积。",
+  answer: "63",
+  solution: "面积=9×7=63 cm²"
+},
+{
+  id: 305,
+  category: "平行四边形",
+  question: "平行四边形底为 10 cm，高为 8 cm，求面积。",
+  answer: "80",
+  solution: "面积=10×8=80 cm²"
+},
+{
+  id: 306,
+  category: "平行四边形",
+  question: "平行四边形底为 11 cm，高为 9 cm，求面积。",
+  answer: "99",
+  solution: "面积=11×9=99 cm²"
+},
+{
+  id: 307,
+  category: "平行四边形",
+  question: "平行四边形底为 12 cm，高为 10 cm，求面积。",
+  answer: "120",
+  solution: "面积=12×10=120 cm²"
+},
+{
+  id: 308,
+  category: "平行四边形",
+  question: "平行四边形底为 13 cm，高为 11 cm，求面积。",
+  answer: "143",
+  solution: "面积=13×11=143 cm²"
+},
+{
+  id: 309,
+  category: "平行四边形",
+  question: "平行四边形底为 14 cm，高为 12 cm，求面积。",
+  answer: "168",
+  solution: "面积=14×12=168 cm²"
+},
+{
+  id: 310,
+  category: "平行四边形",
+  question: "平行四边形底为 15 cm，高为 13 cm，求面积。",
+  answer: "195",
+  solution: "面积=15×13=195 cm²"
+},
+{
+  id: 311,
+  category: "平行四边形",
+  question: "平行四边形底为 16 cm，高为 14 cm，求面积。",
+  answer: "224",
+  solution: "面积=16×14=224 cm²"
+},
+{
+  id: 312,
+  category: "平行四边形",
+  question: "平行四边形底为 17 cm，高为 15 cm，求面积。",
+  answer: "255",
+  solution: "面积=17×15=255 cm²"
+},
+{
+  id: 313,
+  category: "平行四边形",
+  question: "平行四边形底为 18 cm，高为 16 cm，求面积。",
+  answer: "288",
+  solution: "面积=18×16=288 cm²"
+},
+{
+  id: 314,
+  category: "平行四边形",
+  question: "平行四边形底为 19 cm，高为 17 cm，求面积。",
+  answer: "323",
+  solution: "面积=19×17=323 cm²"
+},
+{
+  id: 315,
+  category: "平行四边形",
+  question: "平行四边形底为 20 cm，高为 18 cm，求面积。",
+  answer: "360",
+  solution: "面积=20×18=360 cm²"
+},
+{
+  id: 316,
+  category: "平行四边形",
+  question: "平行四边形底为 21 cm，高为 6 cm，求面积。",
+  answer: "126",
+  solution: "面积=21×6=126 cm²"
+},
+{
+  id: 317,
+  category: "平行四边形",
+  question: "平行四边形底为 22 cm，高为 7 cm，求面积。",
+  answer: "154",
+  solution: "面积=22×7=154 cm²"
+},
+{
+  id: 318,
+  category: "平行四边形",
+  question: "平行四边形底为 23 cm，高为 8 cm，求面积。",
+  answer: "184",
+  solution: "面积=23×8=184 cm²"
+},
+{
+  id: 319,
+  category: "平行四边形",
+  question: "平行四边形底为 24 cm，高为 9 cm，求面积。",
+  answer: "216",
+  solution: "面积=24×9=216 cm²"
+},
+{
+  id: 320,
+  category: "平行四边形",
+  question: "平行四边形底为 25 cm，高为 10 cm，求面积。",
+  answer: "250",
+  solution: "面积=25×10=250 cm²"
+},
+{
+  id: 321,
+  category: "平行四边形",
+  question: "平行四边形底为 26 cm，高为 11 cm，求面积。",
+  answer: "286",
+  solution: "面积=26×11=286 cm²"
+},
+{
+  id: 322,
+  category: "平行四边形",
+  question: "平行四边形底为 27 cm，高为 12 cm，求面积。",
+  answer: "324",
+  solution: "面积=27×12=324 cm²"
+},
+{
+  id: 323,
+  category: "平行四边形",
+  question: "平行四边形底为 28 cm，高为 13 cm，求面积。",
+  answer: "364",
+  solution: "面积=28×13=364 cm²"
+},
+{
+  id: 324,
+  category: "平行四边形",
+  question: "平行四边形底为 29 cm，高为 14 cm，求面积。",
+  answer: "406",
+  solution: "面积=29×14=406 cm²"
+},
+{
+  id: 325,
+  category: "平行四边形",
+  question: "平行四边形底为 30 cm，高为 15 cm，求面积。",
+  answer: "450",
+  solution: "面积=30×15=450 cm²"
+},
+{
+  id: 326,
+  category: "平行四边形",
+  question: "平行四边形面积为 72 cm²，底为 9 cm，求高。",
+  answer: "8",
+  solution: "高=面积÷底=72÷9=8 cm"
+},
+{
+  id: 327,
+  category: "平行四边形",
+  question: "平行四边形面积为 100 cm²，底为 10 cm，求高。",
+  answer: "10",
+  solution: "高=100÷10=10 cm"
+},
+{
+  id: 328,
+  category: "平行四边形",
+  question: "平行四边形面积为 132 cm²，底为 11 cm，求高。",
+  answer: "12",
+  solution: "高=132÷11=12 cm"
+},
+{
+  id: 329,
+  category: "平行四边形",
+  question: "平行四边形面积为 168 cm²，底为 12 cm，求高。",
+  answer: "14",
+  solution: "高=168÷12=14 cm"
+},
+{
+  id: 330,
+  category: "平行四边形",
+  question: "平行四边形面积为 208 cm²，底为 13 cm，求高。",
+  answer: "16",
+  solution: "高=208÷13=16 cm"
+},
+{
+  id: 331,
+  category: "平行四边形",
+  question: "平行四边形面积为 252 cm²，底为 14 cm，求高。",
+  answer: "18",
+  solution: "高=252÷14=18 cm"
+},
+{
+  id: 332,
+  category: "平行四边形",
+  question: "平行四边形面积为 300 cm²，底为 15 cm，求高。",
+  answer: "20",
+  solution: "高=300÷15=20 cm"
+},
+{
+  id: 333,
+  category: "平行四边形",
+  question: "平行四边形面积为 352 cm²，底为 16 cm，求高。",
+  answer: "22",
+  solution: "高=352÷16=22 cm"
+},
+{
+  id: 334,
+  category: "平行四边形",
+  question: "平行四边形面积为 408 cm²，底为 17 cm，求高。",
+  answer: "24",
+  solution: "高=408÷17=24 cm"
+},
+{
+  id: 335,
+  category: "平行四边形",
+  question: "平行四边形面积为 468 cm²，底为 18 cm，求高。",
+  answer: "26",
+  solution: "高=468÷18=26 cm"
+},
+{
+  id: 336,
+  category: "平行四边形",
+  question: "平行四边形面积为 532 cm²，底为 19 cm，求高。",
+  answer: "28",
+  solution: "高=532÷19=28 cm"
+},
+{
+  id: 337,
+  category: "平行四边形",
+  question: "平行四边形面积为 600 cm²，底为 20 cm，求高。",
+  answer: "30",
+  solution: "高=600÷20=30 cm"
+},
+{
+  id: 338,
+  category: "平行四边形",
+  question: "平行四边形面积为 147 cm²，高为 7 cm，求底。",
+  answer: "21",
+  solution: "底=面积÷高=147÷7=21 cm"
+},
+{
+  id: 339,
+  category: "平行四边形",
+  question: "平行四边形面积为 176 cm²，高为 8 cm，求底。",
+  answer: "22",
+  solution: "底=176÷8=22 cm"
+},
+{
+  id: 340,
+  category: "平行四边形",
+  question: "平行四边形面积为 207 cm²，高为 9 cm，求底。",
+  answer: "23",
+  solution: "底=207÷9=23 cm"
+},
 
-<article class="card lesson" data-search="风筝模型 面积 乘积">
-<label class="master"><input type="checkbox" data-master="kite1"> 已掌握</label>
-<h3>四块面积关系</h3>
-<div class="diagram">
-<svg viewBox="0 0 400 260">
-<polygon points="200,20 360,125 200,235 40,125" class="line"/>
-<line x1="200" y1="20" x2="200" y2="235" class="redline"/>
-<line x1="40" y1="125" x2="360" y2="125" class="redline"/>
-<text x="135" y="80" class="label">S₁</text>
-<text x="255" y="80" class="label">S₂</text>
-<text x="255" y="185" class="label">S₃</text>
-<text x="135" y="185" class="label">S₄</text>
-</svg>
-</div>
-<div class="formulas"><span class="chip">S₁×S₃=S₂×S₄</span></div>
-</article>
+{
+  id: 341,
+  category: "平行四边形",
+  question: "平行四边形相邻两边分别为 8 cm 和 5 cm，求周长。",
+  answer: "26",
+  solution: "周长=（8+5）×2=26 cm"
+},
+{
+  id: 342,
+  category: "平行四边形",
+  question: "平行四边形相邻两边分别为 9 cm 和 6 cm，求周长。",
+  answer: "30",
+  solution: "周长=（9+6）×2=30 cm"
+},
+{
+  id: 343,
+  category: "平行四边形",
+  question: "平行四边形相邻两边分别为 10 cm 和 7 cm，求周长。",
+  answer: "34",
+  solution: "周长=（10+7）×2=34 cm"
+},
+{
+  id: 344,
+  category: "平行四边形",
+  question: "平行四边形相邻两边分别为 11 cm 和 8 cm，求周长。",
+  answer: "38",
+  solution: "周长=（11+8）×2=38 cm"
+},
+{
+  id: 345,
+  category: "平行四边形",
+  question: "平行四边形相邻两边分别为 12 cm 和 9 cm，求周长。",
+  answer: "42",
+  solution: "周长=（12+9）×2=42 cm"
+},
+{
+  id: 346,
+  category: "平行四边形",
+  question: "平行四边形相邻两边分别为 13 cm 和 10 cm，求周长。",
+  answer: "46",
+  solution: "周长=（13+10）×2=46 cm"
+},
+{
+  id: 347,
+  category: "平行四边形",
+  question: "平行四边形相邻两边分别为 14 cm 和 11 cm，求周长。",
+  answer: "50",
+  solution: "周长=（14+11）×2=50 cm"
+},
+{
+  id: 348,
+  category: "平行四边形",
+  question: "平行四边形相邻两边分别为 15 cm 和 12 cm，求周长。",
+  answer: "54",
+  solution: "周长=（15+12）×2=54 cm"
+},
+{
+  id: 349,
+  category: "平行四边形",
+  question: "平行四边形相邻两边分别为 16 cm 和 13 cm，求周长。",
+  answer: "58",
+  solution: "周长=（16+13）×2=58 cm"
+},
+{
+  id: 350,
+  category: "平行四边形",
+  question: "平行四边形相邻两边分别为 17 cm 和 14 cm，求周长。",
+  answer: "62",
+  solution: "周长=（17+14）×2=62 cm"
+},
 
-<article class="card lesson" data-search="风筝 边 面积比">
-<label class="master"><input type="checkbox" data-master="kite2"> 已掌握</label>
-<h3>面积与边</h3>
-<div class="formulas"><span class="chip">S=½ab·sinθ</span></div>
-<div class="note">夹角相同时，面积比等于夹角两边乘积之比。</div>
-</article>
+{
+  id: 351,
+  category: "梯形",
+  question: "梯形上底 4 cm，下底 8 cm，高 5 cm，求面积。",
+  answer: "30",
+  solution: "面积=（上底+下底）×高÷2=（4+8）×5÷2=30 cm²"
+},
+{
+  id: 352,
+  category: "梯形",
+  question: "梯形上底 5 cm，下底 9 cm，高 6 cm，求面积。",
+  answer: "42",
+  solution: "面积=（5+9）×6÷2=42 cm²"
+},
+{
+  id: 353,
+  category: "梯形",
+  question: "梯形上底 6 cm，下底 10 cm，高 7 cm，求面积。",
+  answer: "56",
+  solution: "面积=（6+10）×7÷2=56 cm²"
+},
+{
+  id: 354,
+  category: "梯形",
+  question: "梯形上底 7 cm，下底 11 cm，高 8 cm，求面积。",
+  answer: "72",
+  solution: "面积=（7+11）×8÷2=72 cm²"
+},
+{
+  id: 355,
+  category: "梯形",
+  question: "梯形上底 8 cm，下底 12 cm，高 9 cm，求面积。",
+  answer: "90",
+  solution: "面积=（8+12）×9÷2=90 cm²"
+},
+{
+  id: 356,
+  category: "梯形",
+  question: "梯形上底 9 cm，下底 13 cm，高 10 cm，求面积。",
+  answer: "110",
+  solution: "面积=（9+13）×10÷2=110 cm²"
+},
+{
+  id: 357,
+  category: "梯形",
+  question: "梯形上底 10 cm，下底 14 cm，高 11 cm，求面积。",
+  answer: "132",
+  solution: "面积=（10+14）×11÷2=132 cm²"
+},
+{
+  id: 358,
+  category: "梯形",
+  question: "梯形上底 11 cm，下底 15 cm，高 12 cm，求面积。",
+  answer: "156",
+  solution: "面积=（11+15）×12÷2=156 cm²"
+},
+{
+  id: 359,
+  category: "梯形",
+  question: "梯形上底 12 cm，下底 16 cm，高 13 cm，求面积。",
+  answer: "182",
+  solution: "面积=（12+16）×13÷2=182 cm²"
+},
+{
+  id: 360,
+  category: "梯形",
+  question: "梯形上底 13 cm，下底 17 cm，高 14 cm，求面积。",
+  answer: "210",
+  solution: "面积=（13+17）×14÷2=210 cm²"
+},
+{
+  id: 361,
+  category: "梯形",
+  question: "梯形上底 14 cm，下底 18 cm，高 15 cm，求面积。",
+  answer: "240",
+  solution: "面积=（14+18）×15÷2=240 cm²"
+},
+{
+  id: 362,
+  category: "梯形",
+  question: "梯形上底 15 cm，下底 19 cm，高 16 cm，求面积。",
+  answer: "272",
+  solution: "面积=（15+19）×16÷2=272 cm²"
+},
+{
+  id: 363,
+  category: "梯形",
+  question: "梯形上底 16 cm，下底 20 cm，高 17 cm，求面积。",
+  answer: "306",
+  solution: "面积=（16+20）×17÷2=306 cm²"
+},
+{
+  id: 364,
+  category: "梯形",
+  question: "梯形上底 17 cm，下底 21 cm，高 18 cm，求面积。",
+  answer: "342",
+  solution: "面积=（17+21）×18÷2=342 cm²"
+},
+{
+  id: 365,
+  category: "梯形",
+  question: "梯形上底 18 cm，下底 22 cm，高 19 cm，求面积。",
+  answer: "380",
+  solution: "面积=（18+22）×19÷2=380 cm²"
+},
+{
+  id: 366,
+  category: "梯形",
+  question: "梯形上底 19 cm，下底 23 cm，高 20 cm，求面积。",
+  answer: "420",
+  solution: "面积=（19+23）×20÷2=420 cm²"
+},
+{
+  id: 367,
+  category: "梯形",
+  question: "梯形上底 20 cm，下底 24 cm，高 8 cm，求面积。",
+  answer: "176",
+  solution: "面积=（20+24）×8÷2=176 cm²"
+},
+{
+  id: 368,
+  category: "梯形",
+  question: "梯形上底 21 cm，下底 25 cm，高 9 cm，求面积。",
+  answer: "207",
+  solution: "面积=（21+25）×9÷2=207 cm²"
+},
+{
+  id: 369,
+  category: "梯形",
+  question: "梯形上底 22 cm，下底 26 cm，高 10 cm，求面积。",
+  answer: "240",
+  solution: "面积=（22+26）×10÷2=240 cm²"
+},
+{
+  id: 370,
+  category: "梯形",
+  question: "梯形上底 23 cm，下底 27 cm，高 11 cm，求面积。",
+  answer: "275",
+  solution: "面积=（23+27）×11÷2=275 cm²"
+},
+{
+  id: 371,
+  category: "梯形",
+  question: "梯形上底 24 cm，下底 28 cm，高 12 cm，求面积。",
+  answer: "312",
+  solution: "面积=（24+28）×12÷2=312 cm²"
+},
+{
+  id: 372,
+  category: "梯形",
+  question: "梯形上底 25 cm，下底 29 cm，高 13 cm，求面积。",
+  answer: "351",
+  solution: "面积=（25+29）×13÷2=351 cm²"
+},
+{
+  id: 373,
+  category: "梯形",
+  question: "梯形上底 26 cm，下底 30 cm，高 14 cm，求面积。",
+  answer: "392",
+  solution: "面积=（26+30）×14÷2=392 cm²"
+},
+{
+  id: 374,
+  category: "梯形",
+  question: "梯形上底 27 cm，下底 31 cm，高 15 cm，求面积。",
+  answer: "435",
+  solution: "面积=（27+31）×15÷2=435 cm²"
+},
+{
+  id: 375,
+  category: "梯形",
+  question: "梯形上底 28 cm，下底 32 cm，高 16 cm，求面积。",
+  answer: "480",
+  solution: "面积=（28+32）×16÷2=480 cm²"
+},
+{
+  id: 376,
+  category: "梯形",
+  question: "梯形面积为 60 cm²，上底 4 cm，下底 8 cm，求高。",
+  answer: "10",
+  solution: "高=面积×2÷（上底+下底）=60×2÷（4+8）=10 cm"
+},
+{
+  id: 377,
+  category: "梯形",
+  question: "梯形面积为 84 cm²，上底 5 cm，下底 9 cm，求高。",
+  answer: "12",
+  solution: "高=84×2÷（5+9）=12 cm"
+},
+{
+  id: 378,
+  category: "梯形",
+  question: "梯形面积为 112 cm²，上底 6 cm，下底 10 cm，求高。",
+  answer: "14",
+  solution: "高=112×2÷（6+10）=14 cm"
+},
+{
+  id: 379,
+  category: "梯形",
+  question: "梯形面积为 144 cm²，上底 7 cm，下底 11 cm，求高。",
+  answer: "16",
+  solution: "高=144×2÷（7+11）=16 cm"
+},
+{
+  id: 380,
+  category: "梯形",
+  question: "梯形面积为 180 cm²，上底 8 cm，下底 12 cm，求高。",
+  answer: "18",
+  solution: "高=180×2÷（8+12）=18 cm"
+},
+{
+  id: 381,
+  category: "梯形",
+  question: "梯形面积为 220 cm²，上底 9 cm，下底 13 cm，求高。",
+  answer: "20",
+  solution: "高=220×2÷（9+13）=20 cm"
+},
+{
+  id: 382,
+  category: "梯形",
+  question: "梯形面积为 264 cm²，上底 10 cm，下底 14 cm，求高。",
+  answer: "22",
+  solution: "高=264×2÷（10+14）=22 cm"
+},
+{
+  id: 383,
+  category: "梯形",
+  question: "梯形面积为 312 cm²，上底 11 cm，下底 15 cm，求高。",
+  answer: "24",
+  solution: "高=312×2÷（11+15）=24 cm"
+},
+{
+  id: 384,
+  category: "梯形",
+  question: "梯形面积为 364 cm²，上底 12 cm，下底 16 cm，求高。",
+  answer: "26",
+  solution: "高=364×2÷（12+16）=26 cm"
+},
+{
+  id: 385,
+  category: "梯形",
+  question: "梯形面积为 420 cm²，上底 13 cm，下底 17 cm，求高。",
+  answer: "28",
+  solution: "高=420×2÷（13+17）=28 cm"
+},
+{
+  id: 386,
+  category: "梯形",
+  question: "梯形上底 6 cm，下底 14 cm，高 8 cm。若上底增加 2 cm，高不变，新梯形面积是多少？",
+  answer: "88",
+  solution: "新上底=6+2=8 cm；面积=（8+14）×8÷2=88 cm²"
+},
+{
+  id: 387,
+  category: "梯形",
+  question: "梯形上底 8 cm，下底 18 cm，高 10 cm。若下底减少 4 cm，高不变，新梯形面积是多少？",
+  answer: "110",
+  solution: "新下底=18−4=14 cm；面积=（8+14）×10÷2=110 cm²"
+},
+{
+  id: 388,
+  category: "梯形",
+  question: "梯形面积为 96 cm²，高为 8 cm，上底为 5 cm，求下底。",
+  answer: "19",
+  solution: "上底+下底=96×2÷8=24，所以下底=24−5=19 cm"
+},
+{
+  id: 389,
+  category: "梯形",
+  question: "梯形面积为 135 cm²，高为 9 cm，上底为 12 cm，求下底。",
+  answer: "18",
+  solution: "上底+下底=135×2÷9=30，所以下底=30−12=18 cm"
+},
+{
+  id: 390,
+  category: "梯形",
+  question: "梯形面积为 176 cm²，高为 11 cm，下底为 20 cm，求上底。",
+  answer: "12",
+  solution: "上底+下底=176×2÷11=32，所以上底=32−20=12 cm"
+},
+{
+  id: 391,
+  category: "梯形",
+  question: "梯形上底 7 cm，下底 17 cm，求中位线长度。",
+  answer: "12",
+  solution: "梯形中位线=（上底+下底）÷2=（7+17）÷2=12 cm"
+},
+{
+  id: 392,
+  category: "梯形",
+  question: "梯形上底 9 cm，下底 21 cm，求中位线长度。",
+  answer: "15",
+  solution: "中位线=（9+21）÷2=15 cm"
+},
+{
+  id: 393,
+  category: "梯形",
+  question: "梯形上底 12 cm，下底 24 cm，求中位线长度。",
+  answer: "18",
+  solution: "中位线=（12+24）÷2=18 cm"
+},
+{
+  id: 394,
+  category: "梯形",
+  question: "梯形中位线长 16 cm，上底长 10 cm，求下底。",
+  answer: "22",
+  solution: "上底+下底=16×2=32，所以下底=32−10=22 cm"
+},
+{
+  id: 395,
+  category: "梯形",
+  question: "梯形中位线长 20 cm，下底长 27 cm，求上底。",
+  answer: "13",
+  solution: "上底+下底=20×2=40，所以上底=40−27=13 cm"
+},
+{
+  id: 396,
+  category: "梯形",
+  question: "梯形中位线长 18 cm，高为 9 cm，求面积。",
+  answer: "162",
+  solution: "梯形面积=中位线×高=18×9=162 cm²"
+},
+{
+  id: 397,
+  category: "梯形",
+  question: "梯形中位线长 25 cm，高为 12 cm，求面积。",
+  answer: "300",
+  solution: "面积=中位线×高=25×12=300 cm²"
+},
+{
+  id: 398,
+  category: "梯形",
+  question: "梯形面积为 280 cm²，中位线长 20 cm，求高。",
+  answer: "14",
+  solution: "高=面积÷中位线=280÷20=14 cm"
+},
+{
+  id: 399,
+  category: "梯形",
+  question: "梯形面积为 360 cm²，中位线长 24 cm，求高。",
+  answer: "15",
+  solution: "高=360÷24=15 cm"
+},
+{
+  id: 400,
+  category: "梯形",
+  question: "一个梯形上底 10 cm，下底 22 cm，高 15 cm，求面积。",
+  answer: "240",
+  solution: "面积=（10+22）×15÷2=240 cm²"
+},
 
-</div>
-</section>
+{
+  id: 401,
+  category: "三角形",
+  question: "三角形底为 6 cm，高为 4 cm，求面积。",
+  answer: "12",
+  solution: "面积=底×高÷2=6×4÷2=12 cm²"
+},
+{
+  id: 402,
+  category: "三角形",
+  question: "三角形底为 8 cm，高为 5 cm，求面积。",
+  answer: "20",
+  solution: "面积=8×5÷2=20 cm²"
+},
+{
+  id: 403,
+  category: "三角形",
+  question: "三角形底为 10 cm，高为 6 cm，求面积。",
+  answer: "30",
+  solution: "面积=10×6÷2=30 cm²"
+},
+{
+  id: 404,
+  category: "三角形",
+  question: "三角形底为 12 cm，高为 7 cm，求面积。",
+  answer: "42",
+  solution: "面积=12×7÷2=42 cm²"
+},
+{
+  id: 405,
+  category: "三角形",
+  question: "三角形底为 14 cm，高为 8 cm，求面积。",
+  answer: "56",
+  solution: "面积=14×8÷2=56 cm²"
+},
+{
+  id: 406,
+  category: "三角形",
+  question: "三角形底为 16 cm，高为 9 cm，求面积。",
+  answer: "72",
+  solution: "面积=16×9÷2=72 cm²"
+},
+{
+  id: 407,
+  category: "三角形",
+  question: "三角形底为 18 cm，高为 10 cm，求面积。",
+  answer: "90",
+  solution: "面积=18×10÷2=90 cm²"
+},
+{
+  id: 408,
+  category: "三角形",
+  question: "三角形底为 20 cm，高为 11 cm，求面积。",
+  answer: "110",
+  solution: "面积=20×11÷2=110 cm²"
+},
+{
+  id: 409,
+  category: "三角形",
+  question: "三角形底为 22 cm，高为 12 cm，求面积。",
+  answer: "132",
+  solution: "面积=22×12÷2=132 cm²"
+},
+{
+  id: 410,
+  category: "三角形",
+  question: "三角形底为 24 cm，高为 13 cm，求面积。",
+  answer: "156",
+  solution: "面积=24×13÷2=156 cm²"
+},
+{
+  id: 411,
+  category: "三角形",
+  question: "三角形底为 26 cm，高为 14 cm，求面积。",
+  answer: "182",
+  solution: "面积=26×14÷2=182 cm²"
+},
+{
+  id: 412,
+  category: "三角形",
+  question: "三角形底为 28 cm，高为 15 cm，求面积。",
+  answer: "210",
+  solution: "面积=28×15÷2=210 cm²"
+},
+{
+  id: 413,
+  category: "三角形",
+  question: "三角形底为 30 cm，高为 16 cm，求面积。",
+  answer: "240",
+  solution: "面积=30×16÷2=240 cm²"
+},
+{
+  id: 414,
+  category: "三角形",
+  question: "三角形面积为 36 cm²，底为 9 cm，求高。",
+  answer: "8",
+  solution: "高=面积×2÷底=36×2÷9=8 cm"
+},
+{
+  id: 415,
+  category: "三角形",
+  question: "三角形面积
+  answer: "10",
 
-<!-- 8 蝴蝶 -->
-<section class="section" id="butterfly">
-<h2>8. 蝴蝶模型</h2>
-<div class="grid">
+  solution: "高=50×2÷10=10 cm"
 
-<article class="card lesson" data-search="梯形 蝴蝶">
-<label class="master"><input type="checkbox" data-master="butterfly1"> 已掌握</label>
-<h3>梯形蝴蝶</h3>
-<div class="diagram">
-<svg viewBox="0 0 400 240">
-<polygon points="40,195 105,35 295,35 360,195" class="line"/>
-<line x1="40" y1="195" x2="295" y2="35" class="redline"/>
-<line x1="105" y1="35" x2="360" y2="195" class="redline"/>
-<text x="92" y="120" class="label">翼</text>
-<text x="285" y="120" class="label">翼</text>
-</svg>
-</div>
-<div class="formulas">
-<span class="chip">两翼面积相等</span>
-<span class="chip">上下三角形面积比=底边比²</span>
-</div>
-</article>
+},
 
-<article class="card lesson" data-search="平行四边形 蝴蝶">
-<label class="master"><input type="checkbox" data-master="butterfly2"> 已掌握</label>
-<h3>平行四边形蝴蝶</h3>
-<div class="diagram">
-<svg viewBox="0 0 400 230">
-<polygon points="40,185 100,35 360,35 300,185" class="line"/>
-<line x1="40" y1="185" x2="360" y2="35" class="redline"/>
-<line x1="100" y1="35" x2="300" y2="185" class="redline"/>
-</svg>
-</div>
-<div class="formulas"><span class="chip">四个三角形面积相等</span></div>
-</article>
+{
 
-<article class="card lesson" data-search="长方形 蝴蝶">
-<label class="master"><input type="checkbox" data-master="butterfly3"> 已掌握</label>
-<h3>长方形蝴蝶</h3>
-<div class="diagram">
-<svg viewBox="0 0 400 230">
-<rect x="55" y="35" width="290" height="160" class="bluefill"/>
-<line x1="55" y1="35" x2="345" y2="195" class="redline"/>
-<line x1="345" y1="35" x2="55" y2="195" class="redline"/>
-</svg>
-</div>
-<div class="formulas"><span class="chip">每块=总面积÷4</span></div>
-</article>
+  id: 416,
 
-<article class="card lesson" data-search="正方形 蝴蝶">
-<label class="master"><input type="checkbox" data-master="butterfly4"> 已掌握</label>
-<h3>正方形蝴蝶</h3>
-<div class="diagram">
-<svg viewBox="0 0 400 250">
-<rect x="105" y="25" width="190" height="190" class="purple"/>
-<line x1="105" y1="25" x2="295" y2="215" class="redline"/>
-<line x1="295" y1="25" x2="105" y2="215" class="redline"/>
-<circle cx="200" cy="120" r="5" class="mid"/>
-</svg>
-</div>
-<div class="formulas"><span class="chip">四块等面积</span></div>
-</article>
+  category: "三角形",
 
-</div>
-</section>
+  question: "三角形面积为 66 cm²，底为 11 cm，求高。",
 
-<!-- 9 鸟头 -->
-<section class="section" id="bird">
-<h2>9. 鸟头模型</h2>
-<div class="grid">
+  answer: "12",
 
-<article class="card lesson" data-search="鸟头 相等角">
-<label class="master"><input type="checkbox" data-master="bird1"> 已掌握</label>
-<h3>相等角鸟头</h3>
-<div class="diagram">
-<svg viewBox="0 0 420 240">
-<line x1="205" y1="125" x2="70" y2="35" class="line"/>
-<line x1="205" y1="125" x2="80" y2="210" class="line"/>
-<line x1="205" y1="125" x2="345" y2="40" class="line"/>
-<line x1="205" y1="125" x2="350" y2="210" class="line"/>
-<path d="M175 105 A38 38 0 0 0 175 145" class="angle"/>
-<path d="M235 105 A38 38 0 0 1 235 145" class="angle"/>
-<text x="185" y="118" class="label">O</text>
-</svg>
-</div>
-<div class="formulas"><span class="chip">S比=夹角两边乘积之比</span></div>
-</article>
+  solution: "高=66×2÷11=12 cm"
 
-<article class="card lesson" data-search="鸟头 对顶角">
-<label class="master"><input type="checkbox" data-master="bird2"> 已掌握</label>
-<h3>对顶角</h3>
-<div class="diagram">
-<svg viewBox="0 0 420 230">
-<line x1="45" y1="35" x2="370" y2="200" class="line"/>
-<line x1="370" y1="35" x2="45" y2="200" class="line"/>
-<circle cx="207.5" cy="117.5" r="5" class="mid"/>
-<text x="215" y="110" class="label">O</text>
-</svg>
-</div>
-<div class="note">对顶角相等，因此两边乘积可以直接参与面积比。</div>
-</article>
+},
 
-<article class="card lesson" data-search="沙漏 相似">
-<label class="master"><input type="checkbox" data-master="bird3"> 已掌握</label>
-<h3>沙漏模型</h3>
-<div class="diagram">
-<svg viewBox="0 0 420 250">
-<line x1="70" y1="30" x2="350" y2="220" class="line"/>
-<line x1="350" y1="30" x2="70" y2="220" class="line"/>
-<line x1="70" y1="30" x2="350" y2="30" class="redline"/>
-<line x1="70" y1="220" x2="350" y2="220" class="redline"/>
-<text x="170" y="18" class="label">平行</text>
-<text x="170" y="244" class="label">平行</text>
-</svg>
-</div>
-<div class="formulas"><span class="chip">平行 → 相似</span><span class="chip">面积比=边长比²</span></div>
-</article>
+{
 
-<article class="card lesson" data-search="金字塔 相似">
-<label class="master"><input type="checkbox" data-master="bird4"> 已掌握</label>
-<h3>金字塔模型</h3>
-<div class="diagram">
-<svg viewBox="0 0 420 250">
-<polygon points="45,220 210,25 375,220" class="line"/>
-<line x1="115" y1="135" x2="305" y2="135" class="redline"/>
-<text x="170" y="125" class="label">DE ∥ BC</text>
-</svg>
-</div>
-<div class="formulas"><span class="chip">小△∽大△</span><span class="chip">面积比=相似比²</span></div>
-</article>
+  id: 417,
 
-</div>
-</section>
+  category: "三角形",
 
-<!-- 10 燕尾 -->
-<section class="section" id="swallow">
-<h2>10. 燕尾模型</h2>
-<div class="grid">
+  question: "三角形面积为 84 cm²，底为 12 cm，求高。",
 
-<article class="card lesson" data-search="燕尾 三角形">
-<label class="master"><input type="checkbox" data-master="swallow1"> 已掌握</label>
-<h3>三角形燕尾</h3>
-<div class="diagram">
-<svg viewBox="0 0 420 250">
-<polygon points="45,210 205,25 375,210" class="line"/>
-<circle cx="225" cy="210" r="5" class="mid"/>
-<line x1="205" y1="25" x2="225" y2="210" class="redline"/>
-<text x="215" y="232" class="label">D</text>
-<text x="105" y="195" class="label">BD</text>
-<text x="285" y="195" class="label">DC</text>
-</svg>
-</div>
-<div class="formulas"><span class="chip">S△ABD : S△ADC = BD : DC</span></div>
-</article>
+  answer: "14",
 
-<article class="card lesson" data-search="燕尾 四边形 对角线">
-<label class="master"><input type="checkbox" data-master="swallow2"> 已掌握</label>
-<h3>四边形燕尾</h3>
-<div class="diagram">
-<svg viewBox="0 0 420 260">
-<polygon points="65,50 345,30 365,210 55,225" class="line"/>
-<line x1="65" y1="50" x2="365" y2="210" class="redline"/>
-<line x1="345" y1="30" x2="55" y2="225" class="redline"/>
-<circle cx="207" cy="126" r="5" class="mid"/>
-<text x="215" y="120" class="label">O</text>
-</svg>
-</div>
-<div class="note">围绕交点找共高三角形，把线段比一步步转成面积比。</div>
-</article>
+  solution: "高=84×2÷12=14 cm"
 
-</div>
-</section>
+},
 
-<div class="card">
-<h2>🧠 模型题快速判断</h2>
-<div class="formulas">
-<span class="chip">中点 → 1:1</span>
-<span class="chip">平行 → 等高 / 相似</span>
-<span class="chip">交点 → 对顶角</span>
-<span class="chip">同高 → 面积比=底边比</span>
-<span class="chip">同底 → 面积比=高之比</span>
-<span class="chip">相似 → 面积比=边长比²</span>
-</div>
-</div>
+{
 
-</main>
-</div>
+  id: 418,
 
-<footer class="footer">
-数学｜几何模型专项 · 完全离线运行<br>
-图形、题库、批改程序全部包含在 index.html 中
-</footer>
-</div>
+  category: "三角形",
 
-<script>
-function R(a,b){return Math.floor(Math.random()*(b-a+1))+a}
-function pick(a){return a[R(0,a.length-1)]}
-function gcd(a,b){a=Math.abs(a);b=Math.abs(b);while(b)[a,b]=[b,a%b];return a||1}
-function rat(a,b){let g=gcd(a,b);return (a/g)+":"+(b/g)}
-function num(v,t=.001){return{type:"number",v:Number(v),t}}
-function txt(...v){return{type:"text",v}}
-function ratio(a,b){let g=gcd(a,b);return{type:"ratio",a:a/g,b:b/g}}
-function Q(cat,q,a,sol){return{cat,q,a,sol}}
+  question: "三角形面积为 104 cm²，底为 13 cm，求高。",
 
-function rectangle(){
- let t=R(1,6),a=R(3,35),b=R(2,25);
- if(t===1)return Q("长方形｜面积",`长 ${a} cm，宽 ${b} cm，面积是多少？`,num(a*b),`S=${a}×${b}=${a*b} cm²`);
- if(t===2)return Q("长方形｜周长",`长 ${a} cm，宽 ${b} cm，周长是多少？`,num(2*(a+b)),`C=2×(${a}+${b})=${2*(a+b)} cm`);
- if(t===3)return Q("长方形｜求宽",`长方形周长 ${2*(a+b)} cm，长 ${a} cm，宽是多少？`,num(b),`宽=${a+b}−${a}=${b} cm`);
- if(t===4)return Q("长方形｜求长",`长方形面积 ${a*b} cm²，宽 ${b} cm，长是多少？`,num(a),`长=${a*b}÷${b}=${a} cm`);
- if(t===5)return Q("正方形｜面积",`正方形边长 ${a} cm，面积是多少？`,num(a*a),`S=${a}²=${a*a} cm²`);
- return Q("正方形｜周长",`正方形边长 ${a} cm，周长是多少？`,num(4*a),`C=4×${a}=${4*a} cm`);
+  answer: "16",
+
+  solution: "高=104×2÷13=16 cm"
+
+},
+
+{
+
+  id: 419,
+
+  category: "三角形",
+
+  question: "三角形面积为 126 cm²，底为 14 cm，求高。",
+
+  answer: "18",
+
+  solution: "高=126×2÷14=18 cm"
+
+},
+
+{
+
+  id: 420,
+
+  category: "三角形",
+
+  question: "三角形面积为 150 cm²，底为 15 cm，求高。",
+
+  answer: "20",
+
+  solution: "高=150×2÷15=20 cm"
+
+},
+
+{
+
+  id: 421,
+
+  category: "三角形",
+
+  question: "三角形三个内角中，两个角分别是 50° 和 60°，求第三个角。",
+
+  answer: "70",
+
+  solution: "三角形内角和为180°，第三个角=180°−50°−60°=70°"
+
+},
+
+{
+
+  id: 422,
+
+  category: "三角形",
+
+  question: "三角形三个内角中，两个角分别是 35° 和 75°，求第三个角。",
+
+  answer: "70",
+
+  solution: "第三个角=180°−35°−75°=70°"
+
+},
+
+{
+
+  id: 423,
+
+  category: "三角形",
+
+  question: "三角形三个内角中，两个角分别是 42° 和 68°，求第三个角。",
+
+  answer: "70",
+
+  solution: "第三个角=180°−42°−68°=70°"
+
+},
+
+{
+
+  id: 424,
+
+  category: "三角形",
+
+  question: "三角形三个内角中，两个角分别是 30° 和 90°，求第三个角。",
+
+  answer: "60",
+
+  solution: "第三个角=180°−30°−90°=60°"
+
+},
+
+{
+
+  id: 425,
+
+  category: "三角形",
+
+  question: "三角形三个内角中，两个角分别是 45° 和 45°，求第三个角。",
+
+  answer: "90",
+
+  solution: "第三个角=180°−45°−45°=90°"
+
+},
+
+{
+
+  id: 426,
+
+  category: "三角形",
+
+  question: "一个等腰三角形的两个底角都是 55°，求顶角。",
+
+  answer: "70",
+
+  solution: "顶角=180°−55°×2=70°"
+
+},
+
+{
+
+  id: 427,
+
+  category: "三角形",
+
+  question: "一个等腰三角形的顶角为 40°，求一个底角。",
+
+  answer: "70",
+
+  solution: "两个底角相等，每个底角=（180°−40°）÷2=70°"
+
+},
+
+{
+
+  id: 428,
+
+  category: "三角形",
+
+  question: "一个等腰三角形的顶角为 80°，求一个底角。",
+
+  answer: "50",
+
+  solution: "底角=（180°−80°）÷2=50°"
+
+},
+
+{
+
+  id: 429,
+
+  category: "三角形",
+
+  question: "一个等腰三角形的一个底角为 65°，求顶角。",
+
+  answer: "50",
+
+  solution: "顶角=180°−65°×2=50°"
+
+},
+
+{
+
+  id: 430,
+
+  category: "三角形",
+
+  question: "一个等边三角形的一个内角是多少度？",
+
+  answer: "60",
+
+  solution: "等边三角形三个角相等，180°÷3=60°"
+
+},
+
+{
+
+  id: 431,
+
+  category: "三角形",
+
+  question: "一个三角形三个角分别为 50°、60°、70°，按角分类属于什么三角形？",
+
+  answer: "锐角三角形",
+
+  solution: "三个角都小于90°，所以是锐角三角形"
+
+},
+
+{
+
+  id: 432,
+
+  category: "三角形",
+
+  question: "一个三角形三个角分别为 30°、60°、90°，按角分类属于什么三角形？",
+
+  answer: "直角三角形",
+
+  solution: "有一个角等于90°，所以是直角三角形"
+
+},
+
+{
+
+  id: 433,
+
+  category: "三角形",
+
+  question: "一个三角形三个角分别为 25°、45°、110°，按角分类属于什么三角形？",
+
+  answer: "钝角三角形",
+
+  solution: "有一个角大于90°，所以是钝角三角形"
+
+},
+
+{
+
+  id: 434,
+
+  category: "三角形",
+
+  question: "一个三角形三个角分别为 80°、50°、50°，按角分类属于什么三角形？",
+
+  answer: "锐角三角形",
+
+  solution: "三个角都小于90°，所以是锐角三角形"
+
+},
+
+{
+
+  id: 435,
+
+  category: "三角形",
+
+  question: "一个三角形三个角分别为 20°、70°、90°，按角分类属于什么三角形？",
+
+  answer: "直角三角形",
+
+  solution: "其中一个角为90°，所以是直角三角形"
+
+},
+
+{
+
+  id: 436,
+
+  category: "三角形",
+
+  question: "三角形三边分别为 5 cm、5 cm、8 cm，按边分类属于什么三角形？",
+
+  answer: "等腰三角形",
+
+  solution: "有两条边相等，所以是等腰三角形"
+
+},
+
+{
+
+  id: 437,
+
+  category: "三角形",
+
+  question: "三角形三边分别为 7 cm、7 cm、7 cm，按边分类属于什么三角形？",
+
+  answer: "等边三角形",
+
+  solution: "三条边都相等，所以是等边三角形"
+
+},
+
+{
+
+  id: 438,
+
+  category: "三角形",
+
+  question: "三角形三边分别为 6 cm、8 cm、10 cm，按边分类属于什么三角形？",
+
+  answer: "不等边三角形",
+
+  solution: "三条边都不相等，所以是不等边三角形"
+
+},
+
+{
+
+  id: 439,
+
+  category: "三角形",
+
+  question: "三角形三边分别为 9 cm、12 cm、9 cm，按边分类属于什么三角形？",
+
+  answer: "等腰三角形",
+
+  solution: "两条9 cm的边相等，所以是等腰三角形"
+
+},
+
+{
+
+  id: 440,
+
+  category: "三角形",
+
+  question: "三角形三边分别为 11 cm、11 cm、11 cm，按边分类属于什么三角形？",
+
+  answer: "等边三角形",
+
+  solution: "三边相等，所以是等边三角形"
+
+},
+
+{
+
+  id: 441,
+
+  category: "三角形",
+
+  question: "三条线段长分别为 3 cm、4 cm、5 cm，能否组成三角形？请输入“能”或“不能”。",
+
+  answer: "能",
+
+  solution: "最短两边之和3+4=7>5，所以能组成三角形"
+
+},
+
+{
+
+  id: 442,
+
+  category: "三角形",
+
+  question: "三条线段长分别为 2 cm、3 cm、6 cm，能否组成三角形？请输入“能”或“不能”。",
+
+  answer: "不能",
+
+  solution: "2+3=5<6，不满足任意两边之和大于第三边，所以不能组成三角形"
+
+},
+
+{
+
+  id: 443,
+
+  category: "三角形",
+
+  question: "三条线段长分别为 5 cm、7 cm、11 cm，能否组成三角形？请输入“能”或“不能”。",
+
+  answer: "能",
+
+  solution: "5+7=12>11，所以能组成三角形"
+
+},
+
+{
+
+  id: 444,
+
+  category: "三角形",
+
+  question: "三条线段长分别为 4 cm、6 cm、10 cm，能否组成三角形？请输入“能”或“不能”。",
+
+  answer: "不能",
+
+  solution: "4+6=10，必须严格大于第三边；这里等于10，所以不能组成三角形"
+
+},
+
+{
+
+  id: 445,
+
+  category: "三角形",
+
+  question: "三角形两边长分别为 6 cm 和 9 cm，第三边为整数。第三边最小可能是多少厘米？",
+
+  answer: "4",
+
+  solution: "第三边x满足9−6<x<9+6，即3<x<15，所以最小整数是4"
+
+},
+
+{
+
+  id: 446,
+
+  category: "三角形",
+
+  question: "三角形两边长分别为 8 cm 和 13 cm，第三边为整数。第三边最大可能是多少厘米？",
+
+  answer: "20",
+
+  solution: "第三边x满足13−8<x<13+8，即5<x<21，所以最大整数是20"
+
+},
+
+{
+
+  id: 447,
+
+  category: "三角形",
+
+  question: "三角形两边长分别为 10 cm 和 15 cm，第三边为整数。第三边最小可能是多少厘米？",
+
+  answer: "6",
+
+  solution: "15−10<x<15+10，即5<x<25，所以最小整数是6"
+
+},
+
+{
+
+  id: 448,
+
+  category: "三角形",
+
+  question: "三角形两边长分别为 7 cm 和 12 cm，第三边为整数。第三边最大可能是多少厘米？",
+
+  answer: "18",
+
+  solution: "12−7<x<12+7，即5<x<19，所以最大整数是18"
+
+},
+
+{
+
+  id: 449,
+
+  category: "三角形",
+
+  question: "一个三角形的两边分别为 9 cm、14 cm，第三边是 5 cm，能组成三角形吗？请输入“能”或“不能”。",
+
+  answer: "不能",
+
+  solution: "9+5=14，没有严格大于第三边，所以不能组成三角形"
+
+},
+
+{
+
+  id: 450,
+
+  category: "三角形",
+
+  question: "一个三角形的两边分别为 9 cm、14 cm，第三边是 6 cm，能组成三角形吗？请输入“能”或“不能”。",
+
+  answer: "能",
+
+  solution: "9+6=15>14，且其余两边之和也都大于第三边，所以能组成三角形"
+
+},
+
+{
+
+  id: 451,
+
+  category: "多边形内角和",
+
+  question: "四边形的内角和是多少度？",
+
+  answer: "360",
+
+  solution: "多边形内角和=（n−2）×180°；四边形：（4−2）×180°=360°"
+
+},
+
+{
+
+  id: 452,
+
+  category: "多边形内角和",
+
+  question: "五边形的内角和是多少度？",
+
+  answer: "540",
+
+  solution: "（5−2）×180°=540°"
+
+},
+
+{
+
+  id: 453,
+
+  category: "多边形内角和",
+
+  question: "六边形的内角和是多少度？",
+
+  answer: "720",
+
+  solution: "（6−2）×180°=720°"
+
+},
+
+{
+
+  id: 454,
+
+  category: "多边形内角和",
+
+  question: "七边形的内角和是多少度？",
+
+  answer: "900",
+
+  solution: "（7−2）×180°=900°"
+
+},
+
+{
+
+  id: 455,
+
+  category: "多边形内角和",
+
+  question: "八边形的内角和是多少度？",
+
+  answer: "1080",
+
+  solution: "（8−2）×180°=1080°"
+
+},
+
+{
+
+  id: 456,
+
+  category: "多边形内角和",
+
+  question: "九边形的内角和是多少度？",
+
+  answer: "1260",
+
+  solution: "（9−2）×180°=1260°"
+
+},
+
+{
+
+  id: 457,
+
+  category: "多边形内角和",
+
+  question: "十边形的内角和是多少度？",
+
+  answer: "1440",
+
+  solution: "（10−2）×180°=1440°"
+
+},
+
+{
+
+  id: 458,
+
+  category: "多边形内角和",
+
+  question: "一个多边形的内角和是 900°，它是几边形？",
+
+  answer: "7",
+
+  solution: "（n−2）×180°=900°，n−2=5，所以n=7"
+
+},
+
+{
+
+  id: 459,
+
+  category: "多边形内角和",
+
+  question: "一个多边形的内角和是 1260°，它是几边形？",
+
+  answer: "9",
+
+  solution: "（n−2）×180°=1260°，n−2=7，所以n=9"
+
+},
+
+{
+
+  id: 460,
+
+  category: "多边形内角和",
+
+  question: "一个多边形的内角和是 1800°，它是几边形？",
+
+  answer: "12",
+
+  solution: "（n−2）×180°=1800°，n−2=10，所以n=12"
+
+},
+{
+  id: 461,
+  category: "等积模型",
+  question: "两个三角形等底等高。第一个三角形面积为 24 cm²，第二个三角形面积是多少？",
+  answer: "24",
+  solution: "等底等高的两个三角形面积相等，所以第二个三角形面积也是24 cm²"
+},
+{
+  id: 462,
+  category: "等积模型",
+  question: "两个三角形等底等高。甲三角形面积为 36 cm²，乙三角形面积是多少？",
+  answer: "36",
+  solution: "等底等高的三角形面积相等，所以乙三角形面积为36 cm²"
+},
+{
+  id: 463,
+  category: "等积模型",
+  question: "两个三角形等底等高。甲三角形面积为 45 cm²，乙三角形面积是多少？",
+  answer: "45",
+  solution: "两个三角形的底和高分别相等，因此面积相等，乙三角形面积为45 cm²"
+},
+{
+  id: 464,
+  category: "等积模型",
+  question: "两个三角形共用一条底边，并且两个顶点在与底边平行的同一直线上。甲三角形面积为 52 cm²，乙三角形面积是多少？",
+  answer: "52",
+  solution: "两个三角形同底，并且顶点到共同底边的距离相等，所以等底等高，面积相等，乙的面积为52 cm²"
+},
+{
+  id: 465,
+  category: "等积模型",
+  question: "两个三角形底都是 12 cm，高都是 8 cm。每个三角形的面积是多少？",
+  answer: "48",
+  solution: "面积=底×高÷2=12×8÷2=48 cm²"
+},
+{
+  id: 466,
+  category: "等积模型",
+  question: "两个三角形底都是 15 cm，高都是 6 cm。每个三角形的面积是多少？",
+  answer: "45",
+  solution: "面积=15×6÷2=45 cm²"
+},
+{
+  id: 467,
+  category: "等积模型",
+  question: "两个三角形底都是 18 cm，高都是 10 cm。每个三角形的面积是多少？",
+  answer: "90",
+  solution: "面积=18×10÷2=90 cm²"
+},
+{
+  id: 468,
+  category: "等积模型",
+  question: "两个三角形等底不等高，高的比为 2:3。它们的面积比是多少？",
+  answer: "2:3",
+  solution: "三角形面积=底×高÷2。底相等时，面积比等于高之比，所以面积比为2:3"
+},
+{
+  id: 469,
+  category: "等积模型",
+  question: "两个三角形等底不等高，高的比为 4:7。它们的面积比是多少？",
+  answer: "4:7",
+  solution: "等底三角形的面积比等于高之比，因此面积比为4:7"
+},
+{
+  id: 470,
+  category: "等积模型",
+  question: "两个三角形等底，高分别为 6 cm 和 9 cm。它们的面积比是多少？",
+  answer: "2:3",
+  solution: "面积比=高之比=6:9=2:3"
+},
+{
+  id: 471,
+  category: "等积模型",
+  question: "两个三角形等底，高分别为 8 cm 和 12 cm。它们的面积比是多少？",
+  answer: "2:3",
+  solution: "等底时面积比等于高之比，8:12=2:3"
+},
+{
+  id: 472,
+  category: "等积模型",
+  question: "两个三角形等底，高分别为 10 cm 和 15 cm。较小三角形面积为 40 cm²，较大三角形面积是多少？",
+  answer: "60",
+  solution: "面积比=10:15=2:3。较小面积40对应2份，每份20，所以较大面积=20×3=60 cm²"
+},
+{
+  id: 473,
+  category: "等积模型",
+  question: "两个三角形等底，高的比为 3:5。较小三角形面积为 27 cm²，较大三角形面积是多少？",
+  answer: "45",
+  solution: "面积比=3:5。27÷3=9，较大面积=9×5=45 cm²"
+},
+{
+  id: 474,
+  category: "等积模型",
+  question: "两个三角形等底，高的比为 5:8。较大三角形面积为 64 cm²，较小三角形面积是多少？",
+  answer: "40",
+  solution: "面积比=5:8。64÷8=8，较小面积=8×5=40 cm²"
+},
+{
+  id: 475,
+  category: "等积模型",
+  question: "两个三角形等高不等底，底的比为 3:4。它们的面积比是多少？",
+  answer: "3:4",
+  solution: "高相等时，三角形面积比等于底之比，所以面积比为3:4"
+},
+{
+  id: 476,
+  category: "等积模型",
+  question: "两个三角形等高，底分别为 6 cm 和 10 cm。它们的面积比是多少？",
+  answer: "3:5",
+  solution: "等高时面积比=底边之比=6:10=3:5"
+},
+{
+  id: 477,
+  category: "等积模型",
+  question: "两个三角形等高，底分别为 8 cm 和 12 cm。它们的面积比是多少？",
+  answer: "2:3",
+  solution: "面积比=底之比=8:12=2:3"
+},
+{
+  id: 478,
+  category: "等积模型",
+  question: "两个三角形等高，底边比为 2:5。较小三角形面积为 18 cm²，较大三角形面积是多少？",
+  answer: "45",
+  solution: "面积比=2:5。18÷2=9，较大面积=9×5=45 cm²"
+},
+{
+  id: 479,
+  category: "等积模型",
+  question: "两个三角形等高，底边比为 4:7。较小三角形面积为 32 cm²，较大三角形面积是多少？",
+  answer: "56",
+  solution: "面积比=4:7。32÷4=8，较大面积=8×7=56 cm²"
+},
+{
+  id: 480,
+  category: "等积模型",
+  question: "两个三角形等高，底边比为 5:9。较大三角形面积为 72 cm²，较小三角形面积是多少？",
+  answer: "40",
+  solution: "面积比=5:9。72÷9=8，较小面积=8×5=40 cm²"
+},
+{
+  id: 481,
+  category: "等积模型",
+  question: "甲、乙两个三角形等底。甲的高是乙的 2 倍，则甲、乙面积比是多少？",
+  answer: "2:1",
+  solution: "等底时面积比等于高之比。甲的高是乙的2倍，所以面积比为2:1"
+},
+{
+  id: 482,
+  category: "等积模型",
+  question: "甲、乙两个三角形等高。甲的底是乙的 3 倍，则甲、乙面积比是多少？",
+  answer: "3:1",
+  solution: "等高时面积比等于底之比，因此甲、乙面积比为3:1"
+},
+{
+  id: 483,
+  category: "等积模型",
+  question: "两个三角形的底边比为 2:3，高之比为 4:5。它们的面积比是多少？",
+  answer: "8:15",
+  solution: "面积比=底之比×高之比=（2×4）:（3×5）=8:15"
+},
+{
+  id: 484,
+  category: "等积模型",
+  question: "两个三角形的底边比为 3:5，高之比为 2:3。它们的面积比是多少？",
+  answer: "2:5",
+  solution: "面积比=（3×2）:（5×3）=6:15=2:5"
+},
+{
+  id: 485,
+  category: "等积模型",
+  question: "两个三角形底边比为 4:7，高之比为 7:4。它们的面积比是多少？",
+  answer: "1:1",
+  solution: "面积比=（4×7）:（7×4）=28:28=1:1，所以两个三角形面积相等"
+},
+{
+  id: 486,
+  category: "等积模型",
+  question: "两个三角形的面积相等，底边比为 2:3。它们对应高的比是多少？",
+  answer: "3:2",
+  solution: "面积相等时，底×高相等，因此高与底成反比。底比2:3，对应高比3:2"
+},
+{
+  id: 487,
+  category: "等积模型",
+  question: "两个三角形面积相等，高之比为 4:5。它们对应底边的比是多少？",
+  answer: "5:4",
+  solution: "面积相等时底与高成反比，高比4:5，所以底比5:4"
+},
+{
+  id: 488,
+  category: "等积模型",
+  question: "甲、乙两个三角形面积相等。甲底为 8 cm、高为 12 cm；乙底为 16 cm，求乙的高。",
+  answer: "6",
+  solution: "甲面积=8×12÷2=48 cm²。乙高=48×2÷16=6 cm"
+},
+{
+  id: 489,
+  category: "等积模型",
+  question: "甲、乙两个三角形面积相等。甲底为 15 cm、高为 8 cm；乙高为 10 cm，求乙的底。",
+  answer: "12",
+  solution: "甲面积=15×8÷2=60 cm²。乙底=60×2÷10=12 cm"
+},
+{
+  id: 490,
+  category: "等积模型",
+  question: "三个三角形共用同一条底边，三个顶点都在与底边平行的一条直线上。若第一个三角形面积为 75 cm²，另外两个三角形的面积各是多少？",
+  answer: "75",
+  solution: "三个三角形同底等高，所以面积都相等，另外两个三角形的面积也都是75 cm²"
+},
+
+{
+  id: 491,
+  category: "一半模型",
+  question: "三角形ABC中，D是BC的中点。若三角形ABC面积为 40 cm²，求三角形ABD的面积。",
+  answer: "20",
+  solution: "D是BC中点，所以BD=DC。△ABD与△ADC等高且底相等，面积各占大三角形的一半：40÷2=20 cm²"
+},
+{
+  id: 492,
+  category: "一半模型",
+  question: "三角形ABC中，D是BC的中点。若三角形ABC面积为 54 cm²，求三角形ACD的面积。",
+  answer: "27",
+  solution: "中点把底边分成相等两段，两个小三角形等高等底，所以面积各为54÷2=27 cm²"
+},
+{
+  id: 493,
+  category: "一半模型",
+  question: "三角形ABC中，D是BC中点。△ABD面积为 32 cm²，求△ABC面积。",
+  answer: "64",
+  solution: "△ABD占整个△ABC面积的一半，所以△ABC面积=32×2=64 cm²"
+},
+{
+  id: 494,
+  category: "一半模型",
+  question: "三角形ABC中，D是BC中点。△ACD面积为 45 cm²，求△ABC面积。",
+  answer: "90",
+  solution: "中点模型中两部分面积相等，△ABC面积=45×2=90 cm²"
+},
+{
+  id: 495,
+  category: "一半模型",
+  question: "三角形ABC面积为 96 cm²，D为BC中点。△ABD与△ACD的面积比是多少？",
+  answer: "1:1",
+  solution: "BD=DC，并且两个三角形从A到底边BC的高相同，所以面积比=BD:DC=1:1"
+},
+{
+  id: 496,
+  category: "一半模型",
+  question: "三角形ABC中，D、E分别是AB、AC的中点。若△ABC面积为 80 cm²，求△ADE面积。",
+  answer: "20",
+  solution: "连接两边中点得到的△ADE与△ABC相似，边长比为1:2，面积比为1:4，所以面积=80÷4=20 cm²"
+},
+{
+  id: 497,
+  category: "一半模型",
+  question: "三角形ABC中，D、E分别为AB、AC中点。若△ABC面积为 120 cm²，求△ADE面积。",
+  answer: "30",
+  solution: "中位线模型中顶部小三角形面积是原三角形的1/4，所以120÷4=30 cm²"
+},
+{
+  id: 498,
+  category: "一半模型",
+  question: "三角形ABC中，D、E分别为AB、AC中点。△ADE面积为 18 cm²，求△ABC面积。",
+  answer: "72",
+  solution: "△ADE面积是△ABC的1/4，所以△ABC面积=18×4=72 cm²"
+},
+{
+  id: 499,
+  category: "一半模型",
+  question: "三角形ABC中，D、E分别为AB、AC中点。△ABC面积为 100 cm²，求四边形BDEC面积。",
+  answer: "75",
+  solution: "△ADE占整体1/4，面积=25 cm²；四边形BDEC面积=100−25=75 cm²"
+},
+{
+  id: 500,
+  category: "一半模型",
+  question: "三角形ABC中，D、E分别为AB、AC中点。△ABC面积为 64 cm²，四边形BDEC面积是多少？",
+  answer: "48",
+  solution: "顶部小三角形面积=64÷4=16 cm²，所以四边形面积=64−16=48 cm²"
+},
+{
+  id: 501,
+  category: "一半模型",
+  question: "三角形ABC中，D是AB中点，E是AC中点。DE与BC的位置关系是什么？",
+  answer: "平行",
+  solution: "三角形两边中点的连线是三角形中位线，因此DE平行于BC"
+},
+{
+  id: 502,
+  category: "一半模型",
+  question: "三角形ABC中，D、E分别是AB、AC中点。BC长 18 cm，求DE长。",
+  answer: "9",
+  solution: "三角形中位线等于第三边的一半，所以DE=18÷2=9 cm"
+},
+{
+  id: 503,
+  category: "一半模型",
+  question: "三角形ABC中，D、E分别是AB、AC中点。DE长 7 cm，求BC长。",
+  answer: "14",
+  solution: "DE是三角形中位线，DE=BC÷2，所以BC=7×2=14 cm"
+},
+{
+  id: 504,
+  category: "一半模型",
+  question: "三角形ABC中，D、E分别为AB、AC中点。△ADE与△ABC的面积比是多少？",
+  answer: "1:4",
+  solution: "对应边长比为1:2，因此面积比为1²:2²=1:4"
+},
+{
+  id: 505,
+  category: "一半模型",
+  question: "三角形ABC中，D、E分别为AB、AC中点。四边形BDEC与△ABC的面积比是多少？",
+  answer: "3:4",
+  solution: "△ADE占整体1/4，所以剩余四边形BDEC占整体3/4，面积比为3:4"
+},
+
+{
+  id: 506,
+  category: "一半模型",
+  question: "平行四边形ABCD面积为 60 cm²，点E在CD上。连接AE、BE，若△ABE以AB为底且顶点E在对边CD上，求△ABE面积。",
+  answer: "30",
+  solution: "AB与CD平行，E在CD上，所以△ABE与平行四边形同底同高。三角形面积是平行四边形的一半：60÷2=30 cm²"
+},
+{
+  id: 507,
+  category: "一半模型",
+  question: "平行四边形ABCD面积为 84 cm²，点E在CD上。求△ABE面积。",
+  answer: "42",
+  solution: "这是平行四边形“顶天立地”模型：同底同高的三角形面积是平行四边形的一半，84÷2=42 cm²"
+},
+{
+  id: 508,
+  category: "一半模型",
+  question: "平行四边形ABCD面积为 126 cm²，E是CD上的任意一点。求△ABE面积。",
+  answer: "63",
+  solution: "E在与AB平行的CD上，因此到AB的高始终等于平行四边形的高，△ABE面积恒为126÷2=63 cm²"
+},
+{
+  id: 509,
+  category: "一半模型",
+  question: "在平行四边形ABCD中，E为CD上任意一点。△ABE面积为 38 cm²，求平行四边形ABCD面积。",
+  answer: "76",
+  solution: "△ABE面积是平行四边形面积的一半，所以平行四边形面积=38×2=76 cm²"
+},
+{
+  id: 510,
+  category: "一半模型",
+  question: "平行四边形ABCD面积为 100 cm²，E在CD上移动。△ABE的面积会不会随E的位置改变？请输入“会”或“不会”。",
+  answer: "不会",
+  solution: "E始终在与AB平行的CD上，到AB的高不变，底AB也不变，所以△ABE面积不变"
+},
+
+{
+  id: 511,
+  category: "一半模型",
+  question: "平行四边形ABCD面积为 72 cm²，连接一条对角线AC。△ABC面积是多少？",
+  answer: "36",
+  solution: "平行四边形的一条对角线把它分成两个面积相等的三角形，所以72÷2=36 cm²"
+},
+{
+  id: 512,
+  category: "一半模型",
+  question: "平行四边形ABCD面积为 98 cm²，连接对角线BD。△ABD面积是多少？",
+  answer: "49",
+  solution: "对角线把平行四边形平均分成两个三角形，所以98÷2=49 cm²"
+},
+{
+  id: 513,
+  category: "一半模型",
+  question: "平行四边形的一条对角线分出的一个三角形面积为 55 cm²，求整个平行四边形面积。",
+  answer: "110",
+  solution: "一个三角形占平行四边形面积的一半，所以总面积=55×2=110 cm²"
+},
+{
+  id: 514,
+  category: "一半模型",
+  question: "长方形面积为 144 cm²，连接一条对角线。每个三角形面积是多少？",
+  answer: "72",
+  solution: "长方形也是平行四边形，对角线把它分成两个等面积三角形，所以144÷2=72 cm²"
+},
+{
+  id: 515,
+  category: "一半模型",
+  question: "正方形面积为 196 cm²，连接一条对角线。一个三角形的面积是多少？",
+  answer: "98",
+  solution: "对角线把正方形平均分成两个全等三角形，196÷2=98 cm²"
+},
+
+{
+  id: 516,
+  category: "一半模型",
+  question: "平行四边形ABCD面积为 80 cm²，两条对角线相交于O。△AOB面积是多少？",
+  answer: "20",
+  solution: "平行四边形两条对角线互相平分，并把平行四边形分成4个等面积三角形，所以80÷4=20 cm²"
+},
+{
+  id: 517,
+  category: "一半模型",
+  question: "平行四边形ABCD面积为 120 cm²，两条对角线相交于O。△BOC面积是多少？",
+  answer: "30",
+  solution: "两条对角线把平行四边形分成4个等面积三角形，所以120÷4=30 cm²"
+},
+{
+  id: 518,
+  category: "一半模型",
+  question: "平行四边形两条对角线相交后形成的一个小三角形面积为 18 cm²，求平行四边形面积。",
+  answer: "72",
+  solution: "四个小三角形面积相等，所以总面积=18×4=72 cm²"
+},
+{
+  id: 519,
+  category: "一半模型",
+  question: "长方形面积为 200 cm²，两条对角线相交。四个小三角形中任意一个的面积是多少？",
+  answer: "50",
+  solution: "长方形的两条对角线互相平分，四个小三角形面积相等，所以200÷4=50 cm²"
+},
+{
+  id: 520,
+  category: "一半模型",
+  question: "正方形面积为 324 cm²，两条对角线相交。一个小三角形面积是多少？",
+  answer: "81",
+  solution: "两条对角线把正方形分成4个等面积三角形，所以324÷4=81 cm²"
+},
+
+{
+  id: 521,
+  category: "一半模型",
+  question: "梯形ABCD中，AB∥CD，点M是上底AB的中点。若某条辅助线把梯形分成两个等面积部分，这两个部分的面积比是多少？",
+  answer: "1:1",
+  solution: "“一半模型”的核心就是利用中点与等高关系构造等面积部分，因此两部分面积比为1:1"
+},
+{
+  id: 522,
+  category: "一半模型",
+  question: "一个梯形面积为 90 cm²，通过中点构造的一半模型把它分成两个等面积部分。每部分面积是多少？",
+  answer: "45",
+  solution: "两个部分面积相等，所以每部分=90÷2=45 cm²"
+},
+{
+  id: 523,
+  category: "一半模型",
+  question: "一个梯形面积为 128 cm²，通过一半模型分成两个等面积部分。一个部分面积是多少？",
+  answer: "64",
+  solution: "128÷2=64 cm²"
+},
+{
+  id: 524,
+  category: "一半模型",
+  question: "梯形一半模型中，一个等面积部分为 37 cm²，求整个梯形面积。",
+  answer: "74",
+  solution: "该部分占整体一半，所以总面积=37×2=74 cm²"
+},
+{
+  id: 525,
+  category: "一半模型",
+  question: "梯形一半模型中，两部分面积分别记作S₁和S₂。S₁:S₂是多少？",
+  answer: "1:1",
+  solution: "一半模型把原图形分成面积相等的两部分，因此S₁:S₂=1:1"
+},
+
+{
+  id: 526,
+  category: "一半模型",
+  question: "任意四边形ABCD中，E、F、G、H分别是四条边的中点。连接EF、FG、GH、HE得到中点四边形。若原四边形面积为 100 cm²，中点四边形面积是多少？",
+  answer: "50",
+  solution: "任意四边形四边中点依次连接得到的四边形面积等于原四边形面积的一半，所以100÷2=50 cm²"
+},
+{
+  id: 527,
+  category: "一半模型",
+  question: "任意四边形面积为 84 cm²，依次连接四边中点得到的新四边形面积是多少？",
+  answer: "42",
+  solution: "四边中点模型中，中点四边形面积为原四边形的一半，84÷2=42 cm²"
+},
+{
+  id: 528,
+  category: "一半模型",
+  question: "任意四边形四边中点依次连接后得到的新四边形面积为 36 cm²，求原四边形面积。",
+  answer: "72",
+  solution: "中点四边形占原四边形面积的一半，所以原面积=36×2=72 cm²"
+},
+{
+  id: 529,
+  category: "一半模型",
+  question: "任意四边形面积为 150 cm²，四边中点连接形成的四边形面积与原四边形面积之比是多少？",
+  answer: "1:2",
+  solution: "中点四边形面积是原四边形的一半，因此新图形:原图形=1:2"
+},
+{
+  id: 530,
+  category: "一半模型",
+  question: "任意四边形面积为 240 cm²，连接四边中点形成新四边形。原四边形除去中点四边形后剩余部分总面积是多少？",
+  answer: "120",
+  solution: "中点四边形面积=240÷2=120 cm²，因此剩余部分=240−120=120 cm²"
+},
+
+{
+  id: 531,
+  category: "一半模型",
+  question: "三角形ABC中，D为BC中点。若△ABD面积为 26 cm²，△ACD面积是多少？",
+  answer: "26",
+  solution: "BD=DC，两个三角形从A到底边BC的高相同，所以面积相等，△ACD=26 cm²"
+},
+{
+  id: 532,
+  category: "一半模型",
+  question: "三角形ABC中，D为BC中点。若△ABD与△ACD面积之和为 74 cm²，△ABD面积是多少？",
+  answer: "37",
+  solution: "两个三角形面积相等，所以每个面积=74÷2=37 cm²"
+},
+{
+  id: 533,
+  category: "一半模型",
+  question: "三角形ABC中，D为AB中点。连接CD。若△ACD面积为 31 cm²，△BCD面积是多少？",
+  answer: "31",
+  solution: "AD=DB，△ACD和△BCD以AD、DB为底，从C到AB的高相同，所以面积相等"
+},
+{
+  id: 534,
+  category: "一半模型",
+  question: "三角形ABC中，D为AB中点。连接CD。若△ABC面积为 86 cm²，△BCD面积是多少？",
+  answer: "43",
+  solution: "CD把三角形分成两个等面积三角形，所以86÷2=43 cm²"
+},
+{
+  id: 535,
+  category: "一半模型",
+  question: "三角形ABC中，D为AC中点。连接BD。若△ABC面积为 110 cm²，△ABD面积是多少？",
+  answer: "55",
+  solution: "AD=DC，△ABD和△BCD等高等底，因此各占整体一半，110÷2=55 cm²"
+},
+{
+  id: 536,
+  category: "一半模型",
+  question: "一个平行四边形面积为 156 cm²。任取对边上的一点，与另一条边的两个端点连接形成同底同高三角形，该三角形面积是多少？",
+  answer: "78",
+  solution: "同底同高三角形面积是平行四边形面积的一半，所以156÷2=78 cm²"
+},
+{
+  id: 537,
+  category: "一半模型",
+  question: "平行四边形中“顶天立地”三角形面积为 46 cm²，求平行四边形面积。",
+  answer: "92",
+  solution: "顶天立地三角形与平行四边形同底同高，面积是平行四边形的一半，所以46×2=92 cm²"
+},
+{
+  id: 538,
+  category: "一半模型",
+  question: "一个长方形面积为 180 cm²，在上边任取一点，与下边两个端点连接成三角形。这个三角形面积是多少？",
+  answer: "90",
+  solution: "三角形以下边为底，高等于长方形的高，因此面积是长方形的一半：180÷2=90 cm²"
+},
+{
+  id: 539,
+  category: "一半模型",
+  question: "一个正方形面积为 242 cm²，在一条边的对边上任取一点，与这条边两端连接成三角形。三角形面积是多少？",
+  answer: "121",
+  solution: "三角形与正方形同底同高，因此面积为正方形的一半：242÷2=121 cm²"
+},
+{
+  id: 540,
+  category: "一半模型",
+  question: "一个平行四边形面积为 216 cm²，两条对角线相交于O。由O和任意一条边的两个端点组成的三角形面积是多少？",
+  answer: "54",
+  solution: "两条对角线把平行四边形分成4个等面积三角形，所以216÷4=54 cm²"
+},
+
+{
+  id: 541,
+  category: "一半模型",
+  question: "三角形两边中点连线长为 12 cm，与它平行的第三边长是多少？",
+  answer: "24",
+  solution: "三角形中位线等于第三边的一半，所以第三边=12×2=24 cm"
+},
+{
+  id: 542,
+  category: "一半模型",
+  question: "三角形第三边长为 30 cm，两边中点连线长度是多少？",
+  answer: "15",
+  solution: "中位线=第三边÷2=30÷2=15 cm"
+},
+{
+  id: 543,
+  category: "一半模型",
+  question: "三角形ABC中，D、E为两边中点。若△ADE面积为 25 cm²，四边形BDEC面积是多少？",
+  answer: "75",
+  solution: "△ADE占大三角形1/4，因此大三角形面积=25×4=100 cm²；四边形面积=100−25=75 cm²"
+},
+{
+  id: 544,
+  category: "一半模型",
+  question: "三角形ABC中，D、E为两边中点。四边形BDEC面积为 90 cm²，求△ADE面积。",
+  answer: "30",
+  solution: "△ADE与四边形BDEC面积比为1:3，所以△ADE面积=90÷3=30 cm²"
+},
+{
+  id: 545,
+  category: "一半模型",
+  question: "三角形ABC中，两边中点连线把图形分成小三角形和梯形。小三角形面积与梯形面积之比是多少？",
+  answer: "1:3",
+  solution: "小三角形面积占整体1/4，梯形占整体3/4，所以面积比=1:3"
+},
+{
+  id: 546,
+  category: "一半模型",
+  question: "三角形ABC面积为 200 cm²，两边中点连线截出顶部小三角形。小三角形面积是多少？",
+  answer: "50",
+  solution: "小三角形与原三角形边长比1:2，面积比1:4，所以200÷4=50 cm²"
+},
+{
+  id: 547,
+  category: "一半模型",
+  question: "三角形ABC面积为 200 cm²，两边中点连线截出的下方梯形面积是多少？",
+  answer: "150",
+  solution: "顶部小三角形面积=200÷4=50 cm²，梯形面积=200−50=150 cm²"
+},
+{
+  id: 548,
+  category: "一半模型",
+  question: "一个四边形面积为 320 cm²，依次连接四边中点。中点四边形面积是多少？",
+  answer: "160",
+  solution: "中点四边形面积恒为原四边形的一半，所以320÷2=160 cm²"
+},
+{
+  id: 549,
+  category: "一半模型",
+  question: "一个四边形的中点四边形面积为 125 cm²，原四边形面积是多少？",
+  answer: "250",
+  solution: "原四边形面积是中点四边形面积的2倍，所以125×2=250 cm²"
+},
+{
+  id: 550,
+  category: "一半模型",
+  question: "任意四边形依次连接四边中点后，新四边形面积占原四边形面积的几分之几？请填写分数，如1/2。",
+  answer: "1/2",
+  solution: "四边中点模型中，新四边形面积恒等于原四边形面积的1/2"
+},
+
+{
+  id: 551,
+  category: "一半模型",
+  question: "梯形面积为 160 cm²，利用一半模型分成两个等面积图形。一个图形面积是多少？",
+  answer: "80",
+  solution: "160÷2=80 cm²"
+},
+{
+  id: 552,
+  category: "一半模型",
+  question: "梯形面积为 234 cm²，利用中点构造等面积的两部分。每部分面积是多少？",
+  answer: "117",
+  solution: "234÷2=117 cm²"
+},
+{
+  id: 553,
+  category: "一半模型",
+  question: "梯形一半模型的一部分面积为 68 cm²，另一部分面积是多少？",
+  answer: "68",
+  solution: "一半模型两部分面积相等，因此另一部分也是68 cm²"
+},
+{
+  id: 554,
+  category: "一半模型",
+  question: "梯形一半模型的一个部分面积为 92 cm²，整个梯形面积是多少？",
+  answer: "184",
+  solution: "一个部分占整体一半，所以总面积=92×2=184 cm²"
+},
+{
+  id: 555,
+  category: "一半模型",
+  question: "在一半模型中，整个图形面积记作S，一个等面积部分的面积用S表示应是多少？请输入1/2。",
+  answer: "1/2",
+  solution: "等面积部分占整个图形面积的一半，即S/2，因此所占比例为1/2"
+},
+
+{
+  id: 556,
+  category: "一半模型",
+  question: "平行四边形面积为 64 cm²，对角线AC把它分成两个三角形。△ABC与△ACD面积比是多少？",
+  answer: "1:1",
+  solution: "一条对角线把平行四边形分成两个全等、等面积三角形，所以面积比1:1"
+},
+{
+  id: 557,
+  category: "一半模型",
+  question: "长方形面积为 90 cm²，对角线分成的两个三角形面积比是多少？",
+  answer: "1:1",
+  solution: "对角线把长方形分成两个全等三角形，所以面积比1:1"
+},
+{
+  id: 558,
+  category: "一半模型",
+  question: "正方形面积为 128 cm²，一条对角线分成的每个三角形面积是多少？",
+  answer: "64",
+  solution: "128÷2=64 cm²"
+},
+{
+  id: 559,
+  category: "一半模型",
+  question: "平行四边形两条对角线相交，四个小三角形的面积比是多少？",
+  answer: "1:1:1:1",
+  solution: "平行四边形对角线互相平分，因此四个小三角形面积相等，面积比为1:1:1:1"
+},
+{
+  id: 560,
+  category: "一半模型",
+  question: "平行四边形面积为 360 cm²，两条对角线相交后，其中两个小三角形的面积之和是多少？",
+  answer: "180",
+  solution: "每个小三角形面积=360÷4=90 cm²，两个小三角形面积之和=90×2=180 cm²"
 }
-
-function parallelogram(){
- let t=R(1,5),a=R(4,30),h=R(2,20),b=R(3,25);
- if(t===1)return Q("平行四边形｜面积",`底 ${a} cm，高 ${h} cm，面积是多少？`,num(a*h),`S=${a}×${h}=${a*h} cm²`);
- if(t===2)return Q("平行四边形｜求高",`面积 ${a*h} cm²，底 ${a} cm，高是多少？`,num(h),`h=${a*h}÷${a}=${h} cm`);
- if(t===3)return Q("平行四边形｜周长",`相邻两边为 ${a} cm、${b} cm，周长是多少？`,num(2*(a+b)),`C=2×(${a}+${b})=${2*(a+b)} cm`);
- if(t===4){let x=R(30,150);return Q("平行四边形｜角",`一个内角是 ${x}°，相邻内角是多少度？`,num(180-x),`相邻角互补：180−${x}=${180-x}°`)}
- let s=R(5,70)*2;return Q("平行四边形｜一半模型",`平行四边形面积 ${s} cm²，以整条底为底、顶点在对边上的三角形面积是多少？`,num(s/2),`同底等高，三角形面积=${s}÷2=${s/2} cm²`);
-}
-
-function trapezoid(){
- let t=R(1,5),a=R(2,12),b=R(a+2,25),h=R(2,15),s=(a+b)*h/2;
- if(t===1)return Q("梯形｜面积",`上底 ${a} cm，下底 ${b} cm，高 ${h} cm，面积是多少？`,num(s),`S=(${a}+${b})×${h}÷2=${s} cm²`);
- if(t===2)return Q("梯形｜求高",`上底 ${a} cm，下底 ${b} cm，面积 ${s} cm²，高是多少？`,num(h),`h=${s}×2÷(${a}+${b})=${h} cm`);
- if(t===3)return Q("梯形｜中位线",`上底 ${a} cm，下底 ${b} cm，中位线是多少？`,num((a+b)/2),`(${a}+${b})÷2=${(a+b)/2} cm`);
- if(t===4){let x=R(3,80);return Q("梯形蝴蝶｜两翼",`梯形蝴蝶左翼面积 ${x} cm²，右翼面积是多少？`,num(x),`两翼面积相等，所以是 ${x} cm²`)}
- return Q("梯形｜面积反推",`梯形面积 ${s} cm²，高 ${h} cm，上底 ${a} cm，下底是多少？`,num(b),`${s}×2÷${h}−${a}=${b} cm`);
-}
-
-function triangle(){
- let t=R(1,9);
- if(t===1){let a=R(20,80),b=R(20,170-a);return Q("三角形｜内角和",`两个角为 ${a}°、${b}°，第三角是多少？`,num(180-a-b),`180−${a}−${b}=${180-a-b}°`)}
- if(t===2){let n=R(4,15);return Q("多边形｜内角和",`${n} 边形内角和是多少度？`,num((n-2)*180),`(${n}−2)×180=${(n-2)*180}°`)}
- if(t===3){let b=R(3,30),h=R(2,20);return Q("三角形｜面积",`底 ${b} cm，高 ${h} cm，面积是多少？`,num(b*h/2),`${b}×${h}÷2=${b*h/2} cm²`)}
- if(t===4){let b=R(3,30),h=R(2,20),s=b*h/2;return Q("三角形｜求高",`面积 ${s} cm²，底 ${b} cm，高是多少？`,num(h),`${s}×2÷${b}=${h} cm`)}
- if(t===5){let c=R(6,20),a=R(2,c-1),b=R(2,c-1),yes=a+b>c;return Q("三角形｜三边关系",`${a}、${b}、${c} 能组成三角形吗？输入“能”或“不能”。`,txt(...(yes?["能","可以","能组成"]:["不能","不可以","不能组成"])),`${a}+${b}=${a+b}${yes?">":"≤"}${c}，所以${yes?"能":"不能"}组成。`)}
- if(t===6)return Q("三角形｜分类","一个三角形有一个角为 90°，是什么三角形？",txt("直角三角形","直角"),"有一个90°角，所以是直角三角形。");
- if(t===7){let x=R(91,150);return Q("三角形｜分类",`一个三角形有一个角为 ${x}°，是什么三角形？`,txt("钝角三角形","钝角"),`${x}>90，所以是钝角三角形。`)}
- if(t===8)return Q("三角形｜分类","三条边完全相等的三角形叫什么？",txt("等边三角形","等边"),"三边相等叫等边三角形。");
- let x=R(3,20);return Q("等边三角形｜角","等边三角形的一个内角是多少度？",num(60),"三个角都等于60°。");
-}
-
-function equal(){
- let t=R(1,3);
- if(t===1){let s=R(3,100);return Q("等积｜等底等高",`两个三角形同底等高，第一个面积 ${s} cm²，第二个面积是多少？`,num(s),`同底等高面积相等，所以是 ${s} cm²`)}
- if(t===2){let a=R(1,12),b=R(1,12);return Q("等积｜等底",`两个三角形底相同，高之比为 ${a}:${b}，面积比是多少？`,ratio(a,b),`面积比=高之比=${rat(a,b)}`)}
- let a=R(1,12),b=R(1,12);return Q("等积｜等高",`两个三角形高相同，底边比为 ${a}:${b}，面积比是多少？`,ratio(a,b),`面积比=底边比=${rat(a,b)}`);
-}
-
-function half(){
- let t=R(1,5),s=R(3,80)*2;
- if(t===1)return Q("一半模型｜中线",`三角形面积 ${s} cm²，中线分成的每一部分面积是多少？`,num(s/2),`${s}÷2=${s/2} cm²`);
- if(t===2){let x=R(3,50);return Q("一半模型｜两边中点",`三角形面积 ${x*4} cm²，两边中点连线形成顶部小三角形，小三角形面积是多少？`,num(x),`${x*4}÷4=${x} cm²`)}
- if(t===3)return Q("一半模型｜顶天立地",`平行四边形面积 ${s} cm²，顶天立地三角形面积是多少？`,num(s/2),`${s}÷2=${s/2} cm²`);
- if(t===4)return Q("一半模型｜四边中点",`任意四边形面积 ${s} cm²，四边中点组成的新四边形面积是多少？`,num(s/2),`${s}÷2=${s/2} cm²`);
- let x=R(3,60);return Q("一半模型｜中点",`M是BC中点，△ABM面积 ${x} cm²，△AMC面积是多少？`,num(x),`BM=MC且同高，所以面积相等，为 ${x} cm²`);
-}
-
-function kite(){
- let t=R(1,2);
- if(t===1){let a=R(1,10),b=R(1,10),c=R(1,10);let d=b*c/a;return Q("风筝模型｜面积乘积",`四块面积 S₁=${a}，S₂=${b}，S₄=${c}，求与S₁相对的S₃。`,num(d,.01),`S₁×S₃=S₂×S₄，所以 S₃=${fmt(d)}`)}
- let a=R(1,8),b=R(1,8),c=R(1,8),d=R(1,8);return Q("风筝/鸟头｜面积比",`两个三角形夹角相等，夹角两边分别是 ${a}、${b} 与 ${c}、${d}，面积比是多少？`,ratio(a*b,c*d),`面积比=(${a}×${b}):(${c}×${d})=${rat(a*b,c*d)}`);
-}
-
-function butterfly(){
- let t=R(1,3);
- if(t===1){let a=R(1,6),b=R(a+1,10);return Q("梯形蝴蝶｜平方比",`梯形上、下底之比 ${a}:${b}，靠两底的两个三角形面积比是多少？`,ratio(a*a,b*b),`面积比=${a}²:${b}²=${rat(a*a,b*b)}`)}
- if(t===2){let x=R(3,80);return Q("梯形蝴蝶｜两翼",`左翼面积 ${x} cm²，右翼面积是多少？`,num(x),`两翼面积相等，为 ${x} cm²`)}
- let x=R(3,60);return Q("平行四边形蝴蝶",`平行四边形总面积 ${x*4} cm²，两条对角线形成的一个小三角形面积是多少？`,num(x),`${x*4}÷4=${x} cm²`);
-}
-
-function bird(){
- let t=R(1,3),a=R(1,8),b=R(1,8),c=R(1,8),d=R(1,8);
- if(t===1)return Q("鸟头｜相等角",`两个三角形夹角相等，两组夹角边为 ${a},${b} 和 ${c},${d}，面积比是多少？`,ratio(a*b,c*d),`面积比=${rat(a*b,c*d)}`);
- if(t===2)return Q("鸟头｜对顶角",`两直线交于O，AO=${a}, BO=${b}, CO=${c}, DO=${d}，△AOB:△COD面积比是多少？`,ratio(a*b,c*d),`对顶角相等，面积比=${rat(a*b,c*d)}`);
- let p=R(1,5),q=R(p+1,9);return Q("金字塔｜相似",`DE∥BC，AD:AB=${p}:${q}，△ADE:△ABC面积比是多少？`,ratio(p*p,q*q),`相似比=${p}:${q}，面积比=${rat(p*p,q*q)}`);
-}
-
-function swallow(){
- let t=R(1,3),a=R(1,9),b=R(1,9);
- if(t===1)return Q("三角形燕尾",`D在BC上，BD:DC=${a}:${b}，△ABD:△ADC面积比是多少？`,ratio(a,b),`共高，所以面积比=BD:DC=${rat(a,b)}`);
- if(t===2){let u=R(2,10);return Q("燕尾｜面积传递",`BD:DC=${a}:${b}，△ABD面积 ${a*u} cm²，△ADC面积是多少？`,num(b*u),`面积比=${a}:${b}，所以面积=${b*u} cm²`)}
- return Q("四边形燕尾",`两条对角线交于O，AO:OC=${a}:${b}，△AOB:△BOC面积比是多少？`,ratio(a,b),`两三角形共高，所以面积比=AO:OC=${rat(a,b)}`);
-}
-
-const gens={rectangle,parallelogram,trapezoid,triangle,equal,half,kite,butterfly,bird,swallow};
-let current=null,marked=false;
-
-function newQuestion(){
- let k=document.getElementById("category").value;
- if(k==="all")k=pick(Object.keys(gens));
- current=gens[k]();marked=false;
- qcat.textContent=current.cat;qtext.textContent=current.q;
- userAnswer.value="";feedback.className="feedback";feedback.textContent="";
- solution.className="solution";solution.textContent="答案与解析："+current.sol;
- userAnswer.focus();
-}
-
-function norm(s){
- return String(s).trim().toLowerCase().replace(/\s+/g,"")
- .replace(/：/g,":").replace(/平方厘米/g,"").replace(/厘米/g,"")
- .replace(/cm²/gi,"").replace(/cm2/gi,"").replace(/cm/gi,"")
- .replace(/°|度|。/g,"");
-}
-function getNum(s){let m=norm(s).match(/-?\d+(?:\.\d+)?/);return m?Number(m[0]):NaN}
-function getRatio(s){
- let m=String(s).replace(/\s+/g,"").replace(/：/g,":").match(/(-?\d+(?:\.\d+)?)[:\/](-?\d+(?:\.\d+)?)/);
- return m?[Number(m[1]),Number(m[2])]:null;
-}
-function right(u,a){
- if(a.type==="number"){let n=getNum(u);return !Number.isNaN(n)&&Math.abs(n-a.v)<=a.t}
- if(a.type==="text"){let n=norm(u);return a.v.some(x=>norm(x)===n)}
- if(a.type==="ratio"){let r=getRatio(u);return r&&r[1]!==0&&Math.abs(r[0]*a.b-r[1]*a.a)<.0001}
- return false;
-}
-function checkAnswer(){
- if(!current)return newQuestion();
- let u=userAnswer.value.trim();
- if(!u){feedback.className="feedback bad";feedback.textContent="先输入你的答案。";return}
- let ok=right(u,current.a);
- feedback.className="feedback "+(ok?"good":"bad");
- feedback.textContent=ok?"✅ 正确！继续保持。":"❌ 还不对，可以重新计算；实在不会再点“看答案”。";
- if(!marked){saveStat(ok);marked=true}
-}
-function showAnswer(){if(!current)newQuestion();solution.classList.toggle("show")}
-function fmt(n){return Number.isInteger(n)?n:Number(n.toFixed(2))}
-
-let stat={done:0,correct:0,wrong:0};
-function loadStat(){
- try{let x=JSON.parse(localStorage.getItem("math_stats_v3")||"{}");stat.done=x.done||0;stat.correct=x.correct||0;stat.wrong=x.wrong||0}catch(e){}
- renderStat();
-}
-function saveStat(ok){
- stat.done++;ok?stat.correct++:stat.wrong++;
- localStorage.setItem("math_stats_v3",JSON.stringify(stat));renderStat();
-}
-function renderStat(){
- done.textContent=stat.done;correct.textContent=stat.correct;wrong.textContent=stat.wrong;
- rate.textContent=(stat.done?Math.round(stat.correct/stat.done*100):0)+"%";
-}
-
-const masters=[...document.querySelectorAll("[data-master]")];
-function loadMaster(){
- let d={};try{d=JSON.parse(localStorage.getItem("math_master_v3")||"{}")}catch(e){}
- masters.forEach(x=>{x.checked=!!d[x.dataset.master];x.addEventListener("change",saveMaster)});
- renderMaster();
-}
-function saveMaster(){
- let d={};masters.forEach(x=>d[x.dataset.master]=x.checked);
- localStorage.setItem("math_master_v3",JSON.stringify(d));renderMaster();
-}
-function renderMaster(){
- let n=masters.filter(x=>x.checked).length;
- masterText.textContent=n+" / "+masters.length;
- masterBar.style.width=(masters.length?n/masters.length*100:0)+"%";
-}
-function resetAll(){
- if(!confirm("确定清空练习记录和掌握进度吗？"))return;
- localStorage.removeItem("math_stats_v3");localStorage.removeItem("math_master_v3");
- stat={done:0,correct:0,wrong:0};masters.forEach(x=>x.checked=false);
- renderStat();renderMaster();
-}
-function searchCards(v){
- let q=v.trim().toLowerCase();
- document.querySelectorAll(".lesson").forEach(c=>{
-   let text=(c.innerText+" "+(c.dataset.search||"")).toLowerCase();
-   c.classList.toggle("hidden",q&&!text.includes(q));
- });
-}
-function goPractice(){
- practice.scrollIntoView({behavior:"smooth"});
- setTimeout(()=>userAnswer.focus(),350);
-}
-loadStat();loadMaster();newQuestion();
-</script>
-
-</body>
-</html>
