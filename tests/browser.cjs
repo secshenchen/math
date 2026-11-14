@@ -10,7 +10,7 @@ async function main() {
     ? {executablePath:process.env.CHROMIUM_PATH} : {});
   try {
     const device = process.env.GEOMETRY_DEVICE;
-    const context = await browser.newContext({...(devices[device] ?? {viewport:{width:390,height:844}}), offline:engine === chromium});
+    const context = await browser.newContext({...(devices[device] ?? {viewport:{width:1365,height:900}}), offline:engine === chromium});
     const page = await context.newPage();
     const errors = [], remote = [];
     page.on("pageerror", error => errors.push(error.message));
@@ -20,7 +20,7 @@ async function main() {
       if (/^https?:/.test(request.url())) remote.push(request.url());
     });
     page.on("dialog", dialog => dialog.accept());
-    const packed = resolve("candidate/offline.html");
+    const packed = resolve("index.html");
     if (engine === webkit) {
       // WebKit on the Linux runner cannot navigate to the local file.
       // Fulfill the document from disk and prohibit all network traffic.
