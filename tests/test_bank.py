@@ -170,7 +170,7 @@ class BuiltBankTests(unittest.TestCase):
         self.assertEqual(len(mapping),5000)
         self.assertEqual(mapping[:5],[1,2,3,4,5])
         self.assertIn(0,mapping)
-        self.assertGreaterEqual(sum(bool(new) for new in mapping), 4250)
+        self.assertGreaterEqual(sum(bool(new) for new in mapping), 3950)
         self.assertTrue(all(not new or old == new for old,new in enumerate(mapping,1)))
         for key,new in zip(previous,mapping):
             if new:

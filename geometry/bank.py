@@ -523,4 +523,28 @@ def build_bank():
                     break
             else:
                 raise ValueError(f"Not enough distinct prompts: {group}")
+    from collections import Counter
+    import re
+    def form(q):
+        return re.sub(r"[0-9]+(?:[./][0-9]+)?", "N", q["question"])
+
+    for group in ("一半模型","三角形基础","等积模型","鸟头模型"):
+        eligible = [i for i,q in enumerate(result) if q["category"] == group and q["id"] > 5 and q["modelMode"] < 15]
+        counts = Counter(form(result[i]) for i in eligible)
+        selected = []
+        for structure,_ in counts.most_common(2):
+            selected.extend([i for i in eligible if form(result[i]) == structure][:35])
+        variants = list(product(range(3,22),range(2,23),range(2,25),(22,23)))
+        Random(67075).shuffle(variants)
+        choices = iter(variants)
+        for index in selected:
+            for a,b,c,mode in choices:
+                q = build_problem(group,mode,a,b,c)
+                if q["question"] not in seen:
+                    seen.add(q["question"])
+                    level = "挑战" if group in ("一半模型","鸟头模型") else "提高"
+                    result[index] = dict(q,id=result[index]["id"],difficulty=level)
+                    break
+            else:
+                raise ValueError(f"Not enough distinct prompts: {group}")
     return result
