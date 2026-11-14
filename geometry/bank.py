@@ -25,7 +25,62 @@ def build_problem(group, mode, a, b, c):
     unit = "cm²"
     target = ""
     known = ""
-    if group == "等积模型" and mode >= 10:
+    if group == "一半模型" and 12 <= mode <= 14:
+        top = a
+        points.update(C=(2+top,h), D=(2,h))
+        points["M"] = midpoint(points["A"],points["B"])
+        points["N"] = midpoint(points["A"],points["D"])
+        points["P"] = midpoint(points["B"],points["C"])
+        known = f"梯形ABCD中AB∥CD，AB＝{u}厘米，CD＝{top}厘米，高为{h}厘米"
+        if mode == 12:
+            lines = [("D","M")]
+            question = f"{known}，M为AB中点。求△ADM面积。"
+            target, answer = "ADM", Fraction(u*h,4)
+            explanation = "以AM为底，高与梯形相同，AM是AB的一半"
+        elif mode == 13:
+            lines = [("B","N")]
+            question = f"{known}，N为AD中点。求△ABN面积。"
+            target, answer = "ABN", Fraction(u*h,4)
+            explanation = "N到AB的距离是梯形高的一半"
+        else:
+            lines = [("N","P")]
+            question = f"{known}，N、P分别是两腰中点。求梯形ABPN面积。"
+            target, answer = "ABPN", Fraction((3*u+top)*h,8)
+            explanation = "中位线NP等于两底和的一半，下半梯形的高等于原高的一半"
+    elif group == "长方形与正方形" and 12 <= mode <= 14:
+        points.update(C=(u,h),D=(0,h),E=(a,0),F=(a,c),G=(0,c))
+        known = f"长方形ABCD中AB＝{u}厘米、BC＝{h}厘米。角A处剪去小长方形AEFG，AE＝{a}厘米、AG＝{c}厘米"
+        lines = [("E","F"),("F","G")]
+        if mode == 12:
+            question = f"{known}。求剩余图形面积。"
+            target, answer = "EBCDGF", u*h-a*c
+            explanation = f"原面积{u}×{h}，剪去面积{a}×{c}，相减得到剩余面积"
+        elif mode == 13:
+            question = f"{known}。剩余图形的周长是多少厘米？"
+            target, answer, unit = "EBCDGF", 2*(u+h), "cm"
+            explanation = "剪掉的一横一竖分别由凹口的一横一竖补回，周长等于原矩形周长"
+        else:
+            question = f"{known}。剪去面积占原图面积的几分之几？"
+            target, answer, unit = "AEFG", Fraction(a*c,u*h), ""
+            explanation = f"用剪去面积{a}×{c}除以原面积{u}×{h}，再约分"
+    elif group == "平行四边形" and 12 <= mode <= 14:
+        points.update(C=(u+2,h),D=(2,h))
+        points["O"] = intersection(points["A"],points["C"],points["B"],points["D"])
+        lines = [("A","C"),("B","D")]
+        known = f"平行四边形ABCD的对角线交于O，AB＝{u}厘米，AB边对应高为{h}厘米"
+        if mode == 12:
+            question = f"{known}。求△ABO面积。"
+            target, answer = "ABO", Fraction(u*h,4)
+            explanation = "对角线互相平分，O到AB的距离为原高的一半"
+        elif mode == 13:
+            question = f"{known}。求△BCO面积。"
+            target, answer = "BCO", Fraction(u*h,4)
+            explanation = "AC平分整图面积，BO又平分△ABC的面积"
+        else:
+            question = f"{known}。求△ABO与△CDO的面积和。"
+            answer = Fraction(u*h,2)
+            explanation = "两块相对的区域各占总面积的四分之一"
+    elif group == "等积模型" and mode >= 10:
         points.update(C=(a,h), D=(b+2,h), E=(a+1,0))
         lines = [("A","C"),("B","D")]
         outline = "ABC"
@@ -263,6 +318,8 @@ def build_problem(group, mode, a, b, c):
     notes = tuple(known[i:i+22] for i in range(0,len(known),22))
     args = dict(segments=lines,labels=labels)
     regions = [(target,"#bfdbfe")] if target else ()
+    if group == "平行四边形" and mode == 14:
+        regions = [("ABO","#bfdbfe"),("CDO","#fde68a")]
     if ":" in answer and group == "蝴蝶模型":
         regions.append(("CDO","#fde68a"))
     return dict(category=group, modelMode=mode,
@@ -278,7 +335,7 @@ def build_problem(group, mode, a, b, c):
 def build_bank():
     result = build_samples()
     seen = {q["question"] for q in result}
-    inputs = list(product(range(3,22),range(2,23),range(2,25),range(12)))
+    inputs = list(product(range(3,22),range(2,23),range(2,25),range(15)))
     Random(5000).shuffle(inputs)
     for group, quota in QUOTAS.items():
         remaining = quota - sum(q["category"] == group for q in result)

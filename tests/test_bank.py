@@ -68,7 +68,15 @@ class BuiltBankTests(unittest.TestCase):
                     lower = triangulated([p[n] for n in "CDO"])
                     expected = upper/lower
                 elif q["unit"] == "cm²":
-                    expected = triangulated([p[n] for n in q["target"]])
+                    if category == "平行四边形" and mode == 14:
+                        expected = sum(triangulated([p[n] for n in name]) for name in ("ABO","CDO"))
+                    else:
+                        expected = triangulated([p[n] for n in q["target"]])
+                elif category == "长方形与正方形" and mode in (13,14):
+                    cutout = triangulated([p[n] for n in "AEFG"])
+                    polygon = [p[n] for n in "EBCDGF"]
+                    expected = (sum(abs(x-u)+abs(y-v) for (x,y),(u,v) in zip(polygon,polygon[1:]+polygon[:1]))
+                                if mode == 13 else cutout / triangulated([p[n] for n in "ABCD"]))
                 elif category == "三角形边角关系":
                     angle_b = degrees(atan2(float(height), float(base)))
                     expected = 90 if mode<8 and mode%2==0 else 90-angle_b if mode>=8 or mode>=4 else angle_b
@@ -88,3 +96,27 @@ class BuiltBankTests(unittest.TestCase):
                 self.assertTrue(isclose(float(answer), float(expected), abs_tol=1e-8))
                 checked += 1
         self.assertEqual(checked, 4995)
+
+    def test_built_svg_matches_construction(self):
+        from fractions import Fraction
+        ns = "{http://www.w3.org/2000/svg}"
+        checked = 0
+        for q in self.bank:
+            if "construction" not in q:
+                continue
+            points = {n:tuple(map(Fraction, pair)) for n,pair in q["construction"].items()}
+            xs,ys = zip(*points.values())
+            scale = min(Fraction(290,max(xs)-min(xs)), Fraction(140,max(ys)-min(ys)))
+            for field in ("questionSvg","answerSvg"):
+                root = ET.fromstring(q[field])
+                shape = root.findall(ns + "polygon")[-1]
+                coordinates = [tuple(map(float,pair.split(","))) for pair in shape.attrib["points"].split()]
+                self.assertEqual(len(coordinates),len(q["outline"]),q["id"])
+                for vertex,(x,y) in zip(q["outline"],coordinates):
+                    u,v = points[vertex]
+                    self.assertAlmostEqual(x,float(65+(u-min(xs))*scale),delta=.001,msg=str(q["id"]))
+                    self.assertAlmostEqual(y,float(185-(v-min(ys))*scale),delta=.001,msg=str(q["id"]))
+                svg_labels = {label.text for label in root.findall(ns + "text")}
+                self.assertTrue(set(q["outline"]) <= svg_labels,q["id"])
+                checked += 1
+        self.assertEqual(checked,9990)
