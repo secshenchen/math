@@ -468,7 +468,7 @@ def build_problem(group, mode, a, b, c):
 def build_bank():
     result = build_samples()
     seen = {q["question"] for q in result}
-    inputs = list(product(range(3,22),range(2,23),range(2,25),range(18)))
+    inputs = list(product(range(3,22),range(2,23),range(2,25),range(15)))
     Random(5000).shuffle(inputs)
     for group, quota in QUOTAS.items():
         remaining = quota - sum(q["category"] == group for q in result)
@@ -491,4 +491,19 @@ def build_bank():
                 break
         if count != remaining:
             raise ValueError(f"{group}: {count}/{remaining}")
+    # Replace selected slots while retaining the other published question IDs.
+    new_inputs = list(product(range(3,22),range(2,23),range(2,25),range(15,18)))
+    Random(5017066).shuffle(new_inputs)
+    for group in ("一半模型","平行四边形","蝴蝶模型","梯形","燕尾模型"):
+        candidates = iter(new_inputs)
+        slots = [index for index,q in enumerate(result) if q["category"]==group and q["id"]>5]
+        for index in slots[::5]:
+            while True:
+                a,b,c,mode = next(candidates)
+                question = build_problem(group,mode,a,b,c)
+                if question["question"] not in seen:
+                    seen.add(question["question"])
+                    break
+            difficulty = "挑战" if group in ("一半模型","梯形","燕尾模型") else "提高"
+            result[index] = dict(question,id=result[index]["id"],difficulty=difficulty)
     return result
