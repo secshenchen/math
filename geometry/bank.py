@@ -506,4 +506,9 @@ def build_bank():
                     break
             difficulty = "挑战" if group in ("一半模型","梯形","燕尾模型") else "提高"
             result[index] = dict(question,id=result[index]["id"],difficulty=difficulty)
+    polygon_slots = [i for i,q in enumerate(result) if q["category"] == "三角形边角关系"]
+    for offset, index in enumerate(polygon_slots[::12][:38]):
+        size, variant = divmod(offset, 2)
+        question = build_problem("三角形边角关系", 18+variant, 3+size, 2, 2)
+        result[index] = dict(question, id=result[index]["id"], difficulty="提高")
     return result

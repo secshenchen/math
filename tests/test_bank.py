@@ -86,6 +86,16 @@ class BuiltBankTests(unittest.TestCase):
                                 if mode == 13 else cutout / triangulated([p[n] for n in "ABCD"]))
                 elif category == "鸟头模型" and mode % 5 == 3:
                     expected = triangulated([p[n] for n in "CMN"])/triangulated([p[n] for n in "ABC"])
+                elif category == "三角形边角关系" and mode >= 18:
+                    from math import acos
+                    polygon = [p[n] for n in q["outline"]]
+                    angles = []
+                    for i, origin in enumerate(polygon):
+                        vectors = [tuple(float(x-y) for x,y in zip(other,origin))
+                                   for other in (polygon[i-1], polygon[(i+1)%len(polygon)])]
+                        (x,y),(u,v) = vectors
+                        angles.append(degrees(acos((x*u+y*v)/(hypot(x,y)*hypot(u,v)))))
+                    expected = sum(angles) if mode == 18 else 180-angles[0]
                 elif category == "三角形边角关系":
                     from math import acos
                     def distance(m,n):

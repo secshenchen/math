@@ -1,5 +1,6 @@
 """Additional constructions for the areas with few existing exercise types."""
 from fractions import Fraction
+from math import cos, sin, tau
 from .coordinates import area, midpoint, intersection
 
 
@@ -7,7 +8,22 @@ def construct(group, mode, a, b, c):
     width, height = a+b, 2*c
     p = {"A": (0,0), "B": (width,0), "C": (width,height), "D": (0,height)}
     outline, segments, unit = "ABCD", [], "cm²"
-    if group == "一半模型":
+    if group == "三角形边角关系" and mode >= 18:
+        n = a + 2
+        outline = "".join(chr(65+i) for i in range(n))
+        p = {name: (cos(i*tau/n),sin(i*tau/n)) for i,name in enumerate(outline)}
+        segments = [(outline[0],name) for name in outline[2:-1]]
+        unit, target = "°", ""
+        if mode == 18:
+            known = f"凸{n}边形的各顶点如图，从A向不相邻的顶点作对角线"
+            answer, prompt = (n-2)*180, "求所有内角的和"
+            method = f"从A把凸{n}边形分成{n-2}个三角形，内角和为{n-2}×180°"
+        else:
+            known = f"正{n}边形各边相等、各角相等"
+            answer, prompt = Fraction(360,n), "沿边走一周时，每个顶点的外角是多少度"
+            segments = []
+            method = f"沿边走一圈共转360°，{n}个顶点等分一整圈"
+    elif group == "一半模型":
         p.update(M=midpoint(p["A"],p["B"]), N=midpoint(p["B"],p["C"]),
                  P=midpoint(p["C"],p["D"]), Q=midpoint(p["D"],p["A"]))
         segments = list(zip("MNPQ","NPQM"))
