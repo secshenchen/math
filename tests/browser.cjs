@@ -1,4 +1,5 @@
 const assert = require("node:assert/strict");
+const {readFileSync} = require("node:fs");
 const {resolve} = require("node:path");
 const {pathToFileURL} = require("node:url");
 const {chromium, webkit, devices} = require("playwright");
@@ -9,13 +10,25 @@ async function main() {
     ? {executablePath:process.env.CHROMIUM_PATH} : {});
   try {
     const device = process.env.GEOMETRY_DEVICE;
-    const context = await browser.newContext({...(devices[device] ?? {viewport:{width:390,height:844}}), offline:true});
+    const context = await browser.newContext({...(devices[device] ?? {viewport:{width:390,height:844}}), offline:engine === chromium});
     const page = await context.newPage();
     const errors = [], remote = [];
     page.on("pageerror", error => errors.push(error.message));
     page.on("request", request => { if (/^https?:/.test(request.url())) remote.push(request.url()); });
     page.on("dialog", dialog => dialog.accept());
-    await page.goto(pathToFileURL(resolve("candidate/offline.html")).href);
+    const packed = resolve("candidate/offline.html");
+    if (engine === webkit) {
+      // WebKit on the Linux runner cannot navigate to the local file.
+      // Fulfill the document from disk and prohibit all network traffic.
+      const url = "https://geometry.test/index.html";
+      await page.route("**/*", route => route.request().url() === url
+        ? route.fulfill({contentType:"text/html; charset=utf-8",body:readFileSync(packed)})
+        : route.abort());
+      await page.goto(url);
+      assert.deepEqual(remote.splice(0), [url]);
+    } else {
+      await page.goto(pathToFileURL(packed).href);
+    }
     const input = id => page.locator("#" + id);
     async function credentials(name, pass, action) {
       await input("username").fill(name);
