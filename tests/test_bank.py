@@ -80,8 +80,21 @@ class BuiltBankTests(unittest.TestCase):
                 elif category == "鸟头模型" and mode % 5 == 3:
                     expected = triangulated([p[n] for n in "CMN"])/triangulated([p[n] for n in "ABC"])
                 elif category == "三角形边角关系":
-                    angle_b = degrees(atan2(float(height), float(base)))
-                    expected = 90 if mode<8 and mode%2==0 else 90-angle_b if mode>=8 or mode>=4 else angle_b
+                    from math import acos
+                    def distance(m,n):
+                        return hypot(float(m[0]-n[0]),float(m[1]-n[1]))
+                    ab,ac,bc = distance(a,b),distance(a,c),distance(b,c)
+                    angle_a = degrees(acos((ab*ab+ac*ac-bc*bc)/(2*ab*ac)))
+                    angle_b = degrees(acos((ab*ab+bc*bc-ac*ac)/(2*ab*bc)))
+                    if mode == 1:
+                        expected = 180-angle_b
+                    elif mode == 2:
+                        expected = angle_a
+                    elif mode in (6,7,8):
+                        lo,hi = abs(round(ab)-round(ac))+1,round(ab)+round(ac)-1
+                        expected = {6:hi,7:lo,8:hi-lo+1}[mode]
+                    else:
+                        expected = 180-angle_a-angle_b
                 elif category == "三角形基础" and mode >= 8:
                     legs = [hypot(float(m[0]-n[0]),float(m[1]-n[1])) for m,n in [(a,b),(b,c),(c,a)]]
                     expected = sum(legs) if mode == 8 else len(set(legs))

@@ -213,28 +213,57 @@ def build_problem(group, mode, a, b, c):
         points["N"] = midpoint(points["A"], points["C"])
         total = Fraction(u*h,2)
         if group == "三角形边角关系":
-            # The right angle is constructed at D, so both given angles are exact.
-            points = {"A": (0,0), "B": (u,0), "C": (0,h)}
-            if mode >= 8:
-                import math
-                angle = 15 + a
-                points["C"] = (0,h)
-                points["B"] = (h/math.tan(math.radians(angle)),0)
-                known = f"∠A＝90°，∠B＝{angle}°"
-                answer, unit = 90-angle, "°"
-                question = f"在△ABC中，{known}。求∠C。"
-                explanation = f"三角形内角和为180°，所以180°－90°－{angle}°"
-            elif mode % 2:
-                points["C"] = (0,u)
-                known, answer = "AB＝AC，∠A＝90°", 45
-                explanation = "其余两角相等，(180°－90°)÷2"
-                question = f"在△ABC中，{known}，AB＝{u}厘米。求∠{'B' if mode<4 else 'C'}。"
+            from math import radians, sin, cos
+            if mode < 3:
+                x, y = 25+a, 20+b
+                angle = radians(x)
+                length = u*sin(radians(y))/sin(radians(180-x-y))
+                points["C"] = (length*cos(angle),length*sin(angle))
+                if mode == 0:
+                    known = f"∠A＝{x}°，∠B＝{y}°"
+                    question = f"在△ABC中，{known}。求∠C。"
+                    answer, explanation = 180-x-y, f"内角和减去两个已知角：180°－{x}°－{y}°"
+                elif mode == 1:
+                    points["E"] = (u+5,0)
+                    lines = [("B","E")]
+                    known = f"∠A＝{x}°，∠ACB＝{180-x-y}°"
+                    question = f"在△ABC中，延长AB到E，{known}。求外角∠CBE。"
+                    answer, explanation = 180-y, "三角形外角等于与它不相邻的两个内角之和"
+                else:
+                    known = f"∠A比∠B大{x-y}°，∠C＝{180-x-y}°" if x>=y else f"∠B比∠A大{y-x}°，∠C＝{180-x-y}°"
+                    question = f"在△ABC中，{known}。求∠A。"
+                    answer, explanation = x, "先用内角和求∠A和∠B的和，再结合角度之差求出∠A"
                 unit = "°"
+            elif mode < 6:
+                points["C"] = (Fraction(u,2),u*sin(radians(25+a))/2/cos(radians(25+a)))
+                known = f"AC＝BC，∠A＝{25+a}°"
+                question = f"在△ABC中，{known}。求顶角∠C。"
+                answer, unit, explanation = 180-2*(25+a),"°","等腰三角形两底角相等，180°减去两倍底角"
+            elif mode < 9:
+                x,y = a+2,b+2
+                k = abs(x-y)+1
+                points["B"] = (x,0)
+                horizontal = Fraction(x*x+y*y-k*k,2*x)
+                points["C"] = (horizontal,(y*y-horizontal*horizontal)**0.5)
+                known = f"AB＝{x}厘米，AC＝{y}厘米"
+                if mode == 6:
+                    question = f"在△ABC中，{known}。若BC为整数厘米，BC最大是多少厘米？"
+                    answer, explanation = x+y-1,"第三边严格小于另两边之和，所以最大整数为两边和减一"
+                elif mode == 7:
+                    question = f"在△ABC中，{known}。若BC为整数厘米，BC最小是多少厘米？"
+                    answer, explanation = k,"第三边严格大于另两边之差，所以最小整数为两边差加一"
+                else:
+                    question = f"在△ABC中，{known}。若BC为整数厘米，BC有多少种可能？"
+                    answer, explanation = 2*min(x,y)-1,"整数第三边介于两边差和两边和之间，两个端点都不计入"
+                unit = "cm" if mode != 8 else ""
             else:
-                known, answer = f"AB＝{u}，AC＝{h}，∠A＝90°", 90
-                explanation = "两锐角的和等于180°减去直角"
-                question = f"在△ABC中，{known}。求∠B＋∠C。"
-                unit = "°"
+                points["C"] = (0,h)
+                x = 15+a
+                points["B"] = (h*sin(radians(90-x))/sin(radians(x)),0)
+                known = f"∠A＝90°，∠B＝{x}°"
+                answer, unit = 90-x,"°"
+                question = f"在△ABC中，{known}。求∠C。"
+                explanation = f"两个锐角互余，90°－{x}°"
         elif group == "三角形基础":
             lines = [("C","D")]
             if mode >= 8:

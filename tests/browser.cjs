@@ -1,13 +1,15 @@
 const assert = require("node:assert/strict");
 const {resolve} = require("node:path");
 const {pathToFileURL} = require("node:url");
-const {chromium} = require("playwright");
+const {chromium, webkit, devices} = require("playwright");
 
 async function main() {
-  const browser = await chromium.launch(process.env.CHROMIUM_PATH
+  const engine = process.env.GEOMETRY_BROWSER === "webkit" ? webkit : chromium;
+  const browser = await engine.launch(engine === chromium && process.env.CHROMIUM_PATH
     ? {executablePath:process.env.CHROMIUM_PATH} : {});
   try {
-    const context = await browser.newContext({offline:true, viewport:{width:390,height:844}});
+    const device = process.env.GEOMETRY_DEVICE;
+    const context = await browser.newContext({...(devices[device] ?? {viewport:{width:390,height:844}}), offline:true});
     const page = await context.newPage();
     const errors = [], remote = [];
     page.on("pageerror", error => errors.push(error.message));
@@ -70,12 +72,14 @@ async function main() {
     await page.evaluate(() => { window.print = () => document.body.dataset.printed = "yes"; });
     await input("print").click();
     assert.equal(await page.locator("body").getAttribute("data-printed"), "yes");
-    const pdf = await page.pdf({format:"A4"});
-    assert.equal(pdf.subarray(0,4).toString(), "%PDF");
+    if (engine === chromium) {
+      const pdf = await page.pdf({format:"A4"});
+      assert.equal(pdf.subarray(0,4).toString(), "%PDF");
+    }
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
     assert.deepEqual(remote, []);
     assert.deepEqual(errors, []);
-    console.log("Offline Chromium browser smoke test passed.");
+    console.log("Offline browser smoke test passed.");
   } finally {
     await browser.close();
   }
