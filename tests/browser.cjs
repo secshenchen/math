@@ -62,8 +62,15 @@ async function main() {
     assert.match(await input("response").ariaSnapshot(), /textbox "答案"/);
     await auditAccessibility();
     assert.equal(await input("solutionSvg").locator("svg").count(),0);
-    await page.getByText("展开章节", {exact:true}).click();
-    await input("chapters").getByRole("button", {name:/长方形与正方形/}).click();
+    const openChapters = page.getByText("展开章节", {exact:true});
+    const firstChapter = input("chapters").getByRole("button", {name:/长方形与正方形/});
+    if (devices[device]?.hasTouch) {
+      await openChapters.tap();
+      await firstChapter.tap();
+    } else {
+      await openChapters.click();
+      await firstChapter.click();
+    }
     await input("resume").click();
     assert.match(await input("problemStatus").textContent(), /未作答/);
     await input("entry").fill("84cm²");
@@ -113,6 +120,33 @@ async function main() {
     await input("download").click();
     const restored = JSON.parse(readFileSync(await (await imported).path(),"utf8"));
     assert.equal(restored.marks["1"].answered,backup.marks["1"].answered);
+    const legacy = await page.evaluate(() => {
+      const old = JSON.parse(document.getElementById("migration").textContent);
+      const versions = [[undefined, old.indexOf(0)+1]];
+      for (const [version, element] of [[2,"retired"],[3,"retired3"],[4,"retired4"],[5,"retired5"],[6,"retired6"],[7,"retired7"]]) {
+        versions.push([version,JSON.parse(document.getElementById(element).textContent)[0]]);
+      }
+      return versions;
+    });
+    for (const [version, retired] of legacy) {
+      assert.ok(retired > 5);
+      const old = {version, last:retired, marks:{"1":{favorite:true}, [retired]:{mastered:true}}};
+      await page.evaluate(old => localStorage.setItem("math-geometry-v1-progress:local-test-a",JSON.stringify(old)),old);
+      await page.reload();
+      await input("workspace").waitFor({state:"visible"});
+      const {current, previous} = await page.evaluate(version => {
+        const read = key => JSON.parse(localStorage.getItem("math-geometry-v1-"+key));
+        return {current:read("progress:local-test-a"),
+                previous:read((version === null ? "previous-progress:" : "previous-progress-v"+version+":")+"local-test-a")};
+      },version ?? null);
+      assert.deepEqual(current,{version:8,last:1,marks:{"1":{favorite:true}}});
+      assert.deepEqual(previous,JSON.parse(JSON.stringify(old)));
+    }
+    const v7 = {version:7,last:2,marks:{"2":{favorite:true},[legacy.at(-1)[1]]:{mastered:true}}};
+    await input("uploadFile").setInputFiles({name:"v7.json",mimeType:"application/json",buffer:Buffer.from(JSON.stringify(v7))});
+    await page.waitForFunction(() => document.getElementById("title").textContent.includes("第 2 题"));
+    assert.deepEqual(await page.evaluate(() => JSON.parse(localStorage.getItem("math-geometry-v1-progress:local-test-a"))),
+      {version:8,last:2,marks:{"2":{favorite:true}}});
     await input("search").fill("1");
     await page.evaluate(() => { window.print = () => document.body.dataset.printed = "yes"; });
     await input("print").click();
@@ -124,6 +158,7 @@ async function main() {
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
     await input("remove").click();
     await input("login").waitFor({state:"visible"});
+    assert.equal(await page.evaluate(() => localStorage.getItem("math-geometry-v1-previous-progress-v7:local-test-a")),null);
     await credentials("local-test-a","test-a-1234","signIn");
     await page.getByText("用户名或密码错误。").waitFor();
     await credentials("local-test-b","test-b-1234","register");

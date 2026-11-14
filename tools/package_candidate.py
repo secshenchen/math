@@ -21,4 +21,4 @@ suffix = """'), ch => ch.charCodeAt(0));
 </script></html>
 """
 assert gzip.decompress(base64.b64decode(packed)) == payload
-Path("candidate/offline.html").write_text(prefix + packed + suffix, encoding="utf-8")
+Path("candidate/offline.html").write_text(prefix + packed + suffix, encoding="utf-8", newline="\n")

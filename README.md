@@ -9,10 +9,9 @@
 ## 构建与验证
 
     python3 build.py
-    python3 tools/package_candidate.py
-    cmp index.html candidate/offline.html
     python3 -m unittest discover -s tests -v
     node tests/test_grading.cjs
+    node tests/svg_layout.cjs
     node tests/browser.cjs
 
 浏览器测试依赖 Playwright，仅开发和持续集成时使用。根目录是与 `candidate/offline.html` 字节一致的完整离线应用。旧版入口可通过 Git 历史恢复。
@@ -21,3 +20,9 @@
 批量统计见 `candidate/AUDIT.json`，可用 `python3 tools/audit_bank.py` 重建。旧版记录按题干匹配转移；本次替换掉的题目记录将从新版进度中移除。
 
 自动化检查覆盖题库数量、数学复算、SVG 解析、外轮廓和顶点标签间距。仍有部分细分题型、结构重复、难度分布和逐图视觉审查待完善。移动端兼容性依据 WebKit 模拟测试，真机 Safari 本地文件的表现取决于系统打开方式和浏览器存储设置。
+
+本次补入平行四边形一半模型的四种约定构图、互补夹角、沙漏、金字塔及五种跨模型组合。模型名称用于本站分类，具体构图由题干定义。挑战题占 25%。`AUDIT.json` 中的题干形式按数字归一化统计，同类推理的数字变体仍有保留。
+
+图形的自动验收包括 XML、顶点与渲染后的文字边界。若两题共享几何构图和条件，图下附各自的题干，题号以外的 SVG 正文可据此区分。自动验收和新模型的抽样目视检查有各自的验收范围。iPhone、iPad WebKit 模拟及 axe 扫描由 CI 运行，真机 Safari、VoiceOver 与逐图人工审校单独记录。
+
+发版时运行 `python3 tools/package_candidate.py`，再用生成的 `candidate/offline.html` 替换根目录 `index.html`。回归比较两个已提交文件的字节，并从待发布 HTML 直接读取题库和 SVG。重新构建时另行检查题干、答案、解析和应用代码是否与发布文件一致。

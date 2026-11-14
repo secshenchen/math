@@ -5,6 +5,8 @@ from random import Random
 from .coordinates import area, intersection, midpoint
 from .samples import build_samples, diagram
 from .extension import construct
+from .combined import TOPICS, construct_combined
+from .varied import MODELS, construct_varied
 
 QUOTAS = {
     "长方形与正方形": 400, "平行四边形": 350, "梯形": 400, "三角形基础": 500,
@@ -27,7 +29,9 @@ def build_problem(group, mode, a, b, c):
     target = ""
     known = ""
     metadata = {}
-    additional = construct(group, mode, a, b, c) if mode >= 15 else None
+    additional = (construct_varied(group,mode,a,b,c) if mode >= 32
+                  else construct_combined(group,mode,a,b,c) if mode >= 27
+                  else construct(group,mode,a,b,c) if mode >= 15 else None)
     if additional:
         points, outline, lines, unit, known, target, answer, question, explanation = additional
     elif group == "燕尾模型" and mode >= 8:
@@ -309,7 +313,7 @@ def build_problem(group, mode, a, b, c):
                     known += f"，AD＝{a}厘米，CD＝{2*u}厘米"
                 else:
                     known += f"，CD＝{2*u}厘米"
-                lines = [("C","D")] if kind != 1 else []
+                lines = [("C","D")]
                 points["D"] = (x,0)
                 if kind == 2:
                     lines.append(("D","A"))
@@ -319,7 +323,7 @@ def build_problem(group, mode, a, b, c):
                                "CD垂直AB，且A在D、B之间，∠CAB大于90°")[kind]
                 question = f"△ABC中，{known}。按角分类，△ABC是哪一类三角形？"
                 if kind == 0:
-                    explanation = "A、B处均为锐角。C到AB的距离为AB的两倍，所以C处夹角也小于90°"
+                    explanation = "A、B处均为锐角。CD是AB的两倍，故∠ACD和∠DCB都小于45°，顶角也小于90°。"
                 metadata = {"answerType":"text", "alternatives":[answer[:2]]}
                 unit = ""
             elif mode >= 8:
@@ -452,11 +456,12 @@ def build_problem(group, mode, a, b, c):
         regions = [("ABO","#bfdbfe"),("CDO","#fde68a")]
     if ":" in answer and group == "蝴蝶模型":
         regions.append(("CDO","#fde68a"))
-    determined = additional and ((group == "一半模型" and 15 <= mode <= 17) or group == "梯形" or (group == "长方形与正方形" and mode in (20,21)) or (group == "三角形基础" and mode in (22,23)))
+    determined = additional and ((group == "一半模型" and 15 <= mode <= 17) or (group == "梯形" and mode != 32) or (group == "长方形与正方形" and mode in (20,21)) or (group == "三角形基础" and mode in (22,23)))
     geometry_note = () if determined else ("示意图，形状不唯一",)
     return dict(category=group, modelMode=mode,
-                construction={n:[str(value) for value in pair] for n,pair in drawn.items()},
-                outline=outline, target=target, subcategory=explanation if len(explanation)<25 else question.split("求")[-1].strip("。"),
+                construction={n:[f"{value:.12f}" if isinstance(value,float) else str(value) for value in pair]
+                              for n,pair in drawn.items()},
+                outline=outline, target=target, subcategory=MODELS[group][mode-32] if mode >= 32 else TOPICS.get(group,{}).get(mode) or (explanation if len(explanation)<25 else question.split("求")[-1].strip("。")),
                 question=question, answer=answer, unit=unit, answerType=metadata.get("answerType", "ratio" if ":" in answer else "number"),
                 alternatives=metadata.get("alternatives", []), requiresUnit="答案须带单位" in question,
                 geometryStatus="determined" if determined else "representative", givens={"description":known},
@@ -565,4 +570,49 @@ def build_bank():
                     break
             else:
                 raise ValueError(f"Not enough distinct prompts: {group}")
+    for group, models in TOPICS.items():
+        eligible = [i for i,q in enumerate(result) if q["category"] == group and q["id"] > 5
+                    and q["modelMode"] < 15 and (group != "一半模型" or q["difficulty"] == "提高")]
+        by_form = {}
+        for index in eligible:
+            by_form.setdefault(form(result[index]), []).append(index)
+        quota = {"一半模型":54,"鸟头模型":48,"综合几何模型":20}[group]
+        for mode in models:
+            variants = list(product(range(3,22),range(2,23),range(2,25)))
+            Random(38000+mode).shuffle(variants)
+            chosen = 0
+            for a,b,c in variants:
+                q = build_problem(group,mode,a,b,c)
+                if q["question"] in seen:
+                    continue
+                seen.add(q["question"])
+                slots = max(by_form.values(), key=len)
+                index = slots.pop()
+                result[index] = dict(q,id=result[index]["id"],difficulty="挑战")
+                chosen += 1
+                if chosen == quota:
+                    break
+            if chosen != quota:
+                raise ValueError(f"Insufficient exercises for {models[mode]}: {chosen}/{quota}")
+    families = {}
+    for index, q in enumerate(result):
+        families.setdefault((q["category"], form(q)), []).append(index)
+        if q["category"] == "鸟头模型" and q.get("modelMode") == 23:
+            q["difficulty"] = "提高"
+    for group, models in MODELS.items():
+        slots = [index for (topic, _), indices in families.items() if topic == group for index in indices[65:]]
+        variants = list(product(range(3,22),range(2,23),range(2,25)))
+        Random(5137).shuffle(variants)
+        choices = [iter(variants) for _ in models]
+        for order, index in enumerate(slots):
+            k = order % len(models)
+            for a,b,c in choices[k]:
+                q = build_problem(group,32+k,a,b,c)
+                if q["question"] not in seen:
+                    seen.add(q["question"])
+                    level = "提高" if group == "等积模型" and k == 0 else "挑战"
+                    result[index] = dict(q,id=result[index]["id"],difficulty=level)
+                    break
+            else:
+                raise ValueError(f"Not enough distinct prompts: {models[k]}")
     return result

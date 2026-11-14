@@ -172,7 +172,9 @@ def construct(group, mode, a, b, c):
         target = "MNPQ" if mode%2 == 0 else "AMQ"
         answer = Fraction(width*height, 2 if mode%2 == 0 else 8)
         prompt = f"求四边形{target}的面积" if target == "MNPQ" else "求△AMQ面积"
-        method = "每个角上的三角形面积都是长方形面积的八分之一"
+        method = "角上的直角三角形两条直角边各是长方形对应边的一半；再除以2，面积是整图的八分之一"
+        if target == "MNPQ":
+            method += "；从整图减去四个角，剩一半"
     elif group == "平行四边形":
         p.update(C=(width+a,height), D=(a,height))
         p["M"] = midpoint(p["A"],p["B"])
@@ -201,7 +203,7 @@ def construct(group, mode, a, b, c):
         segments = [("D","H")]
         known = f"等腰梯形ABCD下底AB长{width+b}厘米，上底CD长{width-b}厘米，高DH为{height}厘米"
         target, answer, prompt = "ADH", Fraction(b*height,2), "H为D到AB的垂足，求△ADH面积"
-        method = f"两腰等长，两端的水平距离相等，各为({width+b}－{width-b})÷2＝{b}厘米"
+        method = f"两腰等长，AH＝({width+b}－{width-b})÷2＝{b}厘米；再算AH×DH÷2"
     elif group == "燕尾模型":
         outline = "ABC"
         p["C"] = (a,height)
@@ -217,7 +219,9 @@ def construct(group, mode, a, b, c):
             known += f"，AD:AB＝{a}:{width}"
         answer = Fraction(base_area*(divisor+1),2*divisor)
         prompt = f"求△{target}面积"
-        method = "从底边到Q的高等于原高的(1＋1/分母)÷2，再按底边比例折算"
+        rise = Fraction(divisor+1,2*divisor)
+        method = f"Q在PC中点，DQ:DC对应原高的(1＋1/{divisor})÷2＝{rise}。"
+        method += "△AQB同底，按高之比缩放整图面积。" if target == "AQB" else f"先按高之比求△AQB，再按AD:AB＝{a}:{width}换算△ADQ。"
     else:
         return None
     return p, outline, segments, unit, known, target, answer, f"{known}。{prompt}。", method

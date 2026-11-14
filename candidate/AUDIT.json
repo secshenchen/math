@@ -1,8 +1,8 @@
 {
   "questions": 5000,
   "svg_documents": 10000,
-  "distinct_svg_bodies": 9939,
-  "reused_svg_bodies": 61,
+  "distinct_svg_bodies": 10000,
+  "reused_svg_bodies": 0,
   "topics": {
     "长方形与正方形": 400,
     "一半模型": 600,
@@ -18,91 +18,125 @@
     "综合几何模型": 200
   },
   "difficulty": {
-    "基础": 1468,
-    "提高": 2642,
-    "挑战": 890
+    "基础": 1364,
+    "提高": 2120,
+    "挑战": 1516
   },
   "geometry_status": {
-    "determined": 337,
-    "representative": 4663
+    "determined": 329,
+    "representative": 4671
   },
-  "normalized_prompts": 118,
-  "largest_prompt_group": 105,
+  "normalized_prompts": 148,
+  "largest_prompt_group": 65,
+  "new_model_coverage": {
+    "一半模型 · 离家出走": 54,
+    "一半模型 · 交头接耳": 54,
+    "一半模型 · 锯齿": 54,
+    "一半模型 · 顶天立地": 54,
+    "鸟头模型 · 金字塔": 48,
+    "鸟头模型 · 沙漏": 48,
+    "鸟头模型 · 互补夹角": 48,
+    "综合几何模型 · 鸟头与相似": 20,
+    "综合几何模型 · 中点与梯形蝴蝶": 20,
+    "综合几何模型 · 平行四边形与燕尾": 20,
+    "综合几何模型 · 风筝与中点": 20,
+    "综合几何模型 · 燕尾与中点": 20
+  },
+  "diversified_models": {
+    "梯形 · 中位线还原上下底": 20,
+    "梯形 · 等腰梯形反求余部": 20,
+    "三角形基础 · 面积差反求分点": 29,
+    "三角形基础 · 由局部面积求高再求整体": 28,
+    "三角形基础 · 中点与面积差": 28,
+    "三角形边角关系 · 外角与角平分线": 10,
+    "三角形边角关系 · 两外角反求第三角": 10,
+    "等积模型 · 三段共高分配": 31,
+    "等积模型 · 两处中点合并面积": 31,
+    "等积模型 · 跨底边与中点": 31,
+    "一半模型 · 中点与对角线分区": 7,
+    "一半模型 · 边中点反推外部面积": 6,
+    "风筝模型 · 四边形总面积补翼": 25,
+    "风筝模型 · 对角线分段求半翼": 24,
+    "风筝模型 · 相邻面积反推全图": 24,
+    "蝴蝶模型 · 上下两块反推侧翼": 15,
+    "蝴蝶模型 · 面积差与底边比": 14,
+    "燕尾模型 · 燕尾面积差与对角线": 6
+  },
   "most_frequent_forms": [
     {
-      "topic": "三角形基础",
-      "form": "△ABC中，AB＝N厘米，高CD＝N厘米。求面积。",
-      "count": 105
+      "topic": "梯形",
+      "form": "等腰梯形ABCD下底AB长N厘米，上底CD长N厘米，高DH为N厘米。H为D到AB的垂足，求△ADH面积。",
+      "count": 65
     },
     {
-      "topic": "等积模型",
-      "form": "在△ABC中，D在AB上，AD:DB＝N:N，△ADC面积＝N cm²。求△ABC面积。",
-      "count": 98
+      "topic": "梯形",
+      "form": "梯形ABCD中，下底AB＝N厘米，上底CD＝N厘米，面积为N平方厘米。求高。",
+      "count": 65
     },
     {
-      "topic": "鸟头模型",
-      "form": "在△ABC中，M在CB上，N在CA上。CM:CB＝N:N，CN:CA＝N:N，△CMN面积＝N cm²。求△ABC面积。",
-      "count": 97
+      "topic": "梯形",
+      "form": "梯形ABCD中，下底AB＝N厘米，上底CD＝N厘米，高为N厘米。求面积。",
+      "count": 65
     },
     {
-      "topic": "等积模型",
-      "form": "E在△ABC的边AB上，AE＝N厘米，AB＝N厘米，△ABC面积为N平方厘米。求△AEC面积。",
-      "count": 94
+      "topic": "梯形",
+      "form": "梯形ABCD中，下底AB＝N厘米，上底CD＝N厘米，高为N厘米。连接AC，求△ABC的面积。",
+      "count": 65
     },
     {
-      "topic": "蝴蝶模型",
-      "form": "梯形ABCD的对角线交于O，AB:CD＝N:N，△CDO面积＝N平方厘米。求△ABO面积。",
-      "count": 94
-    },
-    {
-      "topic": "三角形基础",
-      "form": "△ABC中，AB＝N厘米，面积＝N平方厘米。求AB边上的高CD。",
-      "count": 92
-    },
-    {
-      "topic": "鸟头模型",
-      "form": "在△ABC中，M在CB上，N在CA上。CN:CA＝N:N，△CMN面积＝N cm²。连AM，求△AMN面积。",
-      "count": 90
-    },
-    {
-      "topic": "风筝模型",
-      "form": "凸四边形ABCD的对角线交于O。△BCO＝N，△CDO＝N，△DAO＝N（单位为平方厘米）。求△ABO面积。",
-      "count": 87
-    },
-    {
-      "topic": "等积模型",
-      "form": "在△ABC中，D在AB上，AD:DB＝N:N，△ADC面积＝N cm²。求△BDC面积。",
-      "count": 86
-    },
-    {
-      "topic": "风筝模型",
-      "form": "凸四边形ABCD的对角线交于O。△ABO＝N，△CDO＝N，△DAO＝N（单位为平方厘米）。求△BCO面积。",
-      "count": 86
-    },
-    {
-      "topic": "三角形边角关系",
-      "form": "在△ABC中，∠A＝N°，∠B＝N°。求∠C。",
-      "count": 85
+      "topic": "梯形",
+      "form": "梯形ABCD中，下底AB＝N厘米，上底CD＝N厘米，△ABC面积为N平方厘米。连接AC，求△ACD的面积。",
+      "count": 65
     },
     {
       "topic": "三角形基础",
       "form": "△ABC中，AD＝N厘米，DB＝N厘米，CD＝N厘米，CD⊥AB。求△BDC面积。",
-      "count": 83
+      "count": 65
+    },
+    {
+      "topic": "三角形基础",
+      "form": "△ABC中，AB＝N厘米，面积＝N平方厘米。求AB边上的高CD。",
+      "count": 65
+    },
+    {
+      "topic": "三角形基础",
+      "form": "△ABC中，AB＝N厘米，高CD＝N厘米。求面积。",
+      "count": 65
+    },
+    {
+      "topic": "三角形边角关系",
+      "form": "在△ABC中，∠A＝N°，∠B＝N°。求∠C。",
+      "count": 65
+    },
+    {
+      "topic": "等积模型",
+      "form": "E在△ABC的边AB上，AE＝N厘米，AB＝N厘米，△ABC面积为N平方厘米。求△AEC面积。",
+      "count": 65
+    },
+    {
+      "topic": "等积模型",
+      "form": "C、D在AB同侧且在同一条垂线DE上，CE:DE＝N:N，△ABD面积为N平方厘米。求△ABC的面积。",
+      "count": 65
+    },
+    {
+      "topic": "等积模型",
+      "form": "在△ABC中，D在AB上，AD:DB＝N:N，△ADC面积＝N cm²。求△ABC面积。",
+      "count": 65
+    },
+    {
+      "topic": "等积模型",
+      "form": "在△ABC中，D在AB上，AD:DB＝N:N，△ADC面积＝N cm²。求△BDC面积。",
+      "count": 65
+    },
+    {
+      "topic": "一半模型",
+      "form": "长方形ABCD长N厘米，宽N厘米，M、N、P、Q依次是四边中点。求△AMQ面积。",
+      "count": 65
     },
     {
       "topic": "风筝模型",
-      "form": "凸四边形ABCD的对角线交于O。△ABO＝N，△BCO＝N，△DAO＝N（单位为平方厘米）。求△CDO面积。",
-      "count": 81
-    },
-    {
-      "topic": "梯形",
-      "form": "等腰梯形ABCD下底AB长N厘米，上底CD长N厘米，高DH为N厘米。H为D到AB的垂足，求△ADH面积。",
-      "count": 80
-    },
-    {
-      "topic": "风筝模型",
-      "form": "凸四边形ABCD的对角线交于O。△ABO＝N，△BCO＝N，△CDO＝N（单位为平方厘米）。求△DAO面积。",
-      "count": 79
+      "form": "凸四边形ABCD的对角线交于O。△ABO＝N，△CDO＝N，△DAO＝N（单位为平方厘米）。求△BCO面积。",
+      "count": 65
     }
   ]
 }

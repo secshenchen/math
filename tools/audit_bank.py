@@ -21,6 +21,12 @@ def audit():
         "geometry_status": dict(Counter(q["geometryStatus"] for q in bank)),
         "normalized_prompts": len(groups),
         "largest_prompt_group": max(groups.values()),
+        "new_model_coverage": dict(Counter(
+            f"{q['category']} · {q['subcategory']}" for q in bank if 27 <= q.get("modelMode",0) < 32
+        )),
+        "diversified_models": dict(Counter(
+            f"{q['category']} · {q['subcategory']}" for q in bank if q.get("modelMode",0) >= 32
+        )),
         "most_frequent_forms": [
             {"topic": topic, "form": prompt, "count": count}
             for (topic, prompt), count in groups.most_common(15)

@@ -7,12 +7,13 @@ const read = (key, fallback) => JSON.parse(localStorage.getItem(namespace + key)
 const save = (key, value) => localStorage.setItem(namespace + key, JSON.stringify(value));
 const hex = bytes => Array.from(bytes, n => n.toString(16).padStart(2, "0")).join("");
 let account = null, data, shown = bank, cursor = 0, current;
-const fresh = () => ({version:6, last:1, marks:{}});
+const fresh = () => ({version:8, last:1, marks:{}});
+const retireByVersion = {2:"retired",3:"retired3",4:"retired4",5:"retired5",6:"retired6",7:"retired7"};
 function migrateProgress(old) {
-  if (old.version === 6) return old;
-  if ([2,3,4,5].includes(old.version)) {
-    const retired = new Set(JSON.parse(el({2:"retired",3:"retired3",4:"retired4",5:"retired5"}[old.version]).textContent));
-    return {version:6, last:retired.has(old.last) ? 1 : old.last,
+  if (old.version === 8) return old;
+  if (Object.hasOwn(retireByVersion, old.version)) {
+    const retired = new Set(JSON.parse(el(retireByVersion[old.version]).textContent));
+    return {version:8, last:retired.has(old.last) ? 1 : old.last,
             marks:Object.fromEntries(Object.entries(old.marks).filter(([id]) => !retired.has(Number(id))))};
   }
   if (old.version !== undefined) throw Error("学习记录版本不受支持。");
@@ -35,7 +36,7 @@ async function verifier(password, salt) {
 function activate(name) {
   const previousProgress = read("progress:" + name, fresh());
   data = migrateProgress(previousProgress);
-  if ([2,3,4,5].includes(previousProgress.version)) {
+  if (Object.hasOwn(retireByVersion, previousProgress.version)) {
     save("previous-progress-v" + previousProgress.version + ":" + name,previousProgress);
   }
   if (previousProgress.version === undefined && !read("previous-progress:" + name,null)) {
@@ -226,7 +227,7 @@ for (const id of ["favorite","mastered"]) el(id).onclick = () => { const record 
 el("logout").onclick = exit;
 el("print").onclick = () => window.print();
 el("clear").onclick = () => { if (confirm("清空当前账户的全部学习记录？")) { data = fresh(); persist(); resetFilters(); } };
-el("remove").onclick = () => { if (confirm("删除当前账户及学习记录？")) { localStorage.removeItem(namespace+"profile:"+account); localStorage.removeItem(namespace+"progress:"+account); localStorage.removeItem(namespace+"previous-progress:"+account); localStorage.removeItem(namespace+"previous-progress-v2:"+account); localStorage.removeItem(namespace+"previous-progress-v3:"+account); localStorage.removeItem(namespace+"previous-progress-v4:"+account); localStorage.removeItem(namespace+"previous-progress-v5:"+account); exit(); } };
+el("remove").onclick = () => { if (confirm("删除当前账户及学习记录？")) { localStorage.removeItem(namespace+"profile:"+account); localStorage.removeItem(namespace+"progress:"+account); localStorage.removeItem(namespace+"previous-progress:"+account); for (const version of Object.keys(retireByVersion)) localStorage.removeItem(namespace+"previous-progress-v"+version+":"+account); exit(); } };
 el("download").onclick = () => {
   const url = URL.createObjectURL(new Blob([JSON.stringify(data)],{type:"application/json"}));
   Object.assign(document.createElement("a"),{href:url,download:"geometry-progress.json"}).click();
