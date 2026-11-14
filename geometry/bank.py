@@ -26,7 +26,24 @@ def build_problem(group, mode, a, b, c):
     target = ""
     known = ""
     metadata = {}
-    if group == "一半模型" and 12 <= mode <= 14:
+    if group == "燕尾模型" and mode >= 8:
+        points.update(C=(u+2,h), D=(2,h))
+        points["P"] = midpoint(points["A"],points["C"]) if mode % 2 else (Fraction(u+2,3),Fraction(h,3))
+        lines = [("A","C"),("B","P"),("D","P")]
+        numerator, denominator = (1,2) if mode % 2 else (1,3)
+        outer = u*c
+        known = f"平行四边形ABCD中，P在AC上，AP:AC＝{numerator}:{denominator}，△ABC面积为{outer}平方厘米"
+        if mode % 3 == 0:
+            target, answer = "APD", Fraction(outer*numerator,denominator)
+            explanation = "△ADC与△ABC等积。△APD与△ACD从D到AC的高相同，再按底边比换算"
+        elif mode % 3 == 1:
+            target, answer = "BCP", Fraction(outer*(denominator-numerator),denominator)
+            explanation = "先由AP:AC求PC:AC，再用从B到AC的公共高换算"
+        else:
+            target, answer = "CDP", Fraction(outer*(denominator-numerator),denominator)
+            explanation = "△ACD与△ABC等积。△CDP与△CDA从D到AC的高相同，再按PC:AC换算"
+        question = f"{known}。求△{target}面积。"
+    elif group == "一半模型" and 12 <= mode <= 14:
         top = a
         points.update(C=(2+top,h), D=(2,h))
         points["M"] = midpoint(points["A"],points["B"])
