@@ -1,0 +1,258 @@
+"""Build a deterministic offline bank from coordinate constructions."""
+from fractions import Fraction
+from itertools import product
+from random import Random
+from .coordinates import area, intersection, midpoint
+from .samples import build_samples, diagram
+
+QUOTAS = {
+    "长方形与正方形": 400, "平行四边形": 350, "梯形": 400, "三角形基础": 500,
+    "三角形边角关系": 450, "等积模型": 450, "一半模型": 600, "风筝模型": 400,
+    "蝴蝶模型": 450, "鸟头模型": 400, "燕尾模型": 400, "综合几何模型": 200,
+}
+
+
+def number(value):
+    return str(Fraction(value))
+
+
+def build_problem(group, mode, a, b, c):
+    h = 2 * c
+    u = a + b
+    points = {"A": (0, 0), "B": (u, 0)}
+    lines = []
+    outline = "ABCD"
+    unit = "cm²"
+    target = ""
+    known = ""
+    if group in ("长方形与正方形", "平行四边形", "梯形"):
+        offset = 0 if group == "长方形与正方形" else 2
+        top = a if group == "梯形" else u
+        if group == "长方形与正方形" and 4 <= mode < 8:
+            u, h, top = a, a, a
+            points["B"] = (u, 0)
+        points.update(C=(offset + top, h), D=(offset, h), H=(offset, 0))
+        total = Fraction((u + top) * h, 2)
+        base = f"{group.split('与')[0]}ABCD" if group != "长方形与正方形" else ("正方形ABCD" if 4 <= mode < 8 else "长方形ABCD")
+        if group == "梯形":
+            dimensions = f"下底AB＝{u}厘米，上底CD＝{top}厘米"
+        else:
+            dimensions = f"底AB＝{u}厘米"
+        if mode == 8 and group == "长方形与正方形":
+            known, prompt = f"长AB＝{u}厘米，宽BC＝{h}厘米", "求周长"
+            answer, explanation, unit = 2*(u+h), f"({u}＋{h})×2", "cm"
+        elif mode == 8 and group == "梯形":
+            points["M"] = midpoint(points["A"],points["D"])
+            points["N"] = midpoint(points["B"],points["C"])
+            lines.append(("M","N"))
+            known, prompt = dimensions, "M、N分别是两腰中点，求中位线MN的长"
+            answer, explanation, unit = Fraction(u+top,2), f"({u}＋{top})÷2", "cm"
+        elif mode == 8:
+            known, prompt = f"底AB＝{u}厘米，面积为{number(total)}平方厘米", "求底AB与其对应高的长度和"
+            answer, explanation, unit = u+h, f"先求高：{number(total)}÷{u}＝{h}。再计算{u}＋{h}", "cm"
+        elif mode == 9 and group != "梯形":
+            # Use a 3–4–5 side displacement to obtain an exact sloping side.
+            if group == "平行四边形":
+                h, offset = 4*c, 3*c
+                points.update(C=(u+offset,h),D=(offset,h),H=(offset,0))
+                side = 5*c
+            else:
+                side = h
+            known, prompt = f"周长为{2*(u+side)}厘米，边AB长{u}厘米", "求邻边BC长"
+            answer, explanation, unit = side, f"{2*(u+side)}÷2－{u}", "cm"
+        elif mode == 9:
+            known, prompt = f"下底AB＝{u}厘米，高为{h}厘米，面积为{number(total)}平方厘米", "求上底CD长"
+            answer, explanation, unit = top, f"{number(total)}×2÷{h}－{u}", "cm"
+        elif mode % 4 == 0:
+            known, prompt = f"{dimensions}，高为{h}厘米", "求面积"
+            answer, explanation, target = total, f"({u}＋{top})×{h}÷2", outline
+        elif mode % 4 == 1:
+            known, prompt = f"{dimensions}，面积为{number(total)}平方厘米", "求高"
+            answer, explanation, unit = h, f"{number(total)}×2÷({u}＋{top})", "cm"
+        elif mode % 4 == 2:
+            lines.append(("A", "C"))
+            known, prompt = f"{dimensions}，高为{h}厘米", "连接AC，求△ABC的面积"
+            answer, explanation, target = Fraction(u * h, 2), f"{u}×{h}÷2", "ABC"
+        else:
+            lines.append(("A", "C"))
+            partial = Fraction(u*h, 2)
+            known, prompt = f"{dimensions}，△ABC面积为{number(partial)}平方厘米", "连接AC，求△ACD的面积"
+            answer, explanation, target = Fraction(top*h,2), f"{number(partial)}×{top}÷{u}", "ACD"
+        if offset and (mode in (0, 2, 4, 6) or mode == 9 and group == "梯形"):
+            lines.append(("D", "H"))
+        question = f"{base}中，{known}。{prompt}。"
+    elif group in ("风筝模型", "蝴蝶模型"):
+        if group == "蝴蝶模型":
+            points.update(C=(a+b-1,h), D=(b-1,h))
+        else:
+            points.update(C=(u+2,h), D=(1,h+c))
+        points["O"] = intersection(points["A"],points["C"],points["B"],points["D"])
+        lines = [("A","C"),("B","D")]
+        regions = ("ABO","BCO","CDO","DAO")
+        sizes = [area([points[n] for n in name]) for name in regions]
+        k = mode % 4
+        target = regions[k]
+        known = "，".join(f"△{name}＝{number(value)}" for i,(name,value) in enumerate(zip(regions,sizes)) if i != k)
+        if group == "蝴蝶模型" and mode >= 4:
+            target = "ABO"
+            known = f"AB:CD＝{u}:{a}"
+            answer = f"{Fraction(u*u,a*a).numerator}:{Fraction(u*u,a*a).denominator}"
+            question = f"梯形ABCD的对角线交于O，{known}。求△ABO与△CDO的面积比。"
+            unit, explanation = "", "上下三角形相似，面积比等于对应底边比的平方"
+        elif group == "蝴蝶模型" and k in (1,3):
+            question = f"梯形ABCD的对角线交于O。{known}（单位为平方厘米）。求△{target}面积。"
+            answer, explanation = sizes[k], "△ABC与△ABD等底等高，减去公共部分后两翼等积"
+        else:
+            question = f"凸四边形ABCD的对角线交于O。{known}（单位为平方厘米）。求△{target}面积。"
+            answer = sizes[(k+1)%4]*sizes[(k-1)%4]/sizes[(k+2)%4]
+            explanation = "对角面积乘积相等，源于同底直线上的两组底边比"
+    else:
+        outline = "ABC"
+        points["C"] = (a, h)
+        points["D"] = (a, 0)
+        points["M"] = midpoint(points["B"], points["C"])
+        points["N"] = midpoint(points["A"], points["C"])
+        total = Fraction(u*h,2)
+        if group == "三角形边角关系":
+            # The right angle is constructed at D, so both given angles are exact.
+            points = {"A": (0,0), "B": (u,0), "C": (0,h)}
+            if mode >= 8:
+                import math
+                angle = 15 + a
+                points["C"] = (0,h)
+                points["B"] = (h/math.tan(math.radians(angle)),0)
+                known = f"∠A＝90°，∠B＝{angle}°"
+                answer, unit = 90-angle, "°"
+                question = f"在△ABC中，{known}。求∠C。"
+                explanation = f"三角形内角和为180°，所以180°－90°－{angle}°"
+            elif mode % 2:
+                points["C"] = (0,u)
+                known, answer = "AB＝AC，∠A＝90°", 45
+                explanation = "其余两角相等，(180°－90°)÷2"
+                question = f"在△ABC中，{known}，AB＝{u}厘米。求∠{'B' if mode<4 else 'C'}。"
+                unit = "°"
+            else:
+                known, answer = f"AB＝{u}，AC＝{h}，∠A＝90°", 90
+                explanation = "两锐角的和等于180°减去直角"
+                question = f"在△ABC中，{known}。求∠B＋∠C。"
+                unit = "°"
+        elif group == "三角形基础":
+            lines = [("C","D")]
+            if mode >= 8:
+                points = {"A": (0,0), "B": (3*c,0), "C": (0,4*c)}
+                lines = []
+                known = f"AB＝{3*c}厘米，AC＝{4*c}厘米，BC＝{5*c}厘米"
+                if mode == 8:
+                    answer, unit, explanation = 12*c, "cm", f"{3*c}＋{4*c}＋{5*c}"
+                    question = f"△ABC中，{known}。求周长。"
+                else:
+                    answer, unit, explanation = 3, "", "三边长度各不相等"
+                    question = f"△ABC中，{known}。三条边中，有几个不同的长度？"
+            elif mode % 3 == 0:
+                known, answer, target = f"AB＝{u}厘米，高CD＝{h}厘米", total, "ABC"
+                question, explanation = f"△ABC中，{known}。求面积。", f"{u}×{h}÷2"
+            elif mode % 3 == 1:
+                known, answer, unit = f"AB＝{u}厘米，面积＝{number(total)}平方厘米", h, "cm"
+                question, explanation = f"△ABC中，{known}。求AB边上的高CD。", f"{number(total)}×2÷{u}"
+            else:
+                known, answer, target = f"AD＝{a}厘米，DB＝{b}厘米，CD＝{h}厘米，CD⊥AB", Fraction(b*h,2), "BDC"
+                question, explanation = f"△ABC中，{known}。求△BDC面积。", f"{b}×{h}÷2"
+        elif group in ("等积模型","燕尾模型"):
+            lines = [("C","D")]
+            known = f"AD:DB＝{a}:{b}，△ADC面积＝{number(Fraction(a*h,2))} cm²"
+            target = "BDC" if mode % 2 else "ABC"
+            answer = Fraction((b if mode%2 else u)*h,2)
+            explanation = "各三角形共用从C到直线AB的高，面积与底边成正比"
+            question = f"在△ABC中，D在AB上，{known}。求△{target}面积。"
+            if group == "燕尾模型":
+                points["P"] = midpoint(points["C"],points["D"])
+                lines.extend([("A","P"),("B","P")])
+                target = "PDB" if mode%2 else "APB"
+                answer /= 2
+                explanation = "先按公共高换算面积，再由P是CD中点将高减半"
+                question = f"在△ABC中，D在AB上，P是CD中点，{known}。求△{target}面积。"
+        else:
+            lines = [("M","N")]
+            known = f"M、N为BC、AC中点，△ABC面积＝{number(total)} cm²"
+            if group == "一半模型" and mode % 2:
+                lines = [("A","M")]
+                target, answer = "ABM", total/2
+                explanation = "BM是BC的一半，从A作出的高相同"
+                known = f"M为BC中点，△ABC面积＝{number(total)} cm²"
+                question = f"在△ABC中，{known}。求△ABM面积。"
+            elif group == "综合几何模型":
+                points["P"] = midpoint(points["M"],points["N"])
+                lines.append(("C","P"))
+                target, answer = ("CMP" if mode%2 else "CNP"), total/8
+                explanation = "先用中位线相似得到面积的四分之一，再按中点等底分成两半"
+                question = f"在△ABC中，{known}。P是MN中点，求△{target}面积。"
+            elif group == "鸟头模型":
+                r,s = mode%3+2,mode//3+2
+                points["M"] = (Fraction(u,r)+Fraction(r-1,r)*a,Fraction(r-1,r)*h)
+                points["N"] = (Fraction(s-1,s)*a,Fraction(s-1,s)*h)
+                known = f"CM:CB＝1:{r}，CN:CA＝1:{s}，△ABC面积＝{number(total)} cm²"
+                target, answer = "CMN", total/(r*s)
+                explanation = "两角共用夹角。先固定CN换算CM与CB，再固定CB换算CN与CA"
+                question = f"在△ABC中，M在CB上，N在CA上。{known}。求△CMN面积。"
+            else:
+                target, answer = "CMN", total/4
+                explanation = "中位线平行于底边，相似边长比1:2，面积比1:4"
+                question = f"在△ABC中，{known}。求△CMN面积。"
+
+    used = set(outline + target)
+    for start, end in lines:
+        used.update((start,end))
+    if "O" in points:
+        used.add("O")
+    drawn = {n:p for n,p in points.items() if n in used}
+    xs, ys = zip(*drawn.values())
+    scale = min(290/(max(xs)-min(xs)),140/(max(ys)-min(ys)))
+    labels = []
+    cx, cy = sum(xs)/len(xs), sum(ys)/len(ys)
+    for n,(x,y) in drawn.items():
+        px,py = 65+(x-min(xs))*scale,185-(y-min(ys))*scale
+        labels.append((px + (-12 if x<cx else 12),py + (16 if y<cy else -7),n))
+    if target and unit == "cm²" and Fraction(answer) != area([points[n] for n in target]):
+        raise ValueError(f"Inconsistent shaded area for {question}")
+    answer = answer if isinstance(answer,str) else number(answer)
+    # Wrap known conditions into multiple lines under the drawing.
+    notes = tuple(known[i:i+22] for i in range(0,len(known),22))
+    args = dict(segments=lines,labels=labels)
+    regions = [(target,"#bfdbfe")] if target else ()
+    if ":" in answer and group == "蝴蝶模型":
+        regions.append(("CDO","#fde68a"))
+    return dict(category=group,subcategory=explanation if len(explanation)<25 else question.split("求")[-1].strip("。"),
+                question=question, answer=answer, unit=unit, answerType="ratio" if ":" in answer else "number",
+                geometryStatus="representative", givens={"description":known},
+                solution=[explanation,f"答案为 {answer} {unit}".strip()],
+                questionSvg=diagram(drawn,outline,notes=("示意图",*notes),**args),
+                answerSvg=diagram(drawn,outline,regions=regions,notes=(*notes,f"答案 {answer} {unit}".strip()),**args))
+
+
+def build_bank():
+    result = build_samples()
+    seen = {q["question"] for q in result}
+    inputs = list(product(range(3,22),range(2,23),range(2,25),range(10)))
+    Random(5000).shuffle(inputs)
+    for group, quota in QUOTAS.items():
+        remaining = quota - sum(q["category"] == group for q in result)
+        count = 0
+        for a,b,c,mode in inputs:
+            question = build_problem(group,mode,a,b,c)
+            if question["question"] in seen:
+                continue
+            seen.add(question["question"])
+            identifier = len(result)+1
+            if group == "综合几何模型":
+                difficulty = "挑战"
+            elif group in ("风筝模型", "蝴蝶模型", "鸟头模型", "燕尾模型", "等积模型", "一半模型") or mode in (2,3):
+                difficulty = "提高"
+            else:
+                difficulty = "基础"
+            result.append(dict(question,id=identifier,difficulty=difficulty))
+            count += 1
+            if count == remaining:
+                break
+        if count != remaining:
+            raise ValueError(f"{group}: {count}/{remaining}")
+    return result
