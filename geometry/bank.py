@@ -25,6 +25,7 @@ def build_problem(group, mode, a, b, c):
     unit = "cm²"
     target = ""
     known = ""
+    metadata = {}
     if group == "一半模型" and 12 <= mode <= 14:
         top = a
         points.update(C=(2+top,h), D=(2,h))
@@ -56,7 +57,7 @@ def build_problem(group, mode, a, b, c):
             target, answer = "EBCDGF", u*h-a*c
             explanation = f"原面积{u}×{h}，剪去面积{a}×{c}，相减得到剩余面积"
         elif mode == 13:
-            question = f"{known}。剩余图形的周长是多少厘米？"
+            question = f"{known}。求剩余图形周长，答案须带单位。"
             target, answer, unit = "EBCDGF", 2*(u+h), "cm"
             explanation = "剪掉的一横一竖分别由凹口的一横一竖补回，周长等于原矩形周长"
         else:
@@ -278,7 +279,29 @@ def build_problem(group, mode, a, b, c):
                 explanation = f"两个锐角互余，90°－{x}°"
         elif group == "三角形基础":
             lines = [("C","D")]
-            if mode >= 8:
+            if mode in (10,11,12):
+                kind = mode-10
+                x = a if kind == 0 else 0 if kind == 1 else -a
+                points = {"A":(0,0), "B":(u,0), "C":(x,2*u)}
+                known = f"AB＝{u}厘米。从C向直线AB作高，垂足D{'在AB内部' if kind == 0 else '与A重合' if kind == 1 else f'在AB的延长线上，且A在D、B之间，AD＝{a}厘米'}"
+                if kind == 0:
+                    known += f"，AD＝{a}厘米，CD＝{2*u}厘米"
+                else:
+                    known += f"，CD＝{2*u}厘米"
+                lines = [("C","D")] if kind != 1 else []
+                points["D"] = (x,0)
+                if kind == 2:
+                    lines.append(("D","A"))
+                answer = ("锐角三角形","直角三角形","钝角三角形")[kind]
+                explanation = ("垂足在AB内部，两底角为锐角；按给定长度，C处两条边的夹角也是锐角",
+                               "CD垂直AB，且D就是A，因此∠A为直角",
+                               "CD垂直AB，且A在D、B之间，∠CAB大于90°")[kind]
+                question = f"△ABC中，{known}。按角分类，△ABC是哪一类三角形？"
+                if kind == 0:
+                    explanation = "A、B处均为锐角。C到AB的距离为AB的两倍，所以C处夹角也小于90°"
+                metadata = {"answerType":"text", "alternatives":[answer[:2]]}
+                unit = ""
+            elif mode >= 8:
                 points = {"A": (0,0), "B": (3*c,0), "C": (0,4*c)}
                 lines = []
                 known = f"AB＝{3*c}厘米，AC＝{4*c}厘米，BC＝{5*c}厘米"
@@ -411,7 +434,8 @@ def build_problem(group, mode, a, b, c):
     return dict(category=group, modelMode=mode,
                 construction={n:[str(value) for value in pair] for n,pair in drawn.items()},
                 outline=outline, target=target, subcategory=explanation if len(explanation)<25 else question.split("求")[-1].strip("。"),
-                question=question, answer=answer, unit=unit, answerType="ratio" if ":" in answer else "number",
+                question=question, answer=answer, unit=unit, answerType=metadata.get("answerType", "ratio" if ":" in answer else "number"),
+                alternatives=metadata.get("alternatives", []), requiresUnit="答案须带单位" in question,
                 geometryStatus="representative", givens={"description":known},
                 solution=[explanation,f"答案为 {answer} {unit}".strip()],
                 questionSvg=diagram(drawn,outline,notes=("示意图",*notes),**args),

@@ -22,6 +22,9 @@ function activate(name) {
   el("login").hidden = true;
   el("workspace").hidden = false;
   el("who").textContent = name;
+  const color = read("profile:" + name, {}).color;
+  el("avatar").style.backgroundColor = /^#[0-9a-f]{6}$/i.test(color ?? "") ? color : "#2457a6";
+  el("avatar").textContent = Array.from(name)[0] ?? "";
   resetFilters();
 }
 el("credentials").addEventListener("submit", async event => {
@@ -38,7 +41,7 @@ el("credentials").addEventListener("submit", async event => {
       if (profile) throw Error("用户名已存在。");
       if (password.length < 6 || password !== el("confirmPassword").value) throw Error("密码至少 6 个字符，两次输入须一致。");
       const salt = hex(crypto.getRandomValues(new Uint8Array(16)));
-      save(key, {salt, digest:await verifier(password,salt)});
+      save(key, {salt, digest:await verifier(password,salt), color:el("avatarColor").value});
     } else if (!profile || await verifier(password, profile.salt) !== profile.digest) {
       throw Error("用户名或密码错误。");
     }
@@ -56,7 +59,13 @@ function exit() {
 }
 const counts = new Map();
 for (const q of bank) counts.set(q.category,(counts.get(q.category) ?? 0)+1);
-for (const [group, count] of counts) el("category").add(new Option(group + "（" + count + "）",group));
+for (const [group, count] of counts) {
+  const label = group + "（" + count + "）";
+  el("category").add(new Option(label,group));
+  const button = Object.assign(document.createElement("button"), {type:"button", textContent:label});
+  button.onclick = () => { filters.forEach(id => el(id).value = ""); el("category").value = group; select(); el("title").focus(); };
+  el("chapters").append(button);
+}
 const filters = ["category","level","filter","search"];
 function resetFilters() {
   filters.forEach(id => el(id).value = "");
@@ -82,7 +91,7 @@ function stats() {
   const accuracy = correct + wrong ? Math.round(correct * 100/(correct + wrong)) : 0;
   const ids = el("category").value ? bank.filter(q => q.category === el("category").value) : bank;
   const completed = ids.filter(q => typeof data.marks[q.id]?.correct === "boolean").length;
-  el("summary").textContent = `完成 ${correct+wrong}/${bank.length} · 正确率 ${accuracy}% · 错题 ${wrong} · 收藏 ${favorite} · 掌握 ${mastered} · 当前专题 ${completed}/${ids.length}`;
+  el("summary").textContent = `完成 ${correct+wrong}/${bank.length} · 正确率 ${accuracy}% · 错题 ${wrong} · 收藏 ${favorite} · 掌握 ${mastered}（${(100*mastered/bank.length).toFixed(1)}%） · 当前专题 ${completed}/${ids.length}`;
 }
 const formulas = {
   "长方形与正方形":"长方形面积＝长×宽，周长＝2×(长＋宽)。正方形面积＝边长²。",
@@ -98,6 +107,13 @@ const formulas = {
   "燕尾模型":"从共同底边或共同高入手，通过分点比例逐步换算面积。",
   "综合几何模型":"先找平行线、中点和公共高，确定可直接换算的面积，再合并结果。"
 };
+function showProblemStatus(record) {
+  el("problemStatus").textContent = [
+    current.subcategory,
+    record.correct === true ? "已答对" : record.correct === false ? "待重练" : "未作答",
+    record.mastered ? "已掌握" : ""
+  ].filter(Boolean).join(" · ");
+}
 function render() {
   current = shown[cursor];
   el("matches").textContent = `${shown.length} 道题`;
@@ -116,6 +132,7 @@ function render() {
   el("previous").disabled = cursor === 0;
   el("next").disabled = cursor === shown.length-1;
   const record = data.marks[current.id] ?? {};
+  showProblemStatus(record);
   for (const [id,label] of [["favorite","收藏"],["mastered","掌握"]]) {
     el(id).textContent = record[id] ? "取消" + label : "标记" + label;
     el(id).setAttribute("aria-pressed", !!record[id]);
@@ -133,7 +150,12 @@ function rational(str) {
   return [BigInt(str.replace(".","")),10n ** BigInt(fraction.length)];
 }
 function equivalent(input, q) {
-  let value = input.normalize("NFKC").trim().replace(/\s+/g,"");
+  const normalize = str => str.normalize("NFKC").trim().replace(/\s+/g,"");
+  let value = normalize(input);
+  if (q.answerType === "text") {
+    if (!value) return null;
+    return [q.answer, ...(q.alternatives ?? [])].some(answer => normalize(answer) === value);
+  }
   const unit = value.match(/(?:cm2|[^\d./:+-]+)$/iu)?.[0];
   if (unit) {
     const normalized = ({"平方厘米":"cm2","厘米":"cm","度":"°"})[unit] ?? unit.toLowerCase();
@@ -147,13 +169,24 @@ function equivalent(input, q) {
     return a[0]*b[1]*d === a[1]*b[0]*c;
   }
   const a = rational(value), b = rational(q.answer);
-  return a && b ? a[0]*b[1] === b[0]*a[1] : null;
+  if (!a || !b) return null;
+  if (q.requiresUnit && !unit) return "missing-unit";
+  const difference = a[0]*b[1]-b[0]*a[1];
+  const tolerance = q.tolerance ? rational(q.tolerance) : null;
+  if (!tolerance) return difference === 0n;
+  const magnitude = difference < 0n ? -difference : difference;
+  return magnitude*tolerance[1] <= tolerance[0]*a[1]*b[1];
 }
 el("response").onsubmit = event => {
   event.preventDefault();
   const answer = equivalent(el("entry").value, current);
-  el("feedback").textContent = answer === null ? "输入格式或单位无效。" : answer ? "回答正确。" : "回答错误，可以重试或查看解析。";
-  if (answer !== null) { Object.assign(mark(),{correct:answer, answered:new Date().toISOString()}); persist(); stats(); }
+  el("feedback").textContent = answer === "missing-unit" ? "请补充答案单位。" : answer === null ? "输入格式或单位无效。" : answer ? "回答正确。" : "回答错误，可以重试或查看解析。";
+  if (typeof answer === "boolean") {
+    Object.assign(mark(),{correct:answer, answered:new Date().toISOString()});
+    persist();
+    stats();
+    showProblemStatus(mark());
+  }
 };
 el("solution").ontoggle = () => {
   if (!current || !el("solution").open) { el("solutionSvg").replaceChildren(); return; }
@@ -189,6 +222,9 @@ el("uploadFile").onchange = async event => {
     for (const [id, record] of Object.entries(incoming.marks)) {
       if (!/^[1-9]\d*$/.test(id) || !bank[Number(id)-1] || !record || typeof record !== "object") throw Error();
       clean.marks[id] = Object.fromEntries(["correct","mastered","favorite"].filter(k => typeof record[k] === "boolean").map(k => [k,record[k]]));
+      if (typeof record.answered === "string" && Number.isFinite(Date.parse(record.answered))) {
+        clean.marks[id].answered = new Date(record.answered).toISOString();
+      }
     }
     if (account === owner && confirm("用导入文件替换当前账户的学习记录？")) { data=clean; persist(); resetFilters(); }
   } catch { alert("学习记录文件无效。"); }

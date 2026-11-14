@@ -57,12 +57,19 @@ class BuiltBankTests(unittest.TestCase):
                 continue
             p = {key: tuple(map(Fraction, pair)) for key, pair in q["construction"].items()}
             mode, category = q["modelMode"], q["category"]
-            answer = Fraction(q["answer"].replace(":", "/"))
+            answer = q["answer"] if q["answerType"] == "text" else Fraction(q["answer"].replace(":", "/"))
             a, b, c = (p[n] for n in "ABC")
             height = c[1]-a[1]
             base = b[0]-a[0]
             with self.subTest(id=q["id"]):
                 self.assertGreater(triangulated([p[n] for n in q["outline"]]), 0)
+                if q["answerType"] == "text":
+                    squares = sorted(sum((x-y)**2 for x,y in zip(m,n)) for m,n in ((a,b),(a,c),(b,c)))
+                    compare = squares[0]+squares[1]-squares[2]
+                    expected = "锐角三角形" if compare>0 else "钝角三角形" if compare<0 else "直角三角形"
+                    self.assertEqual(answer, expected)
+                    checked += 1
+                    continue
                 if q["answerType"] == "ratio":
                     upper = triangulated([p[n] for n in "ABO"])
                     lower = triangulated([p[n] for n in "CDO"])
