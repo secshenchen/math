@@ -40,9 +40,15 @@ async function main() {
       await input(action).click();
     }
     await input("login").waitFor({state:"visible"});
+    await page.keyboard.press("Tab");
+    assert.ok(await page.evaluate(() => document.activeElement?.matches("input, button, a")));
+    assert.equal(await page.locator("html").getAttribute("lang"),"zh-CN");
     await credentials("local-test-a","test-a-1234","register");
     await input("workspace").waitFor({state:"visible"});
     assert.equal(await input("drawing").locator("svg").count(),1);
+    assert.ok(await input("drawing").locator("svg title").textContent());
+    const graphic = input("drawing").locator("svg");
+    assert.equal(await graphic.getAttribute("role"),"img");
     assert.equal(await input("solutionSvg").locator("svg").count(),0);
     await page.getByText("展开章节", {exact:true}).click();
     await input("chapters").getByRole("button", {name:/长方形与正方形/}).click();

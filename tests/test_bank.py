@@ -147,3 +147,17 @@ class BuiltBankTests(unittest.TestCase):
                                          for u,v in positions[:index]),q["id"])
                 checked += 1
         self.assertEqual(checked,9990)
+
+    def test_legacy_progress_mapping(self):
+        from hashlib import sha256
+        html = Path("candidate/index.html").read_text(encoding="utf-8")
+        previous = json.loads(Path("geometry/previous_bank.json").read_text())
+        mapping = json.loads(html.split('id="migration">',1)[1].split("</script>",1)[0])
+        self.assertEqual(len(mapping),5000)
+        self.assertEqual(mapping[:5],[1,2,3,4,5])
+        self.assertIn(0,mapping)
+        self.assertGreaterEqual(sum(bool(new) for new in mapping), 4500)
+        self.assertTrue(all(not new or old == new for old,new in enumerate(mapping,1)))
+        for key,new in zip(previous,mapping):
+            if new:
+                self.assertEqual(key,sha256(self.bank[new-1]["question"].encode()).hexdigest()[:20])

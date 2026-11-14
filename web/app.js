@@ -7,7 +7,19 @@ const read = (key, fallback) => JSON.parse(localStorage.getItem(namespace + key)
 const save = (key, value) => localStorage.setItem(namespace + key, JSON.stringify(value));
 const hex = bytes => Array.from(bytes, n => n.toString(16).padStart(2, "0")).join("");
 let account = null, data, shown = bank, cursor = 0, current;
-const fresh = () => ({last:1, marks:{}});
+const fresh = () => ({version:2, last:1, marks:{}});
+function migrateProgress(old) {
+  if (old.version === 2) return old;
+  if (old.version !== undefined) throw Error("学习记录版本不受支持。");
+  const map = JSON.parse(el("migration").textContent);
+  const converted = fresh();
+  converted.last = map[old.last-1] || 1;
+  for (const [id, record] of Object.entries(old.marks)) {
+    const replacement = map[Number(id)-1];
+    if (replacement) converted.marks[replacement] = record;
+  }
+  return converted;
+}
 const mark = () => data.marks[current.id] ??= {};
 const persist = () => save("progress:" + account, data);
 async function verifier(password, salt) {
@@ -16,7 +28,11 @@ async function verifier(password, salt) {
   return hex(new Uint8Array(await crypto.subtle.deriveBits({name:"PBKDF2", salt:enc.encode(salt), iterations:600000, hash:"SHA-256"}, key, 256)));
 }
 function activate(name) {
-  data = read("progress:" + name, fresh());
+  const previousProgress = read("progress:" + name, fresh());
+  data = migrateProgress(previousProgress);
+  if (previousProgress.version === undefined && !read("previous-progress:" + name,null)) {
+    save("previous-progress:" + name,previousProgress);
+  }
   save("active", name);
   account = name;
   el("login").hidden = true;
@@ -202,7 +218,7 @@ for (const id of ["favorite","mastered"]) el(id).onclick = () => { const record 
 el("logout").onclick = exit;
 el("print").onclick = () => window.print();
 el("clear").onclick = () => { if (confirm("清空当前账户的全部学习记录？")) { data = fresh(); persist(); resetFilters(); } };
-el("remove").onclick = () => { if (confirm("删除当前账户及学习记录？")) { localStorage.removeItem(namespace+"profile:"+account); localStorage.removeItem(namespace+"progress:"+account); exit(); } };
+el("remove").onclick = () => { if (confirm("删除当前账户及学习记录？")) { localStorage.removeItem(namespace+"profile:"+account); localStorage.removeItem(namespace+"progress:"+account); localStorage.removeItem(namespace+"previous-progress:"+account); exit(); } };
 el("download").onclick = () => {
   const url = URL.createObjectURL(new Blob([JSON.stringify(data)],{type:"application/json"}));
   Object.assign(document.createElement("a"),{href:url,download:"geometry-progress.json"}).click();
@@ -215,8 +231,9 @@ el("uploadFile").onchange = async event => {
   if (!file || file.size>2000000) return;
   const owner = account;
   try {
-    const incoming = JSON.parse(await file.text());
+    let incoming = JSON.parse(await file.text());
     if (!incoming.marks || typeof incoming.marks !== "object" || Array.isArray(incoming.marks)) throw Error();
+    incoming = migrateProgress(incoming);
     const clean = fresh();
     if (Number.isInteger(incoming.last) && bank[incoming.last-1]) clean.last = incoming.last;
     for (const [id, record] of Object.entries(incoming.marks)) {

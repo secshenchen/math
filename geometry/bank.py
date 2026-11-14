@@ -4,6 +4,7 @@ from itertools import product
 from random import Random
 from .coordinates import area, intersection, midpoint
 from .samples import build_samples, diagram
+from .extension import construct
 
 QUOTAS = {
     "长方形与正方形": 400, "平行四边形": 350, "梯形": 400, "三角形基础": 500,
@@ -26,7 +27,10 @@ def build_problem(group, mode, a, b, c):
     target = ""
     known = ""
     metadata = {}
-    if group == "燕尾模型" and mode >= 8:
+    additional = construct(group, mode, a, b, c) if mode >= 15 else None
+    if additional:
+        points, outline, lines, unit, known, target, answer, question, explanation = additional
+    elif group == "燕尾模型" and mode >= 8:
         points.update(C=(u+2,h), D=(2,h))
         points["P"] = midpoint(points["A"],points["C"]) if mode % 2 else (Fraction(u+2,3),Fraction(h,3))
         lines = [("A","C"),("B","P"),("D","P")]
@@ -448,15 +452,17 @@ def build_problem(group, mode, a, b, c):
         regions = [("ABO","#bfdbfe"),("CDO","#fde68a")]
     if ":" in answer and group == "蝴蝶模型":
         regions.append(("CDO","#fde68a"))
+    determined = additional and (group in ("一半模型","梯形"))
+    geometry_note = () if determined else ("示意图，形状不唯一",)
     return dict(category=group, modelMode=mode,
                 construction={n:[str(value) for value in pair] for n,pair in drawn.items()},
                 outline=outline, target=target, subcategory=explanation if len(explanation)<25 else question.split("求")[-1].strip("。"),
                 question=question, answer=answer, unit=unit, answerType=metadata.get("answerType", "ratio" if ":" in answer else "number"),
                 alternatives=metadata.get("alternatives", []), requiresUnit="答案须带单位" in question,
-                geometryStatus="representative", givens={"description":known},
+                geometryStatus="determined" if determined else "representative", givens={"description":known},
                 solution=[explanation,f"答案为 {answer} {unit}".strip()],
-                questionSvg=diagram(drawn,outline,notes=("示意图",*notes),**args),
-                answerSvg=diagram(drawn,outline,regions=regions,notes=(*notes,f"答案 {answer} {unit}".strip()),**args))
+                questionSvg=diagram(drawn,outline,notes=(*geometry_note,*notes),**args),
+                answerSvg=diagram(drawn,outline,regions=regions,notes=(*geometry_note,*notes,f"答案 {answer} {unit}".strip()),**args))
 
 
 def build_bank():
@@ -473,7 +479,7 @@ def build_bank():
                 continue
             seen.add(question["question"])
             identifier = len(result)+1
-            if group == "综合几何模型":
+            if group == "综合几何模型" or (mode >= 15 and group in ("燕尾模型","梯形","一半模型")):
                 difficulty = "挑战"
             elif group in ("风筝模型", "蝴蝶模型", "鸟头模型", "燕尾模型", "等积模型", "一半模型") or mode in (2,3):
                 difficulty = "提高"
@@ -485,4 +491,19 @@ def build_bank():
                 break
         if count != remaining:
             raise ValueError(f"{group}: {count}/{remaining}")
+    # Replace selected slots while retaining the other published question IDs.
+    new_inputs = list(product(range(3,22),range(2,23),range(2,25),range(15,18)))
+    Random(5017066).shuffle(new_inputs)
+    for group in ("一半模型","平行四边形","蝴蝶模型","梯形","燕尾模型"):
+        candidates = iter(new_inputs)
+        slots = [index for index,q in enumerate(result) if q["category"]==group and q["id"]>5]
+        for index in slots[::5]:
+            while True:
+                a,b,c,mode = next(candidates)
+                question = build_problem(group,mode,a,b,c)
+                if question["question"] not in seen:
+                    seen.add(question["question"])
+                    break
+            difficulty = "挑战" if group in ("一半模型","梯形","燕尾模型") else "提高"
+            result[index] = dict(question,id=result[index]["id"],difficulty=difficulty)
     return result
