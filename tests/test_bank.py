@@ -171,8 +171,29 @@ class BuiltBankTests(unittest.TestCase):
         self.assertEqual(len(mapping),5000)
         self.assertEqual(mapping[:5],[1,2,3,4,5])
         self.assertIn(0,mapping)
-        self.assertGreaterEqual(sum(bool(new) for new in mapping), 3650)
+        self.assertGreaterEqual(sum(bool(new) for new in mapping), 3250)
         self.assertTrue(all(not new or old == new for old,new in enumerate(mapping,1)))
         for key,new in zip(previous,mapping):
             if new:
                 self.assertEqual(key,sha256(self.bank[new-1]["question"].encode()).hexdigest()[:20])
+
+
+    def test_challenge_model_coverage_and_distinct_diagrams(self):
+        from geometry.combined import TOPICS
+        difficulty = Counter(q["difficulty"] for q in self.bank)
+        self.assertEqual(difficulty["挑战"], 1250)
+        for group, variants in TOPICS.items():
+            for model in variants.values():
+                self.assertTrue(any(q["category"] == group and q["subcategory"] == model
+                                    and q["difficulty"] == "挑战" for q in self.bank), model)
+        bodies = [re.sub(r"<title>[^<]*</title>", "", q[key])
+                  for q in self.bank for key in ("questionSvg", "answerSvg")]
+        self.assertEqual(len(set(bodies)), 10000)
+
+
+    def test_retired_ids_match_changed_exercises(self):
+        html = Path("candidate/index.html").read_text(encoding="utf-8")
+        ids = json.loads(html.split('id="retired6">',1)[1].split("</script>",1)[0])
+        expected = [q["id"] for q in self.bank if q.get("modelMode",0) >= 27]
+        self.assertEqual(ids, expected)
+        self.assertEqual(len(ids),460)

@@ -5,6 +5,7 @@ from random import Random
 from .coordinates import area, intersection, midpoint
 from .samples import build_samples, diagram
 from .extension import construct
+from .combined import TOPICS, construct_combined
 
 QUOTAS = {
     "长方形与正方形": 400, "平行四边形": 350, "梯形": 400, "三角形基础": 500,
@@ -27,7 +28,8 @@ def build_problem(group, mode, a, b, c):
     target = ""
     known = ""
     metadata = {}
-    additional = construct(group, mode, a, b, c) if mode >= 15 else None
+    additional = (construct_combined(group,mode,a,b,c) if mode >= 27
+                  else construct(group,mode,a,b,c) if mode >= 15 else None)
     if additional:
         points, outline, lines, unit, known, target, answer, question, explanation = additional
     elif group == "燕尾模型" and mode >= 8:
@@ -456,7 +458,7 @@ def build_problem(group, mode, a, b, c):
     geometry_note = () if determined else ("示意图，形状不唯一",)
     return dict(category=group, modelMode=mode,
                 construction={n:[str(value) for value in pair] for n,pair in drawn.items()},
-                outline=outline, target=target, subcategory=explanation if len(explanation)<25 else question.split("求")[-1].strip("。"),
+                outline=outline, target=target, subcategory=TOPICS.get(group,{}).get(mode) or (explanation if len(explanation)<25 else question.split("求")[-1].strip("。")),
                 question=question, answer=answer, unit=unit, answerType=metadata.get("answerType", "ratio" if ":" in answer else "number"),
                 alternatives=metadata.get("alternatives", []), requiresUnit="答案须带单位" in question,
                 geometryStatus="determined" if determined else "representative", givens={"description":known},
@@ -565,4 +567,28 @@ def build_bank():
                     break
             else:
                 raise ValueError(f"Not enough distinct prompts: {group}")
+    for group, models in TOPICS.items():
+        eligible = [i for i,q in enumerate(result) if q["category"] == group and q["id"] > 5
+                    and q["modelMode"] < 15 and (group != "一半模型" or q["difficulty"] == "提高")]
+        by_form = {}
+        for index in eligible:
+            by_form.setdefault(form(result[index]), []).append(index)
+        quota = {"一半模型":54,"鸟头模型":48,"综合几何模型":20}[group]
+        for mode in models:
+            variants = list(product(range(3,22),range(2,23),range(2,25)))
+            Random(38000+mode).shuffle(variants)
+            chosen = 0
+            for a,b,c in variants:
+                q = build_problem(group,mode,a,b,c)
+                if q["question"] in seen:
+                    continue
+                seen.add(q["question"])
+                slots = max(by_form.values(), key=len)
+                index = slots.pop()
+                result[index] = dict(q,id=result[index]["id"],difficulty="挑战")
+                chosen += 1
+                if chosen == quota:
+                    break
+            if chosen != quota:
+                raise ValueError(f"Insufficient exercises for {models[mode]}: {chosen}/{quota}")
     return result

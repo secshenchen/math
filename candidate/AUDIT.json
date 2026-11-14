@@ -1,8 +1,8 @@
 {
   "questions": 5000,
   "svg_documents": 10000,
-  "distinct_svg_bodies": 9939,
-  "reused_svg_bodies": 61,
+  "distinct_svg_bodies": 10000,
+  "reused_svg_bodies": 0,
   "topics": {
     "长方形与正方形": 400,
     "一半模型": 600,
@@ -19,15 +19,29 @@
   },
   "difficulty": {
     "基础": 1468,
-    "提高": 2642,
-    "挑战": 890
+    "提高": 2282,
+    "挑战": 1250
   },
   "geometry_status": {
     "determined": 337,
     "representative": 4663
   },
-  "normalized_prompts": 118,
+  "normalized_prompts": 130,
   "largest_prompt_group": 105,
+  "new_model_coverage": {
+    "一半模型 · 离家出走": 54,
+    "一半模型 · 交头接耳": 54,
+    "一半模型 · 锯齿": 54,
+    "一半模型 · 顶天立地": 54,
+    "鸟头模型 · 金字塔": 48,
+    "鸟头模型 · 沙漏": 48,
+    "鸟头模型 · 互补夹角": 48,
+    "综合几何模型 · 鸟头与相似": 20,
+    "综合几何模型 · 中点与梯形蝴蝶": 20,
+    "综合几何模型 · 平行四边形与燕尾": 20,
+    "综合几何模型 · 风筝与中点": 20,
+    "综合几何模型 · 燕尾与中点": 20
+  },
   "most_frequent_forms": [
     {
       "topic": "三角形基础",
@@ -38,11 +52,6 @@
       "topic": "等积模型",
       "form": "在△ABC中，D在AB上，AD:DB＝N:N，△ADC面积＝N cm²。求△ABC面积。",
       "count": 98
-    },
-    {
-      "topic": "鸟头模型",
-      "form": "在△ABC中，M在CB上，N在CA上。CM:CB＝N:N，CN:CA＝N:N，△CMN面积＝N cm²。求△ABC面积。",
-      "count": 97
     },
     {
       "topic": "等积模型",
@@ -58,11 +67,6 @@
       "topic": "三角形基础",
       "form": "△ABC中，AB＝N厘米，面积＝N平方厘米。求AB边上的高CD。",
       "count": 92
-    },
-    {
-      "topic": "鸟头模型",
-      "form": "在△ABC中，M在CB上，N在CA上。CN:CA＝N:N，△CMN面积＝N cm²。连AM，求△AMN面积。",
-      "count": 90
     },
     {
       "topic": "风筝模型",
@@ -103,6 +107,16 @@
       "topic": "风筝模型",
       "form": "凸四边形ABCD的对角线交于O。△ABO＝N，△BCO＝N，△CDO＝N（单位为平方厘米）。求△DAO面积。",
       "count": 79
+    },
+    {
+      "topic": "梯形",
+      "form": "梯形ABCD中，下底AB＝N厘米，上底CD＝N厘米，高为N厘米。连接AC，求△ABC的面积。",
+      "count": 78
+    },
+    {
+      "topic": "一半模型",
+      "form": "长方形ABCD长N厘米，宽N厘米，M、N、P、Q依次是四边中点。求△AMQ面积。",
+      "count": 78
     }
   ]
 }
