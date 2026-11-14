@@ -32,6 +32,7 @@ def build():
     retired4 = [q["id"] for q in questions if q.get("modelMode",0) >= 22]
     retired5 = [q["id"] for q in questions if q.get("modelMode",0) >= 24]
     retired6 = [q["id"] for q in questions if q.get("modelMode",0) >= 27]
+    retired7 = [q["id"] for q in questions if q.get("modelMode",0) >= 32]
     occurrences = Counter(q[key] for q in questions for key in ("questionSvg","answerSvg"))
     for q in questions:
         for key,label in (("questionSvg","题图"),("answerSvg","解析图")):
@@ -45,7 +46,7 @@ def build():
     app = (ROOT / "web/app.js").read_text(encoding="utf-8")
     output = ROOT / "candidate" / "index.html"
     output.parent.mkdir(exist_ok=True)
-    output.write_text(template.replace("__APP__", app).replace("__BANK__", bank).replace("__RETIRED6__", json.dumps(retired6)).replace("__RETIRED5__", json.dumps(retired5)).replace("__RETIRED4__", json.dumps(retired4)).replace("__RETIRED3__", json.dumps(retired3)).replace("__RETIRED__", json.dumps(retired)).replace("__MIGRATION__", json.dumps(migration,separators=(",",":"))), encoding="utf-8")
+    output.write_text(template.replace("__APP__", app).replace("__BANK__", bank).replace("__RETIRED7__", json.dumps(retired7)).replace("__RETIRED6__", json.dumps(retired6)).replace("__RETIRED5__", json.dumps(retired5)).replace("__RETIRED4__", json.dumps(retired4)).replace("__RETIRED3__", json.dumps(retired3)).replace("__RETIRED__", json.dumps(retired)).replace("__MIGRATION__", json.dumps(migration,separators=(",",":"))), encoding="utf-8", newline="\n")
     print(f"{output.relative_to(ROOT)}: {output.stat().st_size:,} bytes")
 
 

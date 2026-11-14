@@ -1,19 +1,21 @@
 const assert = require("node:assert/strict");
-const {readFileSync} = require("node:fs");
+const {readFileSync, writeFileSync} = require("node:fs");
 const {chromium} = require("playwright");
 
 (async () => {
-  const browser = await chromium.launch();
+  const browser = await chromium.launch(process.env.CHROMIUM_PATH
+    ? {executablePath:process.env.CHROMIUM_PATH} : {});
   try {
     const page = await browser.newPage();
     const data = readFileSync("candidate/index.html","utf8").split('id="bank">')[1].split("</script>")[0];
     const bank = JSON.parse(data);
     const issues = [];
+    const records = [];
     let covered = 0;
     for (let i=0;i<bank.length;i+=100) {
       const result = await page.evaluate(batch => {
         const issues = [];
-        let covered = 0;
+        const records = [];
         function cutsBox(line, box) {
           const [x1,y1,x2,y2] = line;
           let lo = 0, hi = 1;
@@ -33,22 +35,34 @@ const {chromium} = require("playwright");
         const holder = document.createElement("div");
         document.body.append(holder);
         for (const question of batch) for (const field of ["questionSvg","answerSvg"]) {
+          const record = {id:question.id, field, labels:0, auxiliaryLines:0, haloCrossings:0};
+          records.push(record);
           holder.innerHTML = question[field];
           const svg = holder.firstElementChild;
           const {width,height} = svg.viewBox.baseVal;
           const lines = [...svg.querySelectorAll("line")].map(line =>
             ["x1","y1","x2","y2"].map(key => line[key].baseVal.value));
+          record.auxiliaryLines = lines.length;
           const shape = [...svg.querySelectorAll("polygon")].at(-1);
           const points = Array.from(shape.points);
           for (const [i,p] of points.entries()) {
             const next = points[(i+1)%points.length];
             lines.push([p.x,p.y,next.x,next.y]);
           }
+          const boxes = [];
           for (const label of svg.querySelectorAll("text")) {
             const b = label.getBBox();
+            record.labels++;
+            for (const [text, a] of boxes) {
+              if (Math.min(a.x+a.width,b.x+b.width)-Math.max(a.x,b.x)>1
+                  && Math.min(a.y+a.height,b.y+b.height)-Math.max(a.y,b.y)>2) {
+                issues.push({id:question.id,field,text:label.textContent,kind:"overlapping labels",with:text});
+              }
+            }
+            boxes.push([label.textContent,b]);
             if (label.getAttribute("text-anchor") === "middle" && lines.some(line => cutsBox(line,b))) {
               if (label.getAttribute("paint-order") === "stroke" && label.getAttribute("stroke") === "white") {
-                covered++;
+                record.haloCrossings++;
               } else {
                 issues.push({id:question.id,field,text:label.textContent,kind:"unprotected line overlap"});
               }
@@ -59,12 +73,14 @@ const {chromium} = require("playwright");
           }
         }
         holder.remove();
-        return {issues,covered};
+        return {issues,records};
       },bank.slice(i,i+100));
       issues.push(...result.issues);
-      covered += result.covered;
+      records.push(...result.records);
+      covered += result.records.reduce((sum, row) => sum+row.haloCrossings,0);
     }
     console.log(JSON.stringify({checked:2*bank.length, issues:issues.length, labelsWithHaloAtCrossings:covered, examples:issues.slice(0,12)}));
+    if (process.env.GEOMETRY_LAYOUT_REPORT) writeFileSync(process.env.GEOMETRY_LAYOUT_REPORT, JSON.stringify({records,issues}));
     assert.equal(issues.length,0,"SVG text must fit and remain legible at line crossings");
   } finally { await browser.close(); }
 })().catch(error => { console.error(error); process.exitCode=1; });

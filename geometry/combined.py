@@ -50,7 +50,7 @@ def construct_combined(group, mode, a, b, c):
         if mode == 27:
             p = {"O":(0,0),"A":(-a,0),"B":(b,0),"C":(a,h),"D":(F(3*a,2),F(3*h,2))}
             outline = "ACDB"
-            lines = [("O","C"),("O","D")]
+            lines = [("O","A"),("O","B"),("O","D")]
             given = f"A、O、B依次共线，C、D在从O出发的同一射线上，OA:OB＝{a}:{b}、OC:OD＝2:3，△AOC面积为{a*c}平方厘米"
             target, answer = "BOD", F(3*b*c,2)
             reason = "两个夹角互补。先用OA:OB换算△AOC与△BOC，再用OC:OD换算△BOC与△BOD。"
@@ -63,7 +63,7 @@ def construct_combined(group, mode, a, b, c):
                 p["O"] = intersection(p["B"],p["E"],p["A"],p["F"])
                 given = f"△ABC面积为{w*c}平方厘米，E、F分别是AC、BC中点，BE与AF交于O"
                 target, answer = "EFO", F(w*c,12)
-                reason = "EF平行AB且为其一半，沙漏的△EFO和△BAO相似；两块的高分去EF与AB间距离的三分之一和三分之二。"
+                reason = "EF是中位线，EF:AB＝1:2。相似的△EFO与△BAO的高也按1:2分配，故△EFO的高是EF到AB距离的三分之一，即整图高的六分之一。再结合一半底长，得整图面积的十二分之一。"
             else:
                 p.update(E=(F(a,2),F(h,2)),F=(F(w+a,2),F(h,2)),M=(a,0))
                 lines = [("E","F"),("C","M")]

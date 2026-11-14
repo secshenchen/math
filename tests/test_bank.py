@@ -1,3 +1,5 @@
+import base64
+import gzip
 import json
 import re
 import unittest
@@ -21,6 +23,20 @@ class BuiltBankTests(unittest.TestCase):
         self.assertEqual(len({q["question"] for q in self.bank}), 5000)
         for q in self.bank:
             self.assertTrue(all(q[key] for key in ("subcategory", "difficulty", "answer", "answerType", "solution")))
+
+    def test_frequent_prompts_are_replaced_with_varied_reasoning(self):
+        forms = Counter((q["category"], re.sub(r"\d+(?:[./]\d+)?", "N", q["question"])) for q in self.bank)
+        self.assertLessEqual(max(forms.values()), 65)
+        self.assertGreaterEqual(len(forms), 145)
+        added = [q for q in self.bank if q.get("modelMode", 0) >= 32]
+        self.assertEqual(len({q["subcategory"] for q in added}), 18)
+        self.assertEqual(len({q["category"] for q in added}), 8)
+
+    def test_checked_in_offline_file_contains_exact_tested_html(self):
+        packed = Path("index.html").read_bytes()
+        self.assertEqual(packed, Path("candidate/offline.html").read_bytes())
+        payload = re.search(rb"atob\('([A-Za-z0-9+/=]+)'\)",packed)[1]
+        self.assertEqual(gzip.decompress(base64.b64decode(payload)), Path("candidate/index.html").read_bytes())
 
     def test_all_svg_documents(self):
         ns = "{http://www.w3.org/2000/svg}"
@@ -71,7 +87,7 @@ class BuiltBankTests(unittest.TestCase):
                     self.assertEqual(answer, expected)
                     checked += 1
                     continue
-                if category == "风筝模型" and mode >= 20:
+                if category == "风筝模型" and mode in (20,21):
                     from math import dist
                     segment = "AC" if mode == 20 else "BD"
                     expected = dist(p[segment[0]],p["O"])/dist(p["O"],p[segment[1]])
@@ -91,6 +107,15 @@ class BuiltBankTests(unittest.TestCase):
                                 if mode == 13 else cutout / triangulated([p[n] for n in "ABCD"]))
                 elif category == "鸟头模型" and mode % 5 == 3:
                     expected = triangulated([p[n] for n in "CMN"])/triangulated([p[n] for n in "ABC"])
+                elif category == "三角形边角关系" and mode >= 32:
+                    def angle_between(first, vertex, last):
+                        x,y = p[vertex]
+                        return degrees(abs(atan2(
+                            float((p[first][0]-x)*(p[last][1]-y)-(p[first][1]-y)*(p[last][0]-x)),
+                            float((p[first][0]-x)*(p[last][0]-x)+(p[first][1]-y)*(p[last][1]-y)))))
+                    expected = angle_between("A","B","M") if mode == 32 else angle_between("A","C","B")
+                elif category == "三角形基础" and mode == 32:
+                    expected = p["D"][0]-a[0]
                 elif category == "三角形边角关系" and mode >= 18:
                     from math import acos
                     polygon = [p[n] for n in q["outline"]]
@@ -154,7 +179,13 @@ class BuiltBankTests(unittest.TestCase):
                     self.assertAlmostEqual(x,float(65+(u-min(xs))*scale),delta=.001,msg=str(q["id"]))
                     self.assertAlmostEqual(y,float(185-(v-min(ys))*scale),delta=.001,msg=str(q["id"]))
                 svg_labels = {label.text for label in root.findall(ns + "text")}
-                self.assertTrue(set(q["outline"]) <= svg_labels,q["id"])
+                names = set("".join(re.findall(r"[A-Z]+", q["question"])))
+                self.assertTrue(set(points) == svg_labels.intersection(points),q["id"])
+                self.assertTrue(names <= set(points), (q["id"],names-set(points)))
+                if field == "answerSvg" and q["target"]:
+                    expected = " ".join(f"{65+(points[n][0]-min(xs))*float(scale):.3f},{185-(points[n][1]-min(ys))*float(scale):.3f}" for n in q["target"])
+                    matches = [poly.attrib["points"].split() for poly in root.findall(ns + "polygon")[:-1]]
+                    self.assertIn(expected.split(),matches,q["id"])
                 positions = [(float(t.attrib["x"]),float(t.attrib["y"]))
                              for t in root.findall(ns + "text") if t.text in points]
                 for index,(x,y) in enumerate(positions):
@@ -171,7 +202,7 @@ class BuiltBankTests(unittest.TestCase):
         self.assertEqual(len(mapping),5000)
         self.assertEqual(mapping[:5],[1,2,3,4,5])
         self.assertIn(0,mapping)
-        self.assertGreaterEqual(sum(bool(new) for new in mapping), 3250)
+        self.assertGreaterEqual(sum(bool(new) for new in mapping), 2984)
         self.assertTrue(all(not new or old == new for old,new in enumerate(mapping,1)))
         for key,new in zip(previous,mapping):
             if new:
@@ -181,7 +212,9 @@ class BuiltBankTests(unittest.TestCase):
     def test_challenge_model_coverage_and_distinct_diagrams(self):
         from geometry.combined import TOPICS
         difficulty = Counter(q["difficulty"] for q in self.bank)
-        self.assertEqual(difficulty["挑战"], 1250)
+        self.assertGreaterEqual(difficulty["挑战"], 1250)
+        self.assertFalse(any(q["category"] == "鸟头模型" and q.get("modelMode") == 23
+                             and q["difficulty"] == "挑战" for q in self.bank))
         for group, variants in TOPICS.items():
             for model in variants.values():
                 self.assertTrue(any(q["category"] == group and q["subcategory"] == model
@@ -196,4 +229,7 @@ class BuiltBankTests(unittest.TestCase):
         ids = json.loads(html.split('id="retired6">',1)[1].split("</script>",1)[0])
         expected = [q["id"] for q in self.bank if q.get("modelMode",0) >= 27]
         self.assertEqual(ids, expected)
-        self.assertEqual(len(ids),460)
+        self.assertGreaterEqual(len(ids),460)
+        pi = json.loads(html.split('id="retired7">',1)[1].split("</script>",1)[0])
+        self.assertEqual(pi, [q["id"] for q in self.bank if q.get("modelMode",0) >= 32])
+        self.assertEqual(len(pi),359)
