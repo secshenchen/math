@@ -8,6 +8,70 @@ def construct(group, mode, a, b, c):
     width, height = a+b, 2*c
     p = {"A": (0,0), "B": (width,0), "C": (width,height), "D": (0,height)}
     outline, segments, unit = "ABCD", [], "cm²"
+    if mode >= 24:
+        if group == "蝴蝶模型":
+            p.update(C=(b+a,height), D=(b,height))
+            p["O"] = intersection(p["A"],p["C"],p["B"],p["D"])
+            segments = [("A","C"),("B","D")]
+            lower = Fraction(a*a*c, width+a)
+            upper = lower * Fraction(width,a)**2
+            if mode == 24:
+                known = f"梯形ABCD中AB∥CD，两底的和为{width+a}厘米，AB比CD长{b}厘米，△CDO面积是{lower}平方厘米"
+                target, answer = "ABO", upper
+                method = f"先由两底的和与差求得AB＝{width}、CD＝{a}，再用两底比的平方乘△CDO面积。"
+            elif mode == 25:
+                known = f"梯形ABCD中AB∥CD，AB:CD＝{width}:{a}，△ABO与△CDO的面积和为{upper+lower}平方厘米"
+                target, answer = "CDO", lower
+                method = "上下两块相似，面积比等于底边比的平方；按平方比把两块面积的和分配到两块。"
+            else:
+                wing = Fraction(width*a*c,width+a)
+                known = f"梯形ABCD中AB∥CD，AB:CD＝{width}:{a}，梯形面积为{(width+a)*c}平方厘米"
+                target, answer = "BCO", wing
+                method = "对角线把梯形分成两个等高三角形。先按两底比分配面积，再在△ABC内用AO:OC＝AB:CD分配面积。"
+            known += "，对角线交于O"
+        elif group == "一半模型":
+            outline = "ABC"
+            p["C"] = (a,height)
+            p["M"] = midpoint(p["A"],p["B"])
+            p["N"] = midpoint(p["A"],p["C"])
+            p["P"] = midpoint(p["A"],p["M"])
+            p["Q"] = midpoint(p["A"],p["N"])
+            segments = [("M","N"),("P","Q")]
+            if mode == 24:
+                known = f"△ABC面积为{width*c}平方厘米，M、N分别是AB、AC中点，P、Q分别是AM、AN中点"
+                target, answer = "APQ", Fraction(width*c,16)
+                method = "每连接一次对应边的中点，得到的相似三角形面积都缩小到四分之一。"
+            elif mode == 25:
+                known = f"△ABC中M、N分别是AB、AC中点，P、Q分别是AM、AN中点，△APQ面积为{Fraction(width*c,16)}平方厘米"
+                target, answer = "ABC", width*c
+                method = "从小三角形APQ到AMN再到ABC，两次相似放大各使面积变为原来的四倍。"
+            else:
+                known = f"△ABC面积为{width*c}平方厘米，M、N分别是AB、AC中点，P、Q分别是AM、AN中点"
+                target, answer = "PMNQ", Fraction(3*width*c,16)
+                method = "先算△AMN占全图的四分之一，再减去占全图十六分之一的△APQ。"
+        elif group == "燕尾模型":
+            outline = "ABC"
+            p["C"] = (a,height)
+            p["D"] = (a,0)
+            p["P"] = (a,Fraction(height,3))
+            p["Q"] = (a,Fraction(2*height,3))
+            segments = [("C","D"),("A","P"),("B","P"),("A","Q"),("B","Q")]
+            if mode == 24:
+                known = f"△ABC中D在AB上且AD:DB＝{a}:{b}，P、Q将DC从D到C三等分，△ABP面积为{Fraction(width*c,3)}平方厘米"
+                target, answer = "ACQ", Fraction(a*c,3)
+                method = "由△ABP面积乘三得到整图面积，按AD:AB求△ACD面积，最后按CQ:CD求△ACQ面积。"
+            elif mode == 25:
+                known = f"△ABC中D在AB上且AD:DB＝{a}:{b}，P、Q将DC从D到C三等分，△ADQ面积为{Fraction(2*a*c,3)}平方厘米"
+                target, answer = "BCP", Fraction(2*b*c,3)
+                method = "△ADQ与△BDQ同高，先按AD:DB换算面积。△BDQ与△BCP从B到DC同高，且DQ＝CP，故两者等积。"
+            else:
+                known = f"△ABC中D在AB上且AD:DB＝{a}:{b}，P、Q将DC从D到C三等分，△BCQ面积为{Fraction(b*c,3)}平方厘米"
+                target, answer = "ABP", Fraction(width*c,3)
+                method = "由△BCQ的面积与CQ:CD求出△BCD，再用DB:AB求整图面积，最后取△ABP的三分之一比例。"
+        else:
+            return None
+        prompt = f"求四边形{target}的面积" if len(target)==4 else f"求△{target}面积"
+        return p, outline, segments, unit, known, target, answer, f"{known}。{prompt}。", method
     if mode >= 22:
         if group == "一半模型":
             p.update(C=(width+a,height),D=(a,height))

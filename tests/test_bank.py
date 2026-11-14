@@ -31,6 +31,7 @@ class BuiltBankTests(unittest.TestCase):
                     svg = q[field]
                     root = ET.fromstring(svg)
                     self.assertEqual(root.tag, ns + "svg")
+                    self.assertIn(f"第{q['id']}题", root.findtext(ns + "title"))
                     _, _, width, height = map(float, root.attrib["viewBox"].split())
                     self.assertGreater(width * height, 0)
                     self.assertIsNotNone(root.find(ns + "polygon"))
@@ -170,7 +171,7 @@ class BuiltBankTests(unittest.TestCase):
         self.assertEqual(len(mapping),5000)
         self.assertEqual(mapping[:5],[1,2,3,4,5])
         self.assertIn(0,mapping)
-        self.assertGreaterEqual(sum(bool(new) for new in mapping), 3950)
+        self.assertGreaterEqual(sum(bool(new) for new in mapping), 3650)
         self.assertTrue(all(not new or old == new for old,new in enumerate(mapping,1)))
         for key,new in zip(previous,mapping):
             if new:

@@ -40,6 +40,15 @@ async function main() {
       await input(action).click();
     }
     await input("login").waitFor({state:"visible"});
+    async function auditAccessibility() {
+      if (engine !== chromium || !process.env.GEOMETRY_AXE) return;
+      await page.addScriptTag({content:readFileSync(require.resolve("axe-core/axe.min.js"),"utf8")});
+      const violations = await page.evaluate(async () => (await window.axe.run({
+        runOnly:{type:"tag",values:["wcag2a","wcag2aa","wcag21a","wcag21aa"]},
+      })).violations.map(({id,nodes}) => ({id,targets:nodes.map(node => node.target)})));
+      assert.deepEqual(violations,[]);
+    }
+    await auditAccessibility();
     await page.keyboard.press("Tab");
     assert.ok(await page.evaluate(() => document.activeElement?.matches("input, button, a")));
     assert.equal(await page.locator("html").getAttribute("lang"),"zh-CN");
@@ -49,8 +58,9 @@ async function main() {
     assert.ok(await input("drawing").locator("svg title").textContent());
     const graphic = input("drawing").locator("svg");
     assert.equal(await graphic.getAttribute("role"),"img");
-    assert.match(await graphic.ariaSnapshot(), /img "几何关系图"/);
+    assert.match(await graphic.ariaSnapshot(), /img "第1题 · 长方形与正方形 · 题图"/);
     assert.match(await input("response").ariaSnapshot(), /textbox "答案"/);
+    await auditAccessibility();
     assert.equal(await input("solutionSvg").locator("svg").count(),0);
     await page.getByText("展开章节", {exact:true}).click();
     await input("chapters").getByRole("button", {name:/长方形与正方形/}).click();
