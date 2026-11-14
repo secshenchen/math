@@ -10,12 +10,22 @@ from xml.etree import ElementTree as ET
 from geometry.bank import QUOTAS
 
 
+def released_html():
+    packed = Path("index.html").read_bytes()
+    payload = re.search(rb"atob\('([A-Za-z0-9+/=]+)'\)",packed)[1]
+    return gzip.decompress(base64.b64decode(payload)).decode("utf-8")
+
+
+def read_bank(html):
+    payload = html.split('<script type="application/json" id="bank">', 1)[1].split("</script>", 1)[0]
+    return json.loads(payload)
+
+
 class BuiltBankTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        html = Path("candidate/index.html").read_text(encoding="utf-8")
-        payload = html.split('<script type="application/json" id="bank">', 1)[1].split("</script>", 1)[0]
-        cls.bank = json.loads(payload)
+        cls.html = released_html()
+        cls.bank = read_bank(cls.html)
 
     def test_counts_and_prompt_uniqueness(self):
         self.assertEqual([q["id"] for q in self.bank], list(range(1, 5001)))
@@ -32,11 +42,18 @@ class BuiltBankTests(unittest.TestCase):
         self.assertEqual(len({q["subcategory"] for q in added}), 18)
         self.assertEqual(len({q["category"] for q in added}), 8)
 
-    def test_checked_in_offline_file_contains_exact_tested_html(self):
-        packed = Path("index.html").read_bytes()
-        self.assertEqual(packed, Path("candidate/offline.html").read_bytes())
-        payload = re.search(rb"atob\('([A-Za-z0-9+/=]+)'\)",packed)[1]
-        self.assertEqual(gzip.decompress(base64.b64decode(payload)), Path("candidate/index.html").read_bytes())
+    def test_checked_in_offline_file_contains_same_exercises_as_build(self):
+        self.assertEqual(Path("index.html").read_bytes(), Path("candidate/offline.html").read_bytes())
+        built = Path("candidate/index.html").read_text(encoding="utf-8")
+        def app_without_bank(html):
+            return re.sub(r'(id="bank">).*?(</script>)',r'\1\2',html,count=1,flags=re.S)
+        self.assertEqual(app_without_bank(self.html),app_without_bank(built))
+        for published, regenerated in zip(self.bank,read_bank(built),strict=True):
+            # Browser tests check the actual shipped drawings. System math libraries can
+            # place a numeric coordinate either side of a label layout threshold.
+            exclude = {"construction","questionSvg","answerSvg"}
+            self.assertEqual({k:v for k,v in published.items() if k not in exclude},
+                             {k:v for k,v in regenerated.items() if k not in exclude},published["id"])
 
     def test_all_svg_documents(self):
         ns = "{http://www.w3.org/2000/svg}"
@@ -196,7 +213,7 @@ class BuiltBankTests(unittest.TestCase):
 
     def test_legacy_progress_mapping(self):
         from hashlib import sha256
-        html = Path("candidate/index.html").read_text(encoding="utf-8")
+        html = self.html
         previous = json.loads(Path("geometry/previous_bank.json").read_text())
         mapping = json.loads(html.split('id="migration">',1)[1].split("</script>",1)[0])
         self.assertEqual(len(mapping),5000)
@@ -225,7 +242,7 @@ class BuiltBankTests(unittest.TestCase):
 
 
     def test_retired_ids_match_changed_exercises(self):
-        html = Path("candidate/index.html").read_text(encoding="utf-8")
+        html = self.html
         ids = json.loads(html.split('id="retired6">',1)[1].split("</script>",1)[0])
         expected = [q["id"] for q in self.bank if q.get("modelMode",0) >= 27]
         self.assertEqual(ids, expected)

@@ -25,4 +25,4 @@
 
 图形的自动验收包括 XML、顶点与渲染后的文字边界。若两题共享几何构图和条件，图下附各自的题干，题号以外的 SVG 正文可据此区分。自动验收和新模型的抽样目视检查有各自的验收范围。iPhone、iPad WebKit 模拟及 axe 扫描由 CI 运行，真机 Safari、VoiceOver 与逐图人工审校单独记录。
 
-发版时运行 `python3 tools/package_candidate.py`，再用生成的 `candidate/offline.html` 替换根目录 `index.html`。回归会比较两个已提交文件，并解压确认它们和本次构建的 HTML 完全相同。
+发版时运行 `python3 tools/package_candidate.py`，再用生成的 `candidate/offline.html` 替换根目录 `index.html`。回归比较两个已提交文件的字节，并从待发布 HTML 直接读取题库和 SVG。重新构建时另行检查题干、答案、解析和应用代码是否与发布文件一致。

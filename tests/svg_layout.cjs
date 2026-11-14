@@ -1,5 +1,6 @@
 const assert = require("node:assert/strict");
 const {readFileSync, writeFileSync} = require("node:fs");
+const {gunzipSync} = require("node:zlib");
 const {chromium} = require("playwright");
 
 (async () => {
@@ -7,7 +8,8 @@ const {chromium} = require("playwright");
     ? {executablePath:process.env.CHROMIUM_PATH} : {});
   try {
     const page = await browser.newPage();
-    const data = readFileSync("candidate/index.html","utf8").split('id="bank">')[1].split("</script>")[0];
+    const packed = readFileSync("index.html","utf8").match(/atob\('([A-Za-z0-9+/=]+)'\)/)[1];
+    const data = gunzipSync(Buffer.from(packed,"base64")).toString("utf8").split('id="bank">')[1].split("</script>")[0];
     const bank = JSON.parse(data);
     const issues = [];
     const records = [];
