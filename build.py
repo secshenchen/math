@@ -1,5 +1,6 @@
 """Build the standalone candidate without replacing the published entry."""
 import json
+from html import escape
 from hashlib import sha256
 from pathlib import Path
 from geometry.bank import build_bank
@@ -15,12 +16,18 @@ def build():
     retired = [q["id"] for q in questions if q.get("modelMode",0) >= 18]
     retired3 = [q["id"] for q in questions if q.get("modelMode",0) >= 20]
     retired4 = [q["id"] for q in questions if q.get("modelMode",0) >= 22]
+    retired5 = [q["id"] for q in questions if q.get("modelMode",0) >= 24]
+    for q in questions:
+        for key,label in (("questionSvg","题图"),("answerSvg","解析图")):
+            svg = q[key]
+            name = escape(f"第{q['id']}题 · {q['category']} · {label}")
+            q[key] = svg.replace("<title>几何关系图</title>",f"<title>{name}</title>",1)
     bank = json.dumps(questions, ensure_ascii=False, separators=(",", ":")).replace("<", "\\u003c")
     template = (ROOT / "web/app.html").read_text(encoding="utf-8")
     app = (ROOT / "web/app.js").read_text(encoding="utf-8")
     output = ROOT / "candidate" / "index.html"
     output.parent.mkdir(exist_ok=True)
-    output.write_text(template.replace("__APP__", app).replace("__BANK__", bank).replace("__RETIRED4__", json.dumps(retired4)).replace("__RETIRED3__", json.dumps(retired3)).replace("__RETIRED__", json.dumps(retired)).replace("__MIGRATION__", json.dumps(migration,separators=(",",":"))), encoding="utf-8")
+    output.write_text(template.replace("__APP__", app).replace("__BANK__", bank).replace("__RETIRED5__", json.dumps(retired5)).replace("__RETIRED4__", json.dumps(retired4)).replace("__RETIRED3__", json.dumps(retired3)).replace("__RETIRED__", json.dumps(retired)).replace("__MIGRATION__", json.dumps(migration,separators=(",",":"))), encoding="utf-8")
     print(f"{output.relative_to(ROOT)}: {output.stat().st_size:,} bytes")
 
 

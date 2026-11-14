@@ -452,7 +452,7 @@ def build_problem(group, mode, a, b, c):
         regions = [("ABO","#bfdbfe"),("CDO","#fde68a")]
     if ":" in answer and group == "蝴蝶模型":
         regions.append(("CDO","#fde68a"))
-    determined = additional and (group in ("一半模型","梯形"))
+    determined = additional and ((group == "一半模型" and 15 <= mode <= 17) or group == "梯形" or (group == "长方形与正方形" and mode in (20,21)) or (group == "三角形基础" and mode in (22,23)))
     geometry_note = () if determined else ("示意图，形状不唯一",)
     return dict(category=group, modelMode=mode,
                 construction={n:[str(value) for value in pair] for n,pair in drawn.items()},
@@ -544,6 +544,24 @@ def build_bank():
                     seen.add(q["question"])
                     level = "挑战" if group in ("一半模型","鸟头模型") else "提高"
                     result[index] = dict(q,id=result[index]["id"],difficulty=level)
+                    break
+            else:
+                raise ValueError(f"Not enough distinct prompts: {group}")
+    for group in ("蝴蝶模型","一半模型","燕尾模型"):
+        eligible = [i for i,q in enumerate(result) if q["category"] == group and q["id"] > 5 and q["modelMode"] < 15]
+        counts = Counter(form(result[i]) for i in eligible)
+        selected = []
+        for structure,_ in counts.most_common(3):
+            selected.extend([i for i in eligible if form(result[i]) == structure][:30])
+        variants = list(product(range(3,22),range(2,23),range(2,25),(24,25,26)))
+        Random(3741518).shuffle(variants)
+        choices = iter(variants)
+        for index in selected:
+            for a,b,c,mode in choices:
+                q = build_problem(group,mode,a,b,c)
+                if q["question"] not in seen:
+                    seen.add(q["question"])
+                    result[index] = dict(q,id=result[index]["id"],difficulty="挑战")
                     break
             else:
                 raise ValueError(f"Not enough distinct prompts: {group}")

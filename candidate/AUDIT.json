@@ -1,6 +1,8 @@
 {
   "questions": 5000,
   "svg_documents": 10000,
+  "distinct_svg_bodies": 9939,
+  "reused_svg_bodies": 61,
   "topics": {
     "长方形与正方形": 400,
     "一半模型": 600,
@@ -17,45 +19,25 @@
   },
   "difficulty": {
     "基础": 1468,
-    "提高": 2912,
-    "挑战": 620
+    "提高": 2642,
+    "挑战": 890
   },
   "geometry_status": {
-    "determined": 271,
-    "representative": 4729
+    "determined": 337,
+    "representative": 4663
   },
-  "normalized_prompts": 109,
-  "largest_prompt_group": 124,
+  "normalized_prompts": 118,
+  "largest_prompt_group": 105,
   "most_frequent_forms": [
-    {
-      "topic": "蝴蝶模型",
-      "form": "梯形ABCD的对角线交于O，AB:CD＝N:N，△CDO面积＝N平方厘米。求△ABO面积。",
-      "count": 124
-    },
-    {
-      "topic": "一半模型",
-      "form": "在△ABC中，M、N为BC、AC中点，△ABC面积＝N cm²。求△CMN面积。",
-      "count": 106
-    },
     {
       "topic": "三角形基础",
       "form": "△ABC中，AB＝N厘米，高CD＝N厘米。求面积。",
       "count": 105
     },
     {
-      "topic": "燕尾模型",
-      "form": "在△ABC中，D在AB上，P是CD中点，AD:DB＝N:N，△ADC面积＝N cm²。求△APB面积。",
-      "count": 101
-    },
-    {
       "topic": "等积模型",
       "form": "在△ABC中，D在AB上，AD:DB＝N:N，△ADC面积＝N cm²。求△ABC面积。",
       "count": 98
-    },
-    {
-      "topic": "一半模型",
-      "form": "在△ABC中，M为BC中点，△ABC面积＝N cm²。求△ABM面积。",
-      "count": 97
     },
     {
       "topic": "鸟头模型",
@@ -68,9 +50,9 @@
       "count": 94
     },
     {
-      "topic": "燕尾模型",
-      "form": "在△ABC中，D在AB上，P是CD中点，AD:DB＝N:N，△ADC面积＝N cm²。求△PDB面积。",
-      "count": 93
+      "topic": "蝴蝶模型",
+      "form": "梯形ABCD的对角线交于O，AB:CD＝N:N，△CDO面积＝N平方厘米。求△ABO面积。",
+      "count": 94
     },
     {
       "topic": "三角形基础",
@@ -88,11 +70,6 @@
       "count": 87
     },
     {
-      "topic": "蝴蝶模型",
-      "form": "梯形ABCD的对角线交于O，AB:CD＝N:N。求△ABO与△CDO的面积比。",
-      "count": 87
-    },
-    {
       "topic": "等积模型",
       "form": "在△ABC中，D在AB上，AD:DB＝N:N，△ADC面积＝N cm²。求△BDC面积。",
       "count": 86
@@ -101,6 +78,31 @@
       "topic": "风筝模型",
       "form": "凸四边形ABCD的对角线交于O。△ABO＝N，△CDO＝N，△DAO＝N（单位为平方厘米）。求△BCO面积。",
       "count": 86
+    },
+    {
+      "topic": "三角形边角关系",
+      "form": "在△ABC中，∠A＝N°，∠B＝N°。求∠C。",
+      "count": 85
+    },
+    {
+      "topic": "三角形基础",
+      "form": "△ABC中，AD＝N厘米，DB＝N厘米，CD＝N厘米，CD⊥AB。求△BDC面积。",
+      "count": 83
+    },
+    {
+      "topic": "风筝模型",
+      "form": "凸四边形ABCD的对角线交于O。△ABO＝N，△BCO＝N，△DAO＝N（单位为平方厘米）。求△CDO面积。",
+      "count": 81
+    },
+    {
+      "topic": "梯形",
+      "form": "等腰梯形ABCD下底AB长N厘米，上底CD长N厘米，高DH为N厘米。H为D到AB的垂足，求△ADH面积。",
+      "count": 80
+    },
+    {
+      "topic": "风筝模型",
+      "form": "凸四边形ABCD的对角线交于O。△ABO＝N，△BCO＝N，△CDO＝N（单位为平方厘米）。求△DAO面积。",
+      "count": 79
     }
   ]
 }
