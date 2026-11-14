@@ -25,7 +25,51 @@ def build_problem(group, mode, a, b, c):
     unit = "cm²"
     target = ""
     known = ""
-    if group in ("长方形与正方形", "平行四边形", "梯形"):
+    if group == "等积模型" and mode >= 10:
+        points.update(C=(a,h), D=(b+2,h), E=(a+1,0))
+        lines = [("A","C"),("B","D")]
+        outline = "ABC"
+        if mode == 10:
+            known = f"CD∥AB，△ABC面积为{u*c}平方厘米"
+            question = f"C、D是直线AB同侧的两个不同点，{known}。求△ABD面积。"
+            answer, target = u*c, "ABD"
+            explanation = "△ABC与△ABD共用底AB，且C、D到AB等距"
+            lines = [("A","D"),("B","D"),("C","D")]
+            if points["C"] == points["D"]:
+                points["D"] = (b+3,h)
+        else:
+            known = f"AE＝{a+1}厘米，AB＝{u}厘米，△ABC面积为{u*c}平方厘米"
+            question = f"E在△ABC的边AB上，{known}。求△AEC面积。"
+            answer, target = (a+1)*c, "AEC"
+            lines = [("C","E")]
+            explanation = "两三角形从C到直线AB的高相同，面积按底边之比换算"
+    elif group == "一半模型" and mode >= 10:
+        points.update(C=(u+2,h),D=(2,h))
+        points["M"] = midpoint(points["A"], points["B"])
+        points["N"] = midpoint(points["B"], points["C"])
+        known = f"平行四边形ABCD面积为{u*h}平方厘米"
+        if mode == 10:
+            question = f"{known}，M为AB中点。求△ADM面积。"
+            target, answer = "ADM", Fraction(u*h,4)
+            lines = [("D","M")]
+            explanation = "AM是AB的一半，△ADM的高与平行四边形的高相同"
+        else:
+            question = f"{known}，M为AB中点，N为BC中点。求△BMN面积。"
+            target, answer = "BMN", Fraction(u*h,8)
+            lines = [("M","N")]
+            explanation = "△ABC占整图一半，△BMN与△BAC相似，面积是它的四分之一"
+    elif group == "综合几何模型" and mode >= 10:
+        points.update(C=(b+a,h),D=(b,h))
+        points["O"] = intersection(points["A"],points["C"],points["B"],points["D"])
+        lines = [("A","C"),("B","D")]
+        points["M"] = midpoint(points["A"],points["O"])
+        lines.append(("B","M"))
+        known = f"梯形ABCD中AB∥CD，AB:CD＝{u}:{a}，△CDO面积为{number(area([points[n] for n in 'CDO']))}平方厘米"
+        question = f"{known}。对角线交于O，M是AO中点。求△BMO面积。"
+        target = "BMO"
+        answer = area([points[n] for n in "CDO"])*Fraction(u*u,2*a*a)
+        explanation = "先用蝴蝶模型将△CDO面积按底边平方比换成△ABO，再利用中点与共同高取一半"
+    elif group in ("长方形与正方形", "平行四边形", "梯形"):
         offset = 0 if group == "长方形与正方形" else 2
         top = a if group == "梯形" else u
         if group == "长方形与正方形" and 4 <= mode < 8:
@@ -221,7 +265,9 @@ def build_problem(group, mode, a, b, c):
     regions = [(target,"#bfdbfe")] if target else ()
     if ":" in answer and group == "蝴蝶模型":
         regions.append(("CDO","#fde68a"))
-    return dict(category=group,subcategory=explanation if len(explanation)<25 else question.split("求")[-1].strip("。"),
+    return dict(category=group, modelMode=mode,
+                construction={n:[str(value) for value in pair] for n,pair in drawn.items()},
+                outline=outline, target=target, subcategory=explanation if len(explanation)<25 else question.split("求")[-1].strip("。"),
                 question=question, answer=answer, unit=unit, answerType="ratio" if ":" in answer else "number",
                 geometryStatus="representative", givens={"description":known},
                 solution=[explanation,f"答案为 {answer} {unit}".strip()],
@@ -232,7 +278,7 @@ def build_problem(group, mode, a, b, c):
 def build_bank():
     result = build_samples()
     seen = {q["question"] for q in result}
-    inputs = list(product(range(3,22),range(2,23),range(2,25),range(10)))
+    inputs = list(product(range(3,22),range(2,23),range(2,25),range(12)))
     Random(5000).shuffle(inputs)
     for group, quota in QUOTAS.items():
         remaining = quota - sum(q["category"] == group for q in result)
