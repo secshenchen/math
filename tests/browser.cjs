@@ -44,9 +44,14 @@ async function main() {
     await input("workspace").waitFor({state:"visible"});
     assert.equal(await input("drawing").locator("svg").count(),1);
     assert.equal(await input("solutionSvg").locator("svg").count(),0);
+    await page.getByText("展开章节", {exact:true}).click();
+    await input("chapters").getByRole("button", {name:/长方形与正方形/}).click();
+    await input("resume").click();
+    assert.match(await input("problemStatus").textContent(), /未作答/);
     await input("entry").fill("84cm²");
     await input("response").locator("button").click();
     assert.match(await input("feedback").textContent(), /正确/);
+    assert.match(await input("problemStatus").textContent(), /已答对/);
     await input("solution").locator("summary").click();
     await input("solutionSvg").locator("svg").waitFor();
     await input("next").click();
@@ -80,10 +85,16 @@ async function main() {
     await input("download").click();
     const exported = await download;
     const file = await exported.path();
+    const backup = JSON.parse(readFileSync(file,"utf8"));
+    assert.ok(Date.parse(backup.marks["1"].answered));
     await input("clear").click();
     assert.match(await input("summary").textContent(), /完成 0/);
     await input("uploadFile").setInputFiles(file);
     await page.waitForFunction(() => document.getElementById("summary").textContent.includes("完成 2/"));
+    const imported = page.waitForEvent("download");
+    await input("download").click();
+    const restored = JSON.parse(readFileSync(await (await imported).path(),"utf8"));
+    assert.equal(restored.marks["1"].answered,backup.marks["1"].answered);
     await input("search").fill("1");
     await page.evaluate(() => { window.print = () => document.body.dataset.printed = "yes"; });
     await input("print").click();
@@ -93,6 +104,12 @@ async function main() {
       assert.equal(pdf.subarray(0,4).toString(), "%PDF");
     }
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
+    await input("remove").click();
+    await input("login").waitFor({state:"visible"});
+    await credentials("local-test-a","test-a-1234","signIn");
+    await page.getByText("用户名或密码错误。").waitFor();
+    await credentials("local-test-b","test-b-1234","register");
+    await page.getByText("用户名已存在。").waitFor();
     assert.deepEqual(remote, []);
     assert.deepEqual(errors, []);
     console.log("Offline browser smoke test passed.");
