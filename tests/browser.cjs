@@ -14,18 +14,21 @@ async function main() {
     const page = await context.newPage();
     const errors = [], remote = [];
     page.on("pageerror", error => errors.push(error.message));
-    page.on("request", request => { if (/^https?:/.test(request.url())) remote.push(request.url()); });
+    const localDocument = "https://geometry.test/index.html";
+    page.on("request", request => {
+      if (engine === webkit && request.url() === localDocument && request.resourceType() === "document") return;
+      if (/^https?:/.test(request.url())) remote.push(request.url());
+    });
     page.on("dialog", dialog => dialog.accept());
     const packed = resolve("candidate/offline.html");
     if (engine === webkit) {
       // WebKit on the Linux runner cannot navigate to the local file.
       // Fulfill the document from disk and prohibit all network traffic.
-      const url = "https://geometry.test/index.html";
-      await page.route("**/*", route => route.request().url() === url
+      const url = localDocument;
+      await page.route("**/*", route => route.request().url() === url && route.request().resourceType() === "document"
         ? route.fulfill({contentType:"text/html; charset=utf-8",body:readFileSync(packed)})
         : route.abort());
       await page.goto(url);
-      assert.deepEqual(remote.splice(0), [url]);
     } else {
       await page.goto(pathToFileURL(packed).href);
     }

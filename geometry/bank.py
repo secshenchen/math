@@ -192,7 +192,19 @@ def build_problem(group, mode, a, b, c):
         k = mode % 4
         target = regions[k]
         known = "，".join(f"△{name}＝{number(value)}" for i,(name,value) in enumerate(zip(regions,sizes)) if i != k)
-        if group == "蝴蝶模型" and mode >= 4:
+        if group == "蝴蝶模型" and mode >= 8:
+            target = "ABO"
+            known = f"AB:CD＝{u}:{a}，△CDO面积＝{number(sizes[2])}平方厘米"
+            if mode % 3 == 0:
+                target = "CDO"
+                known = f"AB:CD＝{u}:{a}，△ABO面积＝{number(sizes[0])}平方厘米"
+                answer = sizes[0]*Fraction(a*a,u*u)
+                explanation = "对应底边的比给出相似比，用其平方由△ABO面积换算△CDO"
+            else:
+                answer = sizes[2]*Fraction(u*u,a*a)
+                explanation = "先根据平行底边得到相似三角形，再把底边比平方以换算面积"
+            question = f"梯形ABCD的对角线交于O，{known}。求△{target}面积。"
+        elif group == "蝴蝶模型" and mode >= 4:
             target = "ABO"
             known = f"AB:CD＝{u}:{a}"
             answer = f"{Fraction(u*u,a*a).numerator}:{Fraction(u*u,a*a).denominator}"
