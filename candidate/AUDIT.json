@@ -1,0 +1,106 @@
+{
+  "questions": 5000,
+  "svg_documents": 10000,
+  "topics": {
+    "长方形与正方形": 400,
+    "一半模型": 600,
+    "蝴蝶模型": 450,
+    "平行四边形": 350,
+    "风筝模型": 400,
+    "梯形": 400,
+    "三角形基础": 500,
+    "三角形边角关系": 450,
+    "等积模型": 450,
+    "鸟头模型": 400,
+    "燕尾模型": 400,
+    "综合几何模型": 200
+  },
+  "difficulty": {
+    "基础": 1729,
+    "提高": 2839,
+    "挑战": 432
+  },
+  "geometry_status": {
+    "determined": 1,
+    "representative": 4999
+  },
+  "normalized_prompts": 94,
+  "largest_prompt_group": 178,
+  "most_frequent_forms": [
+    {
+      "topic": "等积模型",
+      "form": "E在△ABC的边AB上，AE＝N厘米，AB＝N厘米，△ABC面积为N平方厘米。求△AEC面积。",
+      "count": 178
+    },
+    {
+      "topic": "一半模型",
+      "form": "在△ABC中，M为BC中点，△ABC面积＝N cm²。求△ABM面积。",
+      "count": 152
+    },
+    {
+      "topic": "一半模型",
+      "form": "在△ABC中，M、N为BC、AC中点，△ABC面积＝N cm²。求△CMN面积。",
+      "count": 142
+    },
+    {
+      "topic": "三角形基础",
+      "form": "△ABC中，AB＝N厘米，高CD＝N厘米。求面积。",
+      "count": 139
+    },
+    {
+      "topic": "等积模型",
+      "form": "在△ABC中，D在AB上，AD:DB＝N:N，△ADC面积＝N cm²。求△BDC面积。",
+      "count": 139
+    },
+    {
+      "topic": "蝴蝶模型",
+      "form": "梯形ABCD的对角线交于O，AB:CD＝N:N，△CDO面积＝N平方厘米。求△ABO面积。",
+      "count": 127
+    },
+    {
+      "topic": "三角形基础",
+      "form": "△ABC中，AB＝N厘米，面积＝N平方厘米。求AB边上的高CD。",
+      "count": 125
+    },
+    {
+      "topic": "等积模型",
+      "form": "在△ABC中，D在AB上，AD:DB＝N:N，△ADC面积＝N cm²。求△ABC面积。",
+      "count": 115
+    },
+    {
+      "topic": "风筝模型",
+      "form": "凸四边形ABCD的对角线交于O。△BCO＝N，△CDO＝N，△DAO＝N（单位为平方厘米）。求△ABO面积。",
+      "count": 114
+    },
+    {
+      "topic": "鸟头模型",
+      "form": "在△ABC中，M在CB上，N在CA上。CM:CB＝N:N，CN:CA＝N:N，△CMN面积＝N cm²。求△ABC面积。",
+      "count": 114
+    },
+    {
+      "topic": "风筝模型",
+      "form": "凸四边形ABCD的对角线交于O。△ABO＝N，△CDO＝N，△DAO＝N（单位为平方厘米）。求△BCO面积。",
+      "count": 111
+    },
+    {
+      "topic": "鸟头模型",
+      "form": "在△ABC中，M在CB上，N在CA上。CM:CB＝N:N，△CMN面积＝N cm²。连BN，求△CBN面积。",
+      "count": 101
+    },
+    {
+      "topic": "鸟头模型",
+      "form": "在△ABC中，M在CB上，N在CA上。CM:CB＝N:N，CN:CA＝N:N，△ABC面积＝N cm²。求△CMN面积。",
+      "count": 99
+    },
+    {
+      "topic": "燕尾模型",
+      "form": "在△ABC中，D在AB上，P是CD中点，AD:DB＝N:N，△ADC面积＝N cm²。求△PDB面积。",
+      "count": 97
+    },
+    {
+      "topic": "燕尾模型",
+      "form": "在△ABC中，D在AB上，P是CD中点，AD:DB＝N:N，△ADC面积＝N cm²。求△APB面积。",
+      "count": 88
+    }
+  ]
+}

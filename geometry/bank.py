@@ -4,6 +4,7 @@ from itertools import product
 from random import Random
 from .coordinates import area, intersection, midpoint
 from .samples import build_samples, diagram
+from .extension import construct
 
 QUOTAS = {
     "长方形与正方形": 400, "平行四边形": 350, "梯形": 400, "三角形基础": 500,
@@ -26,7 +27,10 @@ def build_problem(group, mode, a, b, c):
     target = ""
     known = ""
     metadata = {}
-    if group == "燕尾模型" and mode >= 8:
+    additional = construct(group, mode, a, b, c) if mode >= 15 else None
+    if additional:
+        points, outline, lines, unit, known, target, answer, question, explanation = additional
+    elif group == "燕尾模型" and mode >= 8:
         points.update(C=(u+2,h), D=(2,h))
         points["P"] = midpoint(points["A"],points["C"]) if mode % 2 else (Fraction(u+2,3),Fraction(h,3))
         lines = [("A","C"),("B","P"),("D","P")]
@@ -455,14 +459,14 @@ def build_problem(group, mode, a, b, c):
                 alternatives=metadata.get("alternatives", []), requiresUnit="答案须带单位" in question,
                 geometryStatus="representative", givens={"description":known},
                 solution=[explanation,f"答案为 {answer} {unit}".strip()],
-                questionSvg=diagram(drawn,outline,notes=("示意图",*notes),**args),
-                answerSvg=diagram(drawn,outline,regions=regions,notes=(*notes,f"答案 {answer} {unit}".strip()),**args))
+                questionSvg=diagram(drawn,outline,notes=("示意图，形状不唯一",*notes),**args),
+                answerSvg=diagram(drawn,outline,regions=regions,notes=("示意图，形状不唯一",*notes,f"答案 {answer} {unit}".strip()),**args))
 
 
 def build_bank():
     result = build_samples()
     seen = {q["question"] for q in result}
-    inputs = list(product(range(3,22),range(2,23),range(2,25),range(15)))
+    inputs = list(product(range(3,22),range(2,23),range(2,25),range(18)))
     Random(5000).shuffle(inputs)
     for group, quota in QUOTAS.items():
         remaining = quota - sum(q["category"] == group for q in result)
@@ -473,7 +477,7 @@ def build_bank():
                 continue
             seen.add(question["question"])
             identifier = len(result)+1
-            if group == "综合几何模型":
+            if group == "综合几何模型" or (mode >= 15 and group in ("燕尾模型","梯形","一半模型")):
                 difficulty = "挑战"
             elif group in ("风筝模型", "蝴蝶模型", "鸟头模型", "燕尾模型", "等积模型", "一半模型") or mode in (2,3):
                 difficulty = "提高"

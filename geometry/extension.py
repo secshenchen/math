@@ -1,0 +1,66 @@
+"""Additional constructions for the areas with few existing exercise types."""
+from fractions import Fraction
+from .coordinates import area, midpoint, intersection
+
+
+def construct(group, mode, a, b, c):
+    width, height = a+b, 2*c
+    p = {"A": (0,0), "B": (width,0), "C": (width,height), "D": (0,height)}
+    outline, segments, unit = "ABCD", [], "cm²"
+    if group == "一半模型":
+        p.update(M=midpoint(p["A"],p["B"]), N=midpoint(p["B"],p["C"]),
+                 P=midpoint(p["C"],p["D"]), Q=midpoint(p["D"],p["A"]))
+        segments = list(zip("MNPQ","NPQM"))
+        known = f"长方形ABCD长{width}厘米，宽{height}厘米，M、N、P、Q依次是四边中点"
+        target = "MNPQ" if mode%2 == 0 else "AMQ"
+        answer = Fraction(width*height, 2 if mode%2 == 0 else 8)
+        prompt = f"求四边形{target}的面积" if target == "MNPQ" else "求△AMQ面积"
+        method = "每个角上的三角形面积都是长方形面积的八分之一"
+    elif group == "平行四边形":
+        p.update(C=(width+a,height), D=(a,height))
+        p["M"] = midpoint(p["A"],p["B"])
+        p["N"] = midpoint(p["C"],p["D"])
+        segments = [("M","N"),("D","M")]
+        known = f"平行四边形ABCD底AB长{width}厘米，高{height}厘米，M、N分别为AB、CD中点"
+        target = "AMND" if mode%2 == 0 else "DMN"
+        answer = Fraction(width*height,2 if target == "AMND" else 4)
+        prompt = f"求四边形{target}的面积" if target == "AMND" else "求△DMN面积"
+        method = "中点连线把平行四边形分成面积相等的两部分，DM再平分左半部分"
+    elif group == "蝴蝶模型":
+        side = height if mode == 16 else width
+        p.update(B=(side,0), C=(side,height), D=(0,height))
+        if mode == 17:
+            p.update(C=(width+a,height),D=(a,height))
+        p["O"] = intersection(p["A"],p["C"],p["B"],p["D"])
+        segments = [("A","C"),("B","D")]
+        shape = {15:"长方形",16:"正方形",17:"平行四边形"}[mode]
+        known = f"{shape}ABCD面积为{side*height}平方厘米，两条对角线交于O"
+        target = {15:"ABO",16:"BCO",17:"CDO"}[mode]
+        answer, prompt = Fraction(side*height,4), f"求△{target}面积"
+        method = "一条对角线平分整图，另一条对角线经过其中点，各小三角形占整图四分之一"
+    elif group == "梯形":
+        p.update(C=(width,height),D=(b,height),B=(width+b,0))
+        p["H"] = (b,0)
+        segments = [("D","H")]
+        known = f"等腰梯形ABCD下底AB长{width+b}厘米，上底CD长{width-b}厘米，高DH为{height}厘米"
+        target, answer, prompt = "ADH", Fraction(b*height,2), "H为D到AB的垂足，求△ADH面积"
+        method = f"两腰等长，两端的水平距离相等，各为({width+b}－{width-b})÷2＝{b}厘米"
+    elif group == "燕尾模型":
+        outline = "ABC"
+        p["C"] = (a,height)
+        p["D"] = (a,0)
+        p["P"] = (a,Fraction(height,3 if mode%2==0 else 4))
+        p["Q"] = midpoint(p["P"],p["C"])
+        segments = [("C","D"),("A","P"),("B","P"),("A","Q"),("B","Q")]
+        divisor = 3 if mode%2==0 else 4
+        known = f"△ABC中D在AB上，P在CD上，DP:DC＝1:{divisor}，Q是PC中点，△ABC面积为{width*c}平方厘米"
+        target = "AQB" if mode < 17 else "ADQ"
+        base_area = width*c if target == "AQB" else a*c
+        if target == "ADQ":
+            known += f"，AD:AB＝{a}:{width}"
+        answer = Fraction(base_area*(divisor+1),2*divisor)
+        prompt = f"求△{target}面积"
+        method = "从底边到Q的高等于原高的(1＋1/分母)÷2，再按底边比例折算"
+    else:
+        return None
+    return p, outline, segments, unit, known, target, answer, f"{known}。{prompt}。", method
