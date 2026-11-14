@@ -362,12 +362,34 @@ def build_problem(group, mode, a, b, c):
     cx, cy = sum(xs)/len(xs), sum(ys)/len(ys)
     for n,(x,y) in drawn.items():
         px,py = 65+(x-min(xs))*scale,185-(y-min(ys))*scale
-        labels.append((px + (-12 if x<cx else 12),py + (16 if y<cy else -7),n))
+        preferred = (-12 if x<cx else 12, 16 if y<cy else -7)
+        options = [preferred, (-12,-8), (12,-8), (-12,17), (12,17),
+                   (-24,5), (24,5), (0,-19), (0,26), (-33,-10), (33,-10)]
+        def usable(dx,dy):
+            tx,ty = px+dx,py+dy
+            return 8 <= tx <= 412 and 16 <= ty <= 214 and all(
+                abs(tx-lx)>=14 or abs(ty-ly)>=18 for lx,ly,_ in labels)
+        dx,dy = next((d for d in options if usable(*d)), preferred)
+        labels.append((px+dx,py+dy,n))
     if target and unit == "cm²" and Fraction(answer) != area([points[n] for n in target]):
         raise ValueError(f"Inconsistent shaded area for {question}")
     answer = answer if isinstance(answer,str) else number(answer)
     # Wrap known conditions into multiple lines under the drawing.
-    notes = tuple(known[i:i+22] for i in range(0,len(known),22))
+    import re
+    clauses = re.split(r"(?<=[，、。])", known)
+    rows = []
+    row = ""
+    for clause in clauses:
+        if row and len(row+clause) > 22:
+            rows.append(row)
+            row = ""
+        while len(clause) > 22:
+            rows.append(clause[:22])
+            clause = clause[22:]
+        row += clause
+    if row:
+        rows.append(row)
+    notes = tuple(rows)
     args = dict(segments=lines,labels=labels)
     regions = [(target,"#bfdbfe")] if target else ()
     if group == "平行四边形" and mode == 14:

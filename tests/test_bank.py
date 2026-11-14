@@ -133,5 +133,10 @@ class BuiltBankTests(unittest.TestCase):
                     self.assertAlmostEqual(y,float(185-(v-min(ys))*scale),delta=.001,msg=str(q["id"]))
                 svg_labels = {label.text for label in root.findall(ns + "text")}
                 self.assertTrue(set(q["outline"]) <= svg_labels,q["id"])
+                positions = [(float(t.attrib["x"]),float(t.attrib["y"]))
+                             for t in root.findall(ns + "text") if t.text in points]
+                for index,(x,y) in enumerate(positions):
+                    self.assertFalse(any(abs(x-u)<13.99 and abs(y-v)<17.99
+                                         for u,v in positions[:index]),q["id"])
                 checked += 1
         self.assertEqual(checked,9990)
