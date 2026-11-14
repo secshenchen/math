@@ -22,7 +22,8 @@ def diagram(points, outline, *, segments=(), regions=(), labels=(), notes=(), eq
     def label(x, y, text, anchor="start"):
         length = sum(16 if ord(char)>255 else 10 for char in text)
         fit = ' textLength="365" lengthAdjust="spacingAndGlyphs"' if anchor == "start" and length > 365 else ""
-        return f'<text x="{x:.3f}" y="{y:.3f}" text-anchor="{anchor}"{fit}>{escape(text)}</text>'
+        halo = ' paint-order="stroke" stroke="white" stroke-width="2.5" stroke-linejoin="round"' if anchor == "middle" else ""
+        return f'<text x="{x:.3f}" y="{y:.3f}" text-anchor="{anchor}"{fit}{halo}>{escape(text)}</text>'
 
     elements = ['<title>几何关系图</title>', '<desc>' + escape("；".join(text for _, _, text in labels) + "；" + "；".join(notes)) + '</desc>']
     elements += [polygon(names, fill, "none") for names, fill in regions]

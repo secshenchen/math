@@ -7,12 +7,12 @@ const read = (key, fallback) => JSON.parse(localStorage.getItem(namespace + key)
 const save = (key, value) => localStorage.setItem(namespace + key, JSON.stringify(value));
 const hex = bytes => Array.from(bytes, n => n.toString(16).padStart(2, "0")).join("");
 let account = null, data, shown = bank, cursor = 0, current;
-const fresh = () => ({version:3, last:1, marks:{}});
+const fresh = () => ({version:4, last:1, marks:{}});
 function migrateProgress(old) {
-  if (old.version === 3) return old;
-  if (old.version === 2) {
-    const retired = new Set(JSON.parse(el("retired").textContent));
-    return {version:3, last:retired.has(old.last) ? 1 : old.last,
+  if (old.version === 4) return old;
+  if (old.version === 2 || old.version === 3) {
+    const retired = new Set(JSON.parse(el(old.version === 2 ? "retired" : "retired3").textContent));
+    return {version:4, last:retired.has(old.last) ? 1 : old.last,
             marks:Object.fromEntries(Object.entries(old.marks).filter(([id]) => !retired.has(Number(id))))};
   }
   if (old.version !== undefined) throw Error("学习记录版本不受支持。");
@@ -35,8 +35,8 @@ async function verifier(password, salt) {
 function activate(name) {
   const previousProgress = read("progress:" + name, fresh());
   data = migrateProgress(previousProgress);
-  if (previousProgress.version === 2) {
-    save("previous-progress-v2:" + name,previousProgress);
+  if ([2,3].includes(previousProgress.version)) {
+    save("previous-progress-v" + previousProgress.version + ":" + name,previousProgress);
   }
   if (previousProgress.version === undefined && !read("previous-progress:" + name,null)) {
     save("previous-progress:" + name,previousProgress);
@@ -226,7 +226,7 @@ for (const id of ["favorite","mastered"]) el(id).onclick = () => { const record 
 el("logout").onclick = exit;
 el("print").onclick = () => window.print();
 el("clear").onclick = () => { if (confirm("清空当前账户的全部学习记录？")) { data = fresh(); persist(); resetFilters(); } };
-el("remove").onclick = () => { if (confirm("删除当前账户及学习记录？")) { localStorage.removeItem(namespace+"profile:"+account); localStorage.removeItem(namespace+"progress:"+account); localStorage.removeItem(namespace+"previous-progress:"+account); localStorage.removeItem(namespace+"previous-progress-v2:"+account); exit(); } };
+el("remove").onclick = () => { if (confirm("删除当前账户及学习记录？")) { localStorage.removeItem(namespace+"profile:"+account); localStorage.removeItem(namespace+"progress:"+account); localStorage.removeItem(namespace+"previous-progress:"+account); localStorage.removeItem(namespace+"previous-progress-v2:"+account); localStorage.removeItem(namespace+"previous-progress-v3:"+account); exit(); } };
 el("download").onclick = () => {
   const url = URL.createObjectURL(new Blob([JSON.stringify(data)],{type:"application/json"}));
   Object.assign(document.createElement("a"),{href:url,download:"geometry-progress.json"}).click();
