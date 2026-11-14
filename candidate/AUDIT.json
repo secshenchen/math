@@ -16,15 +16,15 @@
     "综合几何模型": 200
   },
   "difficulty": {
-    "基础": 1618,
-    "提高": 2902,
+    "基础": 1584,
+    "提高": 2936,
     "挑战": 480
   },
   "geometry_status": {
     "determined": 201,
     "representative": 4799
   },
-  "normalized_prompts": 94,
+  "normalized_prompts": 96,
   "largest_prompt_group": 157,
   "most_frequent_forms": [
     {

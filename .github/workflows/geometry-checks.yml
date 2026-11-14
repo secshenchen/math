@@ -24,6 +24,7 @@ jobs:
       - run: node --check web/app.js && node tests/test_grading.cjs
       - run: npm install --no-save --package-lock=false playwright@1.58.2
       - run: npx playwright install --with-deps chromium webkit
+      - run: node tests/svg_layout.cjs
       - run: node tests/browser.cjs
       - run: node tests/browser.cjs
         env:
