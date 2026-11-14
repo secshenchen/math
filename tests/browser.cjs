@@ -49,6 +49,8 @@ async function main() {
     assert.ok(await input("drawing").locator("svg title").textContent());
     const graphic = input("drawing").locator("svg");
     assert.equal(await graphic.getAttribute("role"),"img");
+    assert.match(await graphic.ariaSnapshot(), /img "几何关系图"/);
+    assert.match(await input("response").ariaSnapshot(), /textbox "答案"/);
     assert.equal(await input("solutionSvg").locator("svg").count(),0);
     await page.getByText("展开章节", {exact:true}).click();
     await input("chapters").getByRole("button", {name:/长方形与正方形/}).click();

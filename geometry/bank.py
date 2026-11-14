@@ -511,4 +511,16 @@ def build_bank():
         size, variant = divmod(offset, 2)
         question = build_problem("三角形边角关系", 18+variant, 3+size, 2, 2)
         result[index] = dict(question, id=result[index]["id"], difficulty="提高")
+    for group in ("长方形与正方形", "风筝模型", "等积模型"):
+        slots = [i for i,q in enumerate(result) if q["category"] == group and q["id"] > 5]
+        inputs = iter(product(range(3,22),range(2,23),range(2,25),range(20,22)))
+        for index in slots[3::6]:
+            for a,b,c,mode in inputs:
+                question = build_problem(group,mode,a,b,c)
+                if question["question"] not in seen:
+                    seen.add(question["question"])
+                    result[index] = dict(question,id=result[index]["id"],difficulty="提高")
+                    break
+            else:
+                raise ValueError(f"Not enough distinct prompts: {group}")
     return result

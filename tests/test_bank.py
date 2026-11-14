@@ -70,7 +70,11 @@ class BuiltBankTests(unittest.TestCase):
                     self.assertEqual(answer, expected)
                     checked += 1
                     continue
-                if q["answerType"] == "ratio":
+                if category == "风筝模型" and mode >= 20:
+                    from math import dist
+                    segment = "AC" if mode == 20 else "BD"
+                    expected = dist(p[segment[0]],p["O"])/dist(p["O"],p[segment[1]])
+                elif q["answerType"] == "ratio":
                     upper = triangulated([p[n] for n in "ABO"])
                     lower = triangulated([p[n] for n in "CDO"])
                     expected = upper/lower
@@ -166,7 +170,7 @@ class BuiltBankTests(unittest.TestCase):
         self.assertEqual(len(mapping),5000)
         self.assertEqual(mapping[:5],[1,2,3,4,5])
         self.assertIn(0,mapping)
-        self.assertGreaterEqual(sum(bool(new) for new in mapping), 4500)
+        self.assertGreaterEqual(sum(bool(new) for new in mapping), 4250)
         self.assertTrue(all(not new or old == new for old,new in enumerate(mapping,1)))
         for key,new in zip(previous,mapping):
             if new:

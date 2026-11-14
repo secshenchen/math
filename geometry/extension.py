@@ -8,7 +8,37 @@ def construct(group, mode, a, b, c):
     width, height = a+b, 2*c
     p = {"A": (0,0), "B": (width,0), "C": (width,height), "D": (0,height)}
     outline, segments, unit = "ABCD", [], "cm²"
-    if group == "三角形边角关系" and mode >= 18:
+    if mode >= 20 and group == "长方形与正方形":
+        # A rectangle split into a square and a smaller rectangle.
+        p.update(B=(width,0), C=(width,a), D=(0,a), E=(a,0), F=(a,a))
+        segments = [("E","F")]
+        if mode == 20:
+            known = f"长方形ABCD的长为{width}厘米，宽为{a}厘米，切去正方形AEFD"
+            target, answer, prompt = "EBCF", a*b, "求剩下长方形的面积"
+            method = f"切去的正方形边长等于原宽。剩下的长为{width}－{a}＝{b}厘米，面积为{a}×{b}"
+        else:
+            known = f"长方形ABCD的长为{width}厘米，宽为{a}厘米，分为正方形AEFD与长方形EBCF"
+            target, answer, prompt = "AEFD", a*a, "求正方形的面积"
+            method = f"正方形边长等于AD，即{a}厘米，面积为{a}×{a}"
+    elif mode >= 20 and group == "风筝模型":
+        p.update(C=(width+a,height),D=(1,3*c))
+        p["O"] = intersection(p["A"],p["C"],p["B"],p["D"])
+        segments = [("A","C"),("B","D")]
+        left = area([p[n] for n in "ABO"])
+        right = area([p[n] for n in ("BCO" if mode == 20 else "DAO")])
+        fraction = left/right
+        known = f"凸四边形ABCD的对角线交于O，△ABO与△{'BCO' if mode == 20 else 'DAO'}的面积之比为{fraction.numerator}:{fraction.denominator}"
+        target, unit, answer = "", "", f"{fraction.numerator}:{fraction.denominator}"
+        prompt = "求AO:OC" if mode == 20 else "求BO:OD"
+        method = "两个三角形有共同的高，面积比等于相应的对角线分段之比"
+    elif mode >= 20 and group == "等积模型":
+        p.update(C=(a,height),D=(a,3*c),E=(a,0))
+        outline = "ABD"
+        segments = [("A","C"),("B","C"),("D","E")]
+        known = f"C、D在AB同侧且在同一条垂线DE上，CE:DE＝2:3，△ABD面积为{Fraction(width*3*c,2)}平方厘米"
+        target, answer, prompt = "ABC", width*c, "求△ABC的面积"
+        method = "两个三角形共用AB，面积之比等于垂线上的高之比2:3"
+    elif group == "三角形边角关系" and mode >= 18:
         n = a + 2
         outline = "".join(chr(65+i) for i in range(n))
         p = {name: (cos(i*tau/n),sin(i*tau/n)) for i,name in enumerate(outline)}
