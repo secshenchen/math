@@ -77,6 +77,8 @@ class BuiltBankTests(unittest.TestCase):
                     polygon = [p[n] for n in "EBCDGF"]
                     expected = (sum(abs(x-u)+abs(y-v) for (x,y),(u,v) in zip(polygon,polygon[1:]+polygon[:1]))
                                 if mode == 13 else cutout / triangulated([p[n] for n in "ABCD"]))
+                elif category == "鸟头模型" and mode % 5 == 3:
+                    expected = triangulated([p[n] for n in "CMN"])/triangulated([p[n] for n in "ABC"])
                 elif category == "三角形边角关系":
                     angle_b = degrees(atan2(float(height), float(base)))
                     expected = 90 if mode<8 and mode%2==0 else 90-angle_b if mode>=8 or mode>=4 else angle_b

@@ -289,10 +289,33 @@ def build_problem(group, mode, a, b, c):
                 r,s = mode%3+2,mode//3+2
                 points["M"] = (Fraction(u,r)+Fraction(r-1,r)*a,Fraction(r-1,r)*h)
                 points["N"] = (Fraction(s-1,s)*a,Fraction(s-1,s)*h)
+                small = total/(r*s)
+                target, answer = "CMN", small
                 known = f"CM:CB＝1:{r}，CN:CA＝1:{s}，△ABC面积＝{number(total)} cm²"
-                target, answer = "CMN", total/(r*s)
-                explanation = "两角共用夹角。先固定CN换算CM与CB，再固定CB换算CN与CA"
+                explanation = "两三角形共用夹角。先固定CN换算CM与CB，再固定CB换算CN与CA"
                 question = f"在△ABC中，M在CB上，N在CA上。{known}。求△CMN面积。"
+                if mode % 5 == 1:
+                    target, answer = "ABC", total
+                    known = f"CM:CB＝1:{r}，CN:CA＝1:{s}，△CMN面积＝{number(small)} cm²"
+                    question = f"在△ABC中，M在CB上，N在CA上。{known}。求△ABC面积。"
+                    explanation = f"沿两条射线把两边分别放大{r}倍和{s}倍，面积依次乘{r}和{s}"
+                elif mode % 5 == 2:
+                    lines.append(("B","N"))
+                    target, answer = "CBN", total/s
+                    known = f"CM:CB＝1:{r}，△CMN面积＝{number(small)} cm²"
+                    question = f"在△ABC中，M在CB上，N在CA上。{known}。连BN，求△CBN面积。"
+                    explanation = "△CMN与△CBN的底边同在CB上，从N到CB的高相同"
+                elif mode % 5 == 3:
+                    unit, answer = "", Fraction(1,r*s)
+                    known = f"CM:CB＝1:{r}，CN:CA＝1:{s}"
+                    question = f"在△ABC中，M在CB上，N在CA上。{known}。△CMN面积占△ABC面积的几分之几？"
+                    explanation = "两边分两次用同高面积比换算，将两个边长比相乘"
+                elif mode % 5 == 4:
+                    lines.append(("A","M"))
+                    target, answer = "AMN", total*(s-1)/(r*s)
+                    known = f"CN:CA＝1:{s}，△CMN面积＝{number(small)} cm²"
+                    question = f"在△ABC中，M在CB上，N在CA上。{known}。连AM，求△AMN面积。"
+                    explanation = "从M到CA的高相同，△AMN与△CMN的面积之比等于AN:CN"
             else:
                 target, answer = "CMN", total/4
                 explanation = "中位线平行于底边，相似边长比1:2，面积比1:4"
