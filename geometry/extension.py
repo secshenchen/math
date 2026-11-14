@@ -8,6 +8,53 @@ def construct(group, mode, a, b, c):
     width, height = a+b, 2*c
     p = {"A": (0,0), "B": (width,0), "C": (width,height), "D": (0,height)}
     outline, segments, unit = "ABCD", [], "cm²"
+    if mode >= 22:
+        if group == "一半模型":
+            p.update(C=(width+a,height),D=(a,height))
+            p["M"] = midpoint(p["A"],p["B"])
+            p["N"] = midpoint(p["D"],p["C"])
+            p["P"] = intersection(p["A"],p["C"],p["M"],p["N"])
+            segments = [("A","C"),("M","N"),("B","P")]
+            known = f"平行四边形ABCD面积为{width*height}平方厘米，M、N分别是AB、CD的中点，AC与MN交于P"
+            target, answer = ("ABP",Fraction(width*height,4)) if mode==22 else ("MBP",Fraction(width*height,8))
+            prompt = f"求△{target}面积"
+            method = "MN平行于AD，且M是AB中点，故P为AC中点。P到AB的高是原高的一半；再按所求三角形的底边计算。"
+        elif group == "三角形基础":
+            outline = "ABC"
+            if mode == 22:
+                p.update(B=(2*a,0),C=(a,height))
+                known = f"等腰三角形ABC以AB为底，AB为{2*a}厘米，高CD为{height}厘米"
+                p["D"] = (a,0)
+                segments = [("C","D")]
+                target, answer, prompt = "ACD",a*c,"D是高的垂足，求△ACD面积"
+                method = "等腰三角形的顶角平分线、底边高和底边中线重合，所以AD等于AB的一半。"
+            else:
+                p.update(C=(-a,height),D=(-a,0))
+                segments = [("C","D"),("D","A")]
+                known = f"△ABC中，高CD的垂足D在BA的延长线上，DA为{a}厘米、AB为{width}厘米、CD为{height}厘米"
+                target, answer, prompt = "ABC",width*c,"用△BCD与△ACD的面积差求△ABC面积"
+                method = f"两块三角形共用高{height}，底分别是{width+a}和{a}，两面积相减得到△ABC的面积。"
+        elif group == "鸟头模型":
+            p.update(A=(-a,0), B=(2*a,0), C=(0,height), D=(0,-3*c), O=(0,0))
+            outline = "ACBD"
+            segments = [("A","B"),("C","D")]
+            known = f"AB与CD交于O，AO:OB＝1:2，CO:OD＝2:3，△AOC面积为{a*c}平方厘米"
+            target,answer = ("BOD",3*a*c) if mode == 22 else ("AOD",Fraction(3*a*c,2))
+            prompt = f"求△{target}面积"
+            method = ("先按AO:OB把△AOC面积扩大为△BOC的面积，再按CO:OD换算△BOD。"
+                      if mode == 22 else "△AOC与△AOD共用底AO，C与D到AB的高之比等于CO:OD。")
+        elif group == "等积模型":
+            p.update(C=(width+a,height),D=(a,height))
+            p["E"] = midpoint(p["A"],p["D"])
+            p["F"] = midpoint(p["B"],p["C"])
+            segments = [("E","F"),("A","F"),("D","F")]
+            known = f"平行四边形ABCD面积为{width*height}平方厘米，E、F分别是AD、BC的中点"
+            target, answer = ("ADF",Fraction(width*height,2)) if mode==22 else ("AEF",Fraction(width*height,4))
+            prompt = f"求△{target}面积"
+            method = "以AD为底，F和B到AD的高相同，所以△ADF与△ADB等积。若用AE为底，其底边又减半。"
+        else:
+            return None
+        return p, outline, segments, unit, known, target, answer, f"{known}。{prompt}。", method
     if mode >= 20 and group == "长方形与正方形":
         # A rectangle split into a square and a smaller rectangle.
         p.update(B=(width,0), C=(width,a), D=(0,a), E=(a,0), F=(a,a))
