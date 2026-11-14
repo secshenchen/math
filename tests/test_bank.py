@@ -42,6 +42,12 @@ class BuiltBankTests(unittest.TestCase):
         self.assertEqual(len({q["subcategory"] for q in added}), 18)
         self.assertEqual(len({q["category"] for q in added}), 8)
 
+    def test_equal_area_height_ratio_specifies_the_foot(self):
+        exercises = [q for q in self.bank if q["category"] == "等积模型" and q.get("modelMode") in (20,21)]
+        self.assertEqual(len(exercises),65)
+        for q in exercises:
+            self.assertIn("E是DE在AB上的垂足",q["question"],q["id"])
+
     def test_checked_in_offline_file_contains_same_exercises_as_build(self):
         self.assertEqual(Path("index.html").read_bytes(), Path("candidate/offline.html").read_bytes())
         built = Path("candidate/index.html").read_text(encoding="utf-8")

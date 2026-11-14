@@ -146,7 +146,7 @@ def construct(group, mode, a, b, c):
         p.update(C=(a,height),D=(a,3*c),E=(a,0))
         outline = "ABD"
         segments = [("A","C"),("B","C"),("D","E")]
-        known = f"C、D在AB同侧且在同一条垂线DE上，CE:DE＝2:3，△ABD面积为{Fraction(width*3*c,2)}平方厘米"
+        known = f"C、D在AB同侧且在同一条垂线DE上，E是DE在AB上的垂足，CE:DE＝2:3，△ABD面积为{Fraction(width*3*c,2)}平方厘米"
         target, answer, prompt = "ABC", width*c, "求△ABC的面积"
         method = "两个三角形共用AB，面积之比等于垂线上的高之比2:3"
     elif group == "三角形边角关系" and mode >= 18:
