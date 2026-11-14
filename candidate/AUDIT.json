@@ -21,8 +21,8 @@
     "挑战": 432
   },
   "geometry_status": {
-    "determined": 1,
-    "representative": 4999
+    "determined": 171,
+    "representative": 4829
   },
   "normalized_prompts": 94,
   "largest_prompt_group": 178,

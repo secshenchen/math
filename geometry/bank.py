@@ -452,15 +452,17 @@ def build_problem(group, mode, a, b, c):
         regions = [("ABO","#bfdbfe"),("CDO","#fde68a")]
     if ":" in answer and group == "蝴蝶模型":
         regions.append(("CDO","#fde68a"))
+    determined = additional and (group in ("一半模型","梯形"))
+    geometry_note = () if determined else ("示意图，形状不唯一",)
     return dict(category=group, modelMode=mode,
                 construction={n:[str(value) for value in pair] for n,pair in drawn.items()},
                 outline=outline, target=target, subcategory=explanation if len(explanation)<25 else question.split("求")[-1].strip("。"),
                 question=question, answer=answer, unit=unit, answerType=metadata.get("answerType", "ratio" if ":" in answer else "number"),
                 alternatives=metadata.get("alternatives", []), requiresUnit="答案须带单位" in question,
-                geometryStatus="representative", givens={"description":known},
+                geometryStatus="determined" if determined else "representative", givens={"description":known},
                 solution=[explanation,f"答案为 {answer} {unit}".strip()],
-                questionSvg=diagram(drawn,outline,notes=("示意图，形状不唯一",*notes),**args),
-                answerSvg=diagram(drawn,outline,regions=regions,notes=("示意图，形状不唯一",*notes,f"答案 {answer} {unit}".strip()),**args))
+                questionSvg=diagram(drawn,outline,notes=(*geometry_note,*notes),**args),
+                answerSvg=diagram(drawn,outline,regions=regions,notes=(*geometry_note,*notes,f"答案 {answer} {unit}".strip()),**args))
 
 
 def build_bank():
