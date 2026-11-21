@@ -2,12 +2,25 @@
 from fractions import Fraction
 from html import escape
 from math import hypot
+import re
 
 from .coordinates import area, intersection, midpoint
 
 
+def wrap_notes(text, width=22):
+    rows, row = [], ""
+    for token in re.findall(r"\d+(?:[./:]\d+)*(?:平方厘米|厘米|cm²|cm|°|度)?|[A-Za-z]+|.",text):
+        if row and len(row+token)>width and token not in "，。；、：？！":
+            rows.append(row)
+            row = ""
+        row += token
+    if row:
+        rows.append(row)
+    return tuple(rows)
+
+
 def diagram(points, outline, *, segments=(), regions=(), labels=(), notes=(), equal_pairs=()):
-    width, height = 420, max(290, 229 + 23 * len(notes))
+    width, height = 420, max(312, 252 + 28 * len(notes))
     xs, ys = zip(*points.values())
     scale = min(290 / (max(xs) - min(xs)), 140 / (max(ys) - min(ys)))
 
@@ -48,7 +61,7 @@ def diagram(points, outline, *, segments=(), regions=(), labels=(), notes=(), eq
                     'stroke="#26334a" stroke-width="2" class="equal-length"/>'
                 )
     elements.extend(label(x, y, text, "middle") for x, y, text in labels)
-    elements.extend(label(18, 220 + 23 * i, text) for i, text in enumerate(notes))
+    elements.extend(label(18, 242 + 28 * i, text) for i, text in enumerate(notes))
     return f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width} {height}" role="img" font-family="sans-serif" font-size="16" fill="#172944">' + "".join(elements) + '</svg>'
 
 
