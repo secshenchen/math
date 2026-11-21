@@ -1,5 +1,7 @@
 # Math Geometry｜几何模型专项练习
 
+2026-11-21 本地验收修复状态见 [验收记录](docs/ACCEPTANCE-2026-11-21.md)。新修改尚未发布；以下链接指向现有线上版本。当前题库统计、逐图自动记录和人工审校缺口分别见 candidate/AUDIT.json 与 audit/，不能将字段存在或自动通过等同全部人工验收完成。
+
 [打开 GitHub Pages](https://secshenchen.github.io/math/) · [下载离线 HTML](https://raw.githubusercontent.com/secshenchen/math/main/index.html)
 
 12 个专题、5000 道题。每题包括题目图和答案图，题库内嵌共 10000 份 SVG。支持本地账户、答题批改、解析、随机出题、错题重练、收藏和打印。

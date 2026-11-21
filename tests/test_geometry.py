@@ -8,6 +8,43 @@ from geometry.coordinates import area, intersection, midpoint
 
 
 class GeometryTests(unittest.TestCase):
+    def test_known_midline_condition_is_visible_in_standalone_svg(self):
+        from geometry.bank import build_problem
+        q = build_problem("梯形",8,7,5,4)
+        self.assertIn("中点","".join(ET.fromstring(q["questionSvg"]).itertext()))
+
+    def test_wrapping_never_splits_numeric_values_and_units(self):
+        from geometry.samples import wrap_notes
+        for token in ("2457/11平方厘米","180°","2925/34","2:3","12.25cm²"):
+            rows = wrap_notes("已知条件"*5+token+"。继续推理。")
+            self.assertTrue(any(token in row for row in rows),rows)
+            self.assertEqual("".join(rows),"已知条件"*5+token+"。继续推理。")
+
+    def test_answer_diagram_contains_the_reasoning_not_just_result(self):
+        from geometry.bank import build_problem
+        q = build_problem("三角形边角关系",2,7,5,4)
+        self.assertIn(q["solution"][0],"".join(ET.fromstring(q["answerSvg"]).itertext()))
+
+    def test_determined_triangle_and_rectangle_labels(self):
+        from geometry.bank import build_problem
+        for group,modes in (("长方形与正方形",range(15)),("三角形基础",(2,5,8,9,10,11,12,13,14,32,33))):
+            for mode in modes:
+                q = build_problem(group,mode,7,5,4)
+                self.assertEqual(q["geometryStatus"],"determined",(group,mode))
+                self.assertNotIn("形状不唯一",q["questionSvg"],(group,mode))
+        q = build_problem("三角形基础",2,7,5,4)
+        self.assertIn("D在边AB上",q["question"])
+
+    def test_midpoint_constructions_state_and_mark_the_known_halves(self):
+        from geometry.bank import build_problem
+        for mode, pairs in ((10,1),(11,2),(12,1),(13,1),(14,2)):
+            q = build_problem("一半模型",mode,7,5,4)
+            for key in ("questionSvg","answerSvg"):
+                root = ET.fromstring(q[key])
+                self.assertIn("中点","".join(root.itertext()),mode)
+                ticks = root.findall("{http://www.w3.org/2000/svg}line[@class='equal-length']")
+                self.assertEqual(len(ticks),sum(2*n for n in range(1,pairs+1)),mode)
+
     def test_exact_coordinates(self):
         self.assertEqual(midpoint((0, 0), (5, 3)), (Fraction(5, 2), Fraction(3, 2)))
         self.assertEqual(intersection((0, 0), (5, 5), (0, 5), (5, 0)), (Fraction(5, 2),) * 2)

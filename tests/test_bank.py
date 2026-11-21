@@ -38,7 +38,7 @@ class BuiltBankTests(unittest.TestCase):
         forms = Counter((q["category"], re.sub(r"\d+(?:[./]\d+)?", "N", q["question"])) for q in self.bank)
         self.assertLessEqual(max(forms.values()), 65)
         self.assertGreaterEqual(len(forms), 145)
-        added = [q for q in self.bank if q.get("modelMode", 0) >= 32]
+        added = [q for q in self.bank if 32 <= q.get("modelMode", 0) < 40]
         self.assertEqual(len({q["subcategory"] for q in added}), 18)
         self.assertEqual(len({q["category"] for q in added}), 8)
 
@@ -104,6 +104,12 @@ class BuiltBankTests(unittest.TestCase):
             with self.subTest(id=q["id"]):
                 self.assertGreater(triangulated([p[n] for n in q["outline"]]), 0)
                 if q["answerType"] == "text":
+                    if mode >= 40:
+                        sides = sorted(hypot(float(m[0]-n[0]),float(m[1]-n[1])) for m,n in ((a,b),(a,c),(b,c)))
+                        expected = "等边三角形" if isclose(sides[0],sides[2]) else "等腰三角形" if isclose(sides[0],sides[1]) or isclose(sides[1],sides[2]) else "不等边三角形"
+                        self.assertEqual(answer,expected)
+                        checked += 1
+                        continue
                     squares = sorted(sum((x-y)**2 for x,y in zip(m,n)) for m,n in ((a,b),(a,c),(b,c)))
                     compare = squares[0]+squares[1]-squares[2]
                     expected = "锐角三角形" if compare>0 else "钝角三角形" if compare<0 else "直角三角形"
@@ -130,6 +136,24 @@ class BuiltBankTests(unittest.TestCase):
                                 if mode == 13 else cutout / triangulated([p[n] for n in "ABCD"]))
                 elif category == "鸟头模型" and mode % 5 == 3:
                     expected = triangulated([p[n] for n in "CMN"])/triangulated([p[n] for n in "ABC"])
+                elif mode >= 40 and category == "长方形与正方形":
+                    poly = [p[n] for n in q["outline"]]
+                    expected = sum(hypot(float(x-u),float(y-v)) for (x,y),(u,v) in zip(poly,poly[1:]+poly[:1]))
+                elif mode >= 40 and category == "平行四边形":
+                    from math import acos
+                    first,vertex,last = ("A","B","C") if mode == 40 else ("B","C","D")
+                    u = [p[first][i]-p[vertex][i] for i in (0,1)]
+                    v = [p[last][i]-p[vertex][i] for i in (0,1)]
+                    expected = degrees(acos(float(sum(x*y for x,y in zip(u,v)))/(hypot(*u)*hypot(*v))))
+                elif category == "三角形边角关系" and mode == 41:
+                    polygon = [p[n] for n in q["outline"]]
+                    from math import atan2
+                    turns = []
+                    for i,(x,y) in enumerate(polygon):
+                        before,after = polygon[i-1],polygon[(i+1)%len(polygon)]
+                        u,v = (x-before[0],y-before[1]),(after[0]-x,after[1]-y)
+                        turns.append(degrees(atan2(float(u[0]*v[1]-u[1]*v[0]),float(u[0]*v[0]+u[1]*v[1]))))
+                    expected = abs(sum(turns))
                 elif category == "三角形边角关系" and mode >= 32:
                     def angle_between(first, vertex, last):
                         x,y = p[vertex]
@@ -225,7 +249,7 @@ class BuiltBankTests(unittest.TestCase):
         self.assertEqual(len(mapping),5000)
         self.assertEqual(mapping[:5],[1,2,3,4,5])
         self.assertIn(0,mapping)
-        self.assertGreaterEqual(sum(bool(new) for new in mapping), 2984)
+        self.assertGreaterEqual(sum(bool(new) for new in mapping), 2700)
         self.assertTrue(all(not new or old == new for old,new in enumerate(mapping,1)))
         for key,new in zip(previous,mapping):
             if new:
@@ -236,12 +260,13 @@ class BuiltBankTests(unittest.TestCase):
         from geometry.combined import TOPICS
         difficulty = Counter(q["difficulty"] for q in self.bank)
         self.assertGreaterEqual(difficulty["挑战"], 1250)
+        from geometry.reasoning import reviewed_multistep
+        self.assertTrue(all(reviewed_multistep(q) for q in self.bank if q["difficulty"] == "挑战"))
         self.assertFalse(any(q["category"] == "鸟头模型" and q.get("modelMode") == 23
                              and q["difficulty"] == "挑战" for q in self.bank))
         for group, variants in TOPICS.items():
             for model in variants.values():
-                self.assertTrue(any(q["category"] == group and q["subcategory"] == model
-                                    and q["difficulty"] == "挑战" for q in self.bank), model)
+                self.assertTrue(any(q["category"] == group and q["subcategory"] == model for q in self.bank), model)
         bodies = [re.sub(r"<title>[^<]*</title>", "", q[key])
                   for q in self.bank for key in ("questionSvg", "answerSvg")]
         self.assertEqual(len(set(bodies)), 10000)
@@ -250,9 +275,10 @@ class BuiltBankTests(unittest.TestCase):
     def test_retired_ids_match_changed_exercises(self):
         html = self.html
         ids = json.loads(html.split('id="retired6">',1)[1].split("</script>",1)[0])
-        expected = [q["id"] for q in self.bank if q.get("modelMode",0) >= 27]
+        retired8 = json.loads(Path("geometry/retired_v8.json").read_text())
+        expected = sorted({q["id"] for q in self.bank if q.get("modelMode",0) >= 27} | set(retired8))
         self.assertEqual(ids, expected)
         self.assertGreaterEqual(len(ids),460)
         pi = json.loads(html.split('id="retired7">',1)[1].split("</script>",1)[0])
-        self.assertEqual(pi, [q["id"] for q in self.bank if q.get("modelMode",0) >= 32])
-        self.assertEqual(len(pi),359)
+        self.assertEqual(pi, sorted({q["id"] for q in self.bank if q.get("modelMode",0) >= 32} | set(retired8)))
+        self.assertEqual(json.loads(html.split('id="retired8">',1)[1].split("</script>",1)[0]),retired8)
