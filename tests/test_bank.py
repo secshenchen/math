@@ -218,6 +218,13 @@ class BuiltBankTests(unittest.TestCase):
             scale = min(Fraction(290,max(xs)-min(xs)), Fraction(140,max(ys)-min(ys)))
             for field in ("questionSvg","answerSvg"):
                 root = ET.fromstring(q[field])
+                projected = [(float(65+(x-min(xs))*scale),float(185-(y-min(ys))*scale)) for x,y in points.values()]
+                for line in root.findall(ns + "line"):
+                    if line.attrib.get("class") == "equal-length":
+                        continue
+                    for end in ("1","2"):
+                        x,y = float(line.attrib["x"+end]),float(line.attrib["y"+end])
+                        self.assertTrue(any(abs(x-u)<=.002 and abs(y-v)<=.002 for u,v in projected),(q["id"],field,"auxiliary endpoint"))
                 shape = root.findall(ns + "polygon")[-1]
                 coordinates = [tuple(map(float,pair.split(","))) for pair in shape.attrib["points"].split()]
                 self.assertEqual(len(coordinates),len(q["outline"]),q["id"])

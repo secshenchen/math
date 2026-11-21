@@ -62,6 +62,13 @@ async function main() {
     assert.match(await input("response").ariaSnapshot(), /textbox "答案"/);
     await auditAccessibility();
     assert.equal(await input("solutionSvg").locator("svg").count(),0);
+    await input("search").fill("434");
+    assert.doesNotMatch(await input("problemStatus").textContent(),/660|先求高|再计算/);
+    const classificationId = await page.evaluate(() => JSON.parse(document.getElementById("bank").textContent).find(q => q.answerType === "text" && q.modelMode >= 40).id);
+    await input("search").fill(String(classificationId));
+    assert.match(await input("problemStatus").textContent(),/^图形分类/);
+    assert.doesNotMatch(await input("problemStatus").textContent(),/等边|等腰|不等边/);
+    await input("search").fill("");
     const topics = await input("category").locator("option").evaluateAll(nodes => nodes.map(n => n.value).filter(Boolean));
     for (const category of topics) {
       await input("category").selectOption(category);

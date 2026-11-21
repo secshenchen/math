@@ -135,7 +135,7 @@ const formulas = {
 };
 function showProblemStatus(record) {
   el("problemStatus").textContent = [
-    current.subcategory,
+    current.answerType === "text" ? "图形分类" : current.subcategory,
     record.correct === true ? "已答对" : record.correct === false ? "待重练" : "未作答",
     record.mastered ? "已掌握" : ""
   ].filter(Boolean).join(" · ");

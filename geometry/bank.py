@@ -466,7 +466,7 @@ def build_problem(group, mode, a, b, c):
     return dict(category=group, modelMode=mode,
                 construction={n:[f"{value:.12f}" if isinstance(value,float) else str(value) for value in pair]
                               for n,pair in drawn.items()},
-                outline=outline, target=target, subcategory=CURRICULUM[group][mode] if mode >= 40 else MODELS[group][mode-32] if mode >= 32 else TOPICS.get(group,{}).get(mode) or (explanation if len(explanation)<25 else question.split("求")[-1].strip("。")),
+                outline=outline, target=target, subcategory=CURRICULUM[group][mode] if mode >= 40 else MODELS[group][mode-32] if mode >= 32 else TOPICS.get(group,{}).get(mode) or question.split("求")[-1].strip("。"),
                 question=question, answer=answer, unit=unit, answerType=metadata.get("answerType", "ratio" if ":" in answer else "number"),
                 alternatives=metadata.get("alternatives", []), requiresUnit="答案须带单位" in question,
                 geometryStatus="determined" if determined else "representative", givens={"description":known},
