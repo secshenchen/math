@@ -3,10 +3,12 @@ from fractions import Fraction
 from itertools import product
 from random import Random
 from .coordinates import area, intersection, midpoint
-from .samples import build_samples, diagram
+from .samples import build_samples, diagram, wrap_notes
 from .extension import construct
 from .combined import TOPICS, construct_combined
 from .varied import MODELS, construct_varied
+from .curriculum import MODELS as CURRICULUM, construct_curriculum
+from .reasoning import reviewed_multistep
 
 QUOTAS = {
     "长方形与正方形": 400, "平行四边形": 350, "梯形": 400, "三角形基础": 500,
@@ -29,11 +31,14 @@ def build_problem(group, mode, a, b, c):
     target = ""
     known = ""
     metadata = {}
-    additional = (construct_varied(group,mode,a,b,c) if mode >= 32
+    equal_pairs = ()
+    additional = (construct_curriculum(group,mode,a,b,c) if mode >= 40 else construct_varied(group,mode,a,b,c) if mode >= 32
                   else construct_combined(group,mode,a,b,c) if mode >= 27
                   else construct(group,mode,a,b,c) if mode >= 15 else None)
     if additional:
         points, outline, lines, unit, known, target, answer, question, explanation = additional
+        if group == "三角形基础" and mode >= 40:
+            metadata = {"answerType":"text", "alternatives":[answer.removesuffix("三角形")]}
     elif group == "燕尾模型" and mode >= 8:
         points.update(C=(u+2,h), D=(2,h))
         points["P"] = midpoint(points["A"],points["C"]) if mode % 2 else (Fraction(u+2,3),Fraction(h,3))
@@ -59,18 +64,24 @@ def build_problem(group, mode, a, b, c):
         points["P"] = midpoint(points["B"],points["C"])
         known = f"梯形ABCD中AB∥CD，AB＝{u}厘米，CD＝{top}厘米，高为{h}厘米"
         if mode == 12:
+            equal_pairs = ((("A","M"),("M","B")),)
             lines = [("D","M")]
             question = f"{known}，M为AB中点。求△ADM面积。"
+            known += "，M为AB中点"
             target, answer = "ADM", Fraction(u*h,4)
             explanation = "以AM为底，高与梯形相同，AM是AB的一半"
         elif mode == 13:
+            equal_pairs = ((("A","N"),("N","D")),)
             lines = [("B","N")]
             question = f"{known}，N为AD中点。求△ABN面积。"
+            known += "，N为AD中点"
             target, answer = "ABN", Fraction(u*h,4)
             explanation = "N到AB的距离是梯形高的一半"
         else:
+            equal_pairs = ((("A","N"),("N","D")),(("B","P"),("P","C")))
             lines = [("N","P")]
             question = f"{known}，N、P分别是两腰中点。求梯形ABPN面积。"
+            known += "，N、P分别为AD、BC的中点"
             target, answer = "ABPN", Fraction((3*u+top)*h,8)
             explanation = "中位线NP等于两底和的一半，下半梯形的高等于原高的一半"
     elif group == "长方形与正方形" and 12 <= mode <= 14:
@@ -131,11 +142,15 @@ def build_problem(group, mode, a, b, c):
         known = f"平行四边形ABCD面积为{u*h}平方厘米"
         if mode == 10:
             question = f"{known}，M为AB中点。求△ADM面积。"
+            known += "，M为AB中点"
+            equal_pairs = ((("A","M"),("M","B")),)
             target, answer = "ADM", Fraction(u*h,4)
             lines = [("D","M")]
             explanation = "AM是AB的一半，△ADM的高与平行四边形的高相同"
         else:
             question = f"{known}，M为AB中点，N为BC中点。求△BMN面积。"
+            known += "，M为AB中点，N为BC中点"
+            equal_pairs = ((("A","M"),("M","B")),(("B","N"),("N","C")))
             target, answer = "BMN", Fraction(u*h,8)
             lines = [("M","N")]
             explanation = "△ABC占整图一半，△BMN与△BAC相似，面积是它的四分之一"
@@ -343,7 +358,7 @@ def build_problem(group, mode, a, b, c):
                 known, answer, unit = f"AB＝{u}厘米，面积＝{number(total)}平方厘米", h, "cm"
                 question, explanation = f"△ABC中，{known}。求AB边上的高CD。", f"{number(total)}×2÷{u}"
             else:
-                known, answer, target = f"AD＝{a}厘米，DB＝{b}厘米，CD＝{h}厘米，CD⊥AB", Fraction(b*h,2), "BDC"
+                known, answer, target = f"D在边AB上，AD＝{a}厘米，DB＝{b}厘米，CD＝{h}厘米，CD⊥AB", Fraction(b*h,2), "BDC"
                 question, explanation = f"△ABC中，{known}。求△BDC面积。", f"{b}×{h}÷2"
         elif group in ("等积模型","燕尾模型"):
             lines = [("C","D")]
@@ -419,55 +434,48 @@ def build_problem(group, mode, a, b, c):
     xs, ys = zip(*drawn.values())
     scale = min(290/(max(xs)-min(xs)),140/(max(ys)-min(ys)))
     labels = []
+    label_guides = []
     cx, cy = sum(xs)/len(xs), sum(ys)/len(ys)
     for n,(x,y) in drawn.items():
         px,py = 65+(x-min(xs))*scale,185-(y-min(ys))*scale
         preferred = (-12 if x<cx else 12, 16 if y<cy else -7)
+        if n == "O" and group == "蝴蝶模型" and (max(ys)-y)*scale < 35:
+            preferred = (20,26)
         options = [preferred, (-12,-8), (12,-8), (-12,17), (12,17),
                    (-24,5), (24,5), (0,-19), (0,26), (-33,-10), (33,-10)]
         def usable(dx,dy):
             tx,ty = px+dx,py+dy
             return 8 <= tx <= 412 and 16 <= ty <= 214 and all(
-                abs(tx-lx)>=14 or abs(ty-ly)>=18 for lx,ly,_ in labels)
+                abs(tx-lx)>=14 or abs(ty-ly)>=24 for lx,ly,_ in labels)
         dx,dy = next((d for d in options if usable(*d)), preferred)
         labels.append((px+dx,py+dy,n))
+        if n == "O" and group == "蝴蝶模型" and (max(ys)-y)*scale < 35:
+            label_guides.append((n,px+dx*.7,py+dy*.7))
     if target and unit == "cm²" and Fraction(answer) != area([points[n] for n in target]):
         raise ValueError(f"Inconsistent shaded area for {question}")
     answer = answer if isinstance(answer,str) else number(answer)
-    # Wrap known conditions into multiple lines under the drawing.
-    import re
-    clauses = re.split(r"(?<=[，、。])", known)
-    rows = []
-    row = ""
-    for clause in clauses:
-        if row and len(row+clause) > 22:
-            rows.append(row)
-            row = ""
-        while len(clause) > 22:
-            rows.append(clause[:22])
-            clause = clause[22:]
-        row += clause
-    if row:
-        rows.append(row)
-    notes = tuple(rows)
-    args = dict(segments=lines,labels=labels)
+    notes = wrap_notes(question)
+    reasoning = wrap_notes(explanation)
+    args = dict(segments=lines,labels=labels,equal_pairs=equal_pairs,label_guides=label_guides)
     regions = [(target,"#bfdbfe")] if target else ()
     if group == "平行四边形" and mode == 14:
         regions = [("ABO","#bfdbfe"),("CDO","#fde68a")]
     if ":" in answer and group == "蝴蝶模型":
         regions.append(("CDO","#fde68a"))
     determined = additional and ((group == "一半模型" and 15 <= mode <= 17) or (group == "梯形" and mode != 32) or (group == "长方形与正方形" and mode in (20,21)) or (group == "三角形基础" and mode in (22,23)))
+    determined = determined or (group == "长方形与正方形" and mode < 15) or (group == "三角形基础" and (mode in (2,5,32,33) or 8 <= mode <= 14))
+    determined = determined or (mode >= 40 and (group in ("长方形与正方形","三角形基础") or (group == "三角形边角关系" and mode == 40)))
     geometry_note = () if determined else ("示意图，形状不唯一",)
     return dict(category=group, modelMode=mode,
                 construction={n:[f"{value:.12f}" if isinstance(value,float) else str(value) for value in pair]
                               for n,pair in drawn.items()},
-                outline=outline, target=target, subcategory=MODELS[group][mode-32] if mode >= 32 else TOPICS.get(group,{}).get(mode) or (explanation if len(explanation)<25 else question.split("求")[-1].strip("。")),
+                outline=outline, target=target, subcategory=CURRICULUM[group][mode] if mode >= 40 else MODELS[group][mode-32] if mode >= 32 else TOPICS.get(group,{}).get(mode) or question.split("求")[-1].strip("。"),
                 question=question, answer=answer, unit=unit, answerType=metadata.get("answerType", "ratio" if ":" in answer else "number"),
                 alternatives=metadata.get("alternatives", []), requiresUnit="答案须带单位" in question,
                 geometryStatus="determined" if determined else "representative", givens={"description":known},
                 solution=[explanation,f"答案为 {answer} {unit}".strip()],
                 questionSvg=diagram(drawn,outline,notes=(*geometry_note,*notes),**args),
-                answerSvg=diagram(drawn,outline,regions=regions,notes=(*geometry_note,*notes,f"答案 {answer} {unit}".strip()),**args))
+                answerSvg=diagram(drawn,outline,regions=regions,notes=(*geometry_note,*notes,*reasoning,f"答案 {answer} {unit}".strip()),**args))
 
 
 def build_bank():
@@ -615,4 +623,31 @@ def build_bank():
                     break
             else:
                 raise ValueError(f"Not enough distinct prompts: {models[k]}")
+    # Replace existing repeated forms with omitted curriculum, retaining all IDs.
+    frequencies = Counter((q["category"],form(q)) for q in result)
+    for group, models in CURRICULUM.items():
+        slots = [i for i,q in enumerate(result) if q["category"] == group and q["id"] > 5
+                 and q["modelMode"] < (10 if group == "综合几何模型" else 15)]
+        slots.sort(key=lambda i: frequencies[group,form(result[i])],reverse=True)
+        cursor = 0
+        for mode in models:
+            variants = list(product(range(3,22),range(2,23),range(2,4) if group == "综合几何模型" else range(2,25)))
+            Random(21121+mode).shuffle(variants)
+            count = 40 if group == "综合几何模型" else 10
+            for a,b,c in variants:
+                q = build_problem(group,mode,a,b,c)
+                if q["question"] in seen:
+                    continue
+                seen.add(q["question"])
+                index = slots[cursor]
+                result[index] = dict(q,id=result[index]["id"],difficulty="挑战" if group == "综合几何模型" else "基础")
+                cursor += 1
+                count -= 1
+                if not count:
+                    break
+            if count:
+                raise ValueError(f"Insufficient curriculum variants: {group}/{mode}")
+    for q in result:
+        if q["difficulty"] == "挑战" and not reviewed_multistep(q):
+            q["difficulty"] = "提高"
     return result

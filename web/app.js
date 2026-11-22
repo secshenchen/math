@@ -1,19 +1,20 @@
 "use strict";
 const el = id => document.getElementById(id);
 const bank = JSON.parse(el("bank").textContent);
+const lessons = JSON.parse(el("lessons").textContent);
 const namespace = "math-geometry-v1-";
 const enc = new TextEncoder();
 const read = (key, fallback) => JSON.parse(localStorage.getItem(namespace + key) ?? JSON.stringify(fallback));
 const save = (key, value) => localStorage.setItem(namespace + key, JSON.stringify(value));
 const hex = bytes => Array.from(bytes, n => n.toString(16).padStart(2, "0")).join("");
 let account = null, data, shown = bank, cursor = 0, current;
-const fresh = () => ({version:8, last:1, marks:{}});
-const retireByVersion = {2:"retired",3:"retired3",4:"retired4",5:"retired5",6:"retired6",7:"retired7"};
+const fresh = () => ({version:9, last:1, marks:{}});
+const retireByVersion = {2:"retired",3:"retired3",4:"retired4",5:"retired5",6:"retired6",7:"retired7",8:"retired8"};
 function migrateProgress(old) {
-  if (old.version === 8) return old;
+  if (old.version === 9) return old;
   if (Object.hasOwn(retireByVersion, old.version)) {
     const retired = new Set(JSON.parse(el(retireByVersion[old.version]).textContent));
-    return {version:8, last:retired.has(old.last) ? 1 : old.last,
+    return {version:9, last:retired.has(old.last) ? 1 : old.last,
             marks:Object.fromEntries(Object.entries(old.marks).filter(([id]) => !retired.has(Number(id))))};
   }
   if (old.version !== undefined) throw Error("学习记录版本不受支持。");
@@ -134,7 +135,7 @@ const formulas = {
 };
 function showProblemStatus(record) {
   el("problemStatus").textContent = [
-    current.subcategory,
+    current.answerType === "text" ? "图形分类" : current.subcategory,
     record.correct === true ? "已答对" : record.correct === false ? "待重练" : "未作答",
     record.mastered ? "已掌握" : ""
   ].filter(Boolean).join(" · ");
@@ -145,6 +146,7 @@ function render() {
   el("problem").hidden = !current;
   el("empty").hidden = !!current;
   stats();
+  showLesson(current?.category || el("category").value);
   if (!current) return;
   el("title").textContent = `第 ${current.id} 题 · ${current.category} · ${current.difficulty}`;
   el("prompt").textContent = current.question;
@@ -164,6 +166,18 @@ function render() {
   }
   data.last = current.id;
   persist();
+}
+function showLesson(category) {
+  const lesson = lessons[category];
+  el("knowledge").hidden = !lesson;
+  el("learn").disabled = !lesson;
+  if (!lesson) return;
+  el("lessonTitle").textContent = category + " · " + lesson.title;
+  el("lessonCondition").textContent = lesson.condition;
+  el("lessonRule").textContent = lesson.rule;
+  el("lessonDrawing").innerHTML = lesson.svg;
+  el("lessonSteps").replaceChildren(...lesson.steps.map(s => Object.assign(document.createElement("li"),{textContent:s})));
+  el("lessonCaution").textContent = lesson.caution;
 }
 function rational(str) {
   if (!/^[+-]?(?:\d{1,70}(?:[./]\d{1,70})?|\.\d{1,70})$/.test(str)) return null;
@@ -219,10 +233,11 @@ el("solution").ontoggle = () => {
   el("steps").replaceChildren(...current.solution.map(s => Object.assign(document.createElement("li"),{textContent:s})));
   el("solutionSvg").innerHTML = current.answerSvg;
 };
-el("next").onclick = () => { if (cursor+1<shown.length) { cursor++; render(); } };
-el("previous").onclick = () => { if (cursor>0) { cursor--; render(); } };
-el("random").onclick = () => { if (shown.length) { cursor = Math.floor(Math.random()*shown.length); render(); } };
-el("resume").onclick = resetFilters;
+el("next").onclick = () => { if (cursor+1<shown.length) { cursor++; render(); el("title").focus(); } };
+el("previous").onclick = () => { if (cursor>0) { cursor--; render(); el("title").focus(); } };
+el("random").onclick = () => { if (shown.length) { cursor = Math.floor(Math.random()*shown.length); render(); el("title").focus(); } };
+el("resume").onclick = () => { resetFilters(); el("title").focus(); };
+el("learn").onclick = () => { el("knowledge").open = true; el("lessonTitle").focus(); };
 for (const id of ["favorite","mastered"]) el(id).onclick = () => { const record = mark(); record[id] = !record[id]; persist(); select(current.id); };
 el("logout").onclick = exit;
 el("print").onclick = () => window.print();
@@ -237,7 +252,9 @@ el("upload").onclick = () => el("uploadFile").click();
 el("uploadFile").onchange = async event => {
   const file = event.target.files[0];
   event.target.value = "";
-  if (!file || file.size>2000000) return;
+  el("importMessage").textContent = "";
+  if (!file) return;
+  if (file.size>2000000) { el("importMessage").textContent = "文件过大，请选择不超过 2 MB 的学习记录；原进度未修改。"; return; }
   const owner = account;
   try {
     let incoming = JSON.parse(await file.text());

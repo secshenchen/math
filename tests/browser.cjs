@@ -1,5 +1,5 @@
 const assert = require("node:assert/strict");
-const {readFileSync} = require("node:fs");
+const {readFileSync,writeFileSync} = require("node:fs");
 const {resolve} = require("node:path");
 const {pathToFileURL} = require("node:url");
 const {chromium, webkit, devices} = require("playwright");
@@ -62,6 +62,32 @@ async function main() {
     assert.match(await input("response").ariaSnapshot(), /textbox "答案"/);
     await auditAccessibility();
     assert.equal(await input("solutionSvg").locator("svg").count(),0);
+    await input("search").fill("434");
+    assert.doesNotMatch(await input("problemStatus").textContent(),/660|先求高|再计算/);
+    const classificationId = await page.evaluate(() => JSON.parse(document.getElementById("bank").textContent).find(q => q.answerType === "text" && q.modelMode >= 40).id);
+    await input("search").fill(String(classificationId));
+    assert.match(await input("problemStatus").textContent(),/^图形分类/);
+    assert.doesNotMatch(await input("problemStatus").textContent(),/等边|等腰|不等边/);
+    await input("search").fill("");
+    const topics = await input("category").locator("option").evaluateAll(nodes => nodes.map(n => n.value).filter(Boolean));
+    for (const category of topics) {
+      await input("category").selectOption(category);
+      await input("learn").click();
+      assert.match(await input("lessonTitle").textContent(),new RegExp(category));
+      assert.equal(await input("lessonDrawing").locator("svg").count(),1);
+      assert.ok((await input("lessonSteps").locator("li").count()) >= 2);
+      assert.ok(await input("lessonCondition").textContent());
+      assert.equal(await page.evaluate(() => document.activeElement.id),"lessonTitle");
+      assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),true);
+    }
+    await input("filter").selectOption("wrong");
+    await input("category").selectOption("平行四边形");
+    assert.equal(await input("problem").isVisible(),false);
+    await input("learn").click();
+    assert.match(await input("lessonTitle").textContent(),/平行四边形/);
+    await input("filter").selectOption("");
+    await input("category").selectOption("");
+    await input("resume").click();
     const openChapters = page.getByText("展开章节", {exact:true});
     const firstChapter = input("chapters").getByRole("button", {name:/长方形与正方形/});
     if (devices[device]?.hasTouch) {
@@ -80,6 +106,7 @@ async function main() {
     await input("solution").locator("summary").click();
     await input("solutionSvg").locator("svg").waitFor();
     await input("next").click();
+    assert.equal(await page.evaluate(() => document.activeElement.id),"title","Next must announce the new problem through focus");
     await input("entry").fill("1");
     await input("response").locator("button").click();
     assert.match(await input("feedback").textContent(), /错误/);
@@ -120,10 +147,13 @@ async function main() {
     await input("download").click();
     const restored = JSON.parse(readFileSync(await (await imported).path(),"utf8"));
     assert.equal(restored.marks["1"].answered,backup.marks["1"].answered);
+    await input("uploadFile").setInputFiles({name:"large.json",mimeType:"application/json",buffer:Buffer.alloc(2000001,32)});
+    assert.match(await input("importMessage").textContent(),/文件过大/);
+    assert.deepEqual(await page.evaluate(() => JSON.parse(localStorage.getItem("math-geometry-v1-progress:local-test-a"))),restored);
     const legacy = await page.evaluate(() => {
       const old = JSON.parse(document.getElementById("migration").textContent);
       const versions = [[undefined, old.indexOf(0)+1]];
-      for (const [version, element] of [[2,"retired"],[3,"retired3"],[4,"retired4"],[5,"retired5"],[6,"retired6"],[7,"retired7"]]) {
+      for (const [version, element] of [[2,"retired"],[3,"retired3"],[4,"retired4"],[5,"retired5"],[6,"retired6"],[7,"retired7"],[8,"retired8"]]) {
         versions.push([version,JSON.parse(document.getElementById(element).textContent)[0]]);
       }
       return versions;
@@ -139,21 +169,33 @@ async function main() {
         return {current:read("progress:local-test-a"),
                 previous:read((version === null ? "previous-progress:" : "previous-progress-v"+version+":")+"local-test-a")};
       },version ?? null);
-      assert.deepEqual(current,{version:8,last:1,marks:{"1":{favorite:true}}});
+      assert.deepEqual(current,{version:9,last:1,marks:{"1":{favorite:true}}});
       assert.deepEqual(previous,JSON.parse(JSON.stringify(old)));
     }
     const v7 = {version:7,last:2,marks:{"2":{favorite:true},[legacy.at(-1)[1]]:{mastered:true}}};
     await input("uploadFile").setInputFiles({name:"v7.json",mimeType:"application/json",buffer:Buffer.from(JSON.stringify(v7))});
     await page.waitForFunction(() => document.getElementById("title").textContent.includes("第 2 题"));
     assert.deepEqual(await page.evaluate(() => JSON.parse(localStorage.getItem("math-geometry-v1-progress:local-test-a"))),
-      {version:8,last:2,marks:{"2":{favorite:true}}});
+      {version:9,last:2,marks:{"2":{favorite:true}}});
     await input("search").fill("1");
     await page.evaluate(() => { window.print = () => document.body.dataset.printed = "yes"; });
     await input("print").click();
     assert.equal(await page.locator("body").getAttribute("data-printed"), "yes");
     if (engine === chromium) {
+      await page.emulateMedia({media:"print"});
+      assert.equal(await input("knowledge").isVisible(),false);
+      assert.equal(await input("drawing").locator("svg").isVisible(),true);
+      assert.equal(await input("solutionSvg").locator("svg").count(),0);
       const pdf = await page.pdf({format:"A4"});
       assert.equal(pdf.subarray(0,4).toString(), "%PDF");
+      if (process.env.GEOMETRY_PDF_DIR) writeFileSync(resolve(process.env.GEOMETRY_PDF_DIR,"question.pdf"),pdf);
+      await page.emulateMedia({media:"screen"});
+      await input("solution").locator("summary").click();
+      await input("solutionSvg").locator("svg").waitFor();
+      await page.emulateMedia({media:"print"});
+      const answerPdf = await page.pdf({format:"A4"});
+      if (process.env.GEOMETRY_PDF_DIR) writeFileSync(resolve(process.env.GEOMETRY_PDF_DIR,"answer.pdf"),answerPdf);
+      await page.emulateMedia({media:"screen"});
     }
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
     await input("remove").click();

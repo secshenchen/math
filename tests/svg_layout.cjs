@@ -9,12 +9,16 @@ const {chromium} = require("playwright");
   try {
     const page = await browser.newPage();
     const packed = readFileSync("index.html","utf8").match(/atob\('([A-Za-z0-9+/=]+)'\)/)[1];
-    const data = gunzipSync(Buffer.from(packed,"base64")).toString("utf8").split('id="bank">')[1].split("</script>")[0];
+    const html = gunzipSync(Buffer.from(packed,"base64")).toString("utf8");
+    const data = html.split('id="bank">')[1].split("</script>")[0];
     const bank = JSON.parse(data);
+    const lessons = Object.entries(JSON.parse(html.split('id="lessons">')[1].split("</script>")[0]))
+      .map(([id,lesson]) => ({id,svg:lesson.svg,fields:["svg"]}));
+    const subjects = [...bank,...lessons];
     const issues = [];
     const records = [];
     let covered = 0;
-    for (let i=0;i<bank.length;i+=100) {
+    for (let i=0;i<subjects.length;i+=100) {
       const result = await page.evaluate(batch => {
         const issues = [];
         const records = [];
@@ -36,7 +40,7 @@ const {chromium} = require("playwright");
         }
         const holder = document.createElement("div");
         document.body.append(holder);
-        for (const question of batch) for (const field of ["questionSvg","answerSvg"]) {
+        for (const question of batch) for (const field of question.fields ?? ["questionSvg","answerSvg"]) {
           const record = {id:question.id, field, labels:0, auxiliaryLines:0, haloCrossings:0};
           records.push(record);
           holder.innerHTML = question[field];
@@ -76,13 +80,13 @@ const {chromium} = require("playwright");
         }
         holder.remove();
         return {issues,records};
-      },bank.slice(i,i+100));
+      },subjects.slice(i,i+100));
       issues.push(...result.issues);
       records.push(...result.records);
       covered += result.records.reduce((sum, row) => sum+row.haloCrossings,0);
     }
-    console.log(JSON.stringify({checked:2*bank.length, issues:issues.length, labelsWithHaloAtCrossings:covered, examples:issues.slice(0,12)}));
-    if (process.env.GEOMETRY_LAYOUT_REPORT) writeFileSync(process.env.GEOMETRY_LAYOUT_REPORT, JSON.stringify({records,issues}));
+    console.log(JSON.stringify({checked:2*bank.length,teachingSVGs:lessons.length, issues:issues.length, labelsWithHaloAtCrossings:covered, examples:issues.slice(0,12)}));
+    if (process.env.GEOMETRY_LAYOUT_REPORT) writeFileSync(process.env.GEOMETRY_LAYOUT_REPORT, JSON.stringify({records:records.filter(r => typeof r.id === "number"),lessonRecords:records.filter(r => typeof r.id === "string"),issues}));
     assert.equal(issues.length,0,"SVG text must fit and remain legible at line crossings");
   } finally { await browser.close(); }
 })().catch(error => { console.error(error); process.exitCode=1; });

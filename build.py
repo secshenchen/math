@@ -6,6 +6,7 @@ from html import escape
 from hashlib import sha256
 from pathlib import Path
 from geometry.bank import build_bank
+from geometry.lessons import build_lessons
 
 ROOT = Path(__file__).resolve().parent
 
@@ -33,6 +34,8 @@ def build():
     retired5 = [q["id"] for q in questions if q.get("modelMode",0) >= 24]
     retired6 = [q["id"] for q in questions if q.get("modelMode",0) >= 27]
     retired7 = [q["id"] for q in questions if q.get("modelMode",0) >= 32]
+    retired8 = json.loads((ROOT / "geometry/retired_v8.json").read_text())
+    retired,retired3,retired4,retired5,retired6,retired7 = [sorted(set(ids)|set(retired8)) for ids in (retired,retired3,retired4,retired5,retired6,retired7)]
     occurrences = Counter(q[key] for q in questions for key in ("questionSvg","answerSvg"))
     for q in questions:
         for key,label in (("questionSvg","题图"),("answerSvg","解析图")):
@@ -43,6 +46,9 @@ def build():
             q[key] = svg.replace("<title>几何关系图</title>",f"<title>{name}</title>",1)
     bank = json.dumps(questions, ensure_ascii=False, separators=(",", ":")).replace("<", "\\u003c")
     template = (ROOT / "web/app.html").read_text(encoding="utf-8")
+    lessons = json.dumps(build_lessons(),ensure_ascii=False,separators=(",",":")).replace("<","\\u003c")
+    template = template.replace("__LESSONS__",lessons)
+    template = template.replace("__RETIRED8__",json.dumps(retired8))
     app = (ROOT / "web/app.js").read_text(encoding="utf-8")
     output = ROOT / "candidate" / "index.html"
     output.parent.mkdir(exist_ok=True)
