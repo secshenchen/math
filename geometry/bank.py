@@ -434,6 +434,7 @@ def build_problem(group, mode, a, b, c):
     xs, ys = zip(*drawn.values())
     scale = min(290/(max(xs)-min(xs)),140/(max(ys)-min(ys)))
     labels = []
+    label_guides = []
     cx, cy = sum(xs)/len(xs), sum(ys)/len(ys)
     for n,(x,y) in drawn.items():
         px,py = 65+(x-min(xs))*scale,185-(y-min(ys))*scale
@@ -448,12 +449,14 @@ def build_problem(group, mode, a, b, c):
                 abs(tx-lx)>=14 or abs(ty-ly)>=24 for lx,ly,_ in labels)
         dx,dy = next((d for d in options if usable(*d)), preferred)
         labels.append((px+dx,py+dy,n))
+        if n == "O" and group == "蝴蝶模型" and (max(ys)-y)*scale < 35:
+            label_guides.append((n,px+dx*.7,py+dy*.7))
     if target and unit == "cm²" and Fraction(answer) != area([points[n] for n in target]):
         raise ValueError(f"Inconsistent shaded area for {question}")
     answer = answer if isinstance(answer,str) else number(answer)
     notes = wrap_notes(question)
     reasoning = wrap_notes(explanation)
-    args = dict(segments=lines,labels=labels,equal_pairs=equal_pairs)
+    args = dict(segments=lines,labels=labels,equal_pairs=equal_pairs,label_guides=label_guides)
     regions = [(target,"#bfdbfe")] if target else ()
     if group == "平行四边形" and mode == 14:
         regions = [("ABO","#bfdbfe"),("CDO","#fde68a")]

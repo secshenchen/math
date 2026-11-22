@@ -220,7 +220,7 @@ class BuiltBankTests(unittest.TestCase):
                 root = ET.fromstring(q[field])
                 projected = [(float(65+(x-min(xs))*scale),float(185-(y-min(ys))*scale)) for x,y in points.values()]
                 for line in root.findall(ns + "line"):
-                    if line.attrib.get("class") == "equal-length":
+                    if line.attrib.get("class") in ("equal-length","label-guide"):
                         continue
                     for end in ("1","2"):
                         x,y = float(line.attrib["x"+end]),float(line.attrib["y"+end])

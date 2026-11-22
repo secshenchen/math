@@ -9,7 +9,7 @@ from .coordinates import area, intersection, midpoint
 
 def wrap_notes(text, width=22):
     rows, row = [], ""
-    for token in re.findall(r"\d+(?:[./:]\d+)*(?:平方厘米|厘米|cm²|cm|°|度)?|[A-Za-z]+|.",text):
+    for token in re.findall(r"\d+(?:[./:]\d+)*(?:平方厘米|厘米|cm²|cm|°|度)?|cm²|[A-Za-z]+|.",text):
         if row and len(row+token)>width and token not in "，。；、：？！":
             rows.append(row)
             row = ""
@@ -19,7 +19,7 @@ def wrap_notes(text, width=22):
     return tuple(rows)
 
 
-def diagram(points, outline, *, segments=(), regions=(), labels=(), notes=(), equal_pairs=()):
+def diagram(points, outline, *, segments=(), regions=(), labels=(), notes=(), equal_pairs=(), label_guides=()):
     width, height = 420, max(312, 252 + 28 * len(notes))
     xs, ys = zip(*points.values())
     scale = min(290 / (max(xs) - min(xs)), 140 / (max(ys) - min(ys)))
@@ -60,6 +60,9 @@ def diagram(points, outline, *, segments=(), regions=(), labels=(), notes=(), eq
                     f'x2="{x + uy * 5:.3f}" y2="{y - ux * 5:.3f}" '
                     'stroke="#26334a" stroke-width="2" class="equal-length"/>'
                 )
+    for name, x, y in label_guides:
+        px, py = project(points[name])
+        elements.append(f'<line class="label-guide" x1="{px:.3f}" y1="{py:.3f}" x2="{x:.3f}" y2="{y:.3f}" stroke="#64748b" stroke-width="1" stroke-dasharray="2 2"/>')
     elements.extend(label(x, y, text, "middle") for x, y, text in labels)
     elements.extend(label(18, 242 + 28 * i, text) for i, text in enumerate(notes))
     return f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width} {height}" role="img" font-family="sans-serif" font-size="16" fill="#172944">' + "".join(elements) + '</svg>'
